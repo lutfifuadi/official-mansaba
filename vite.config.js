@@ -62,6 +62,8 @@ export default defineConfig({
                 'resources/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js',
                 'resources/assets/vendor/libs/hammer/hammer.js',
                 'resources/assets/vendor/libs/@form-validation/popular.js',
+                'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
+                'resources/assets/vendor/libs/@form-validation/auto-focus.js',
                 'resources/assets/vendor/libs/swiper/swiper.js',
                 'resources/assets/vendor/libs/quill/quill.js',
                 'resources/assets/vendor/libs/apex-charts/apexcharts.js',
