@@ -18,12 +18,12 @@ $estTime = $settings->get('maintenance_est_time')?->value ?? 'Beberapa jam ke de
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Maintenance — {{ $siteName }}</title>
   <style>
-    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:300; font-display:swap; src:url('{{ asset('fonts/product-sans/ProductSans-Light.woff2') }}') format('woff2'); }
-    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:400; font-display:swap; src:url('{{ asset('fonts/product-sans/ProductSans-Regular.woff2') }}') format('woff2'); }
-    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:500; font-display:swap; src:url('{{ asset('fonts/product-sans/ProductSans-Medium.woff2') }}') format('woff2'); }
-    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:700; font-display:swap; src:url('{{ asset('fonts/product-sans/ProductSans-Bold.woff2') }}') format('woff2'); }
-    @font-face { font-family:'Trajan Pro'; font-style:normal; font-weight:400; font-display:swap; src:url('{{ asset('fonts/trajan-pro/TrajanPro-Regular.woff2') }}') format('woff2'); }
-    @font-face { font-family:'Trajan Pro'; font-style:normal; font-weight:700; font-display:swap; src:url('{{ asset('fonts/trajan-pro/TrajanPro-Bold.woff2') }}') format('woff2'); }
+    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:300; font-display:block; src:url('{{ asset('fonts/product-sans/ProductSans-Light.woff2') }}') format('woff2'); }
+    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:400; font-display:block; src:url('{{ asset('fonts/product-sans/ProductSans-Regular.woff2') }}') format('woff2'); }
+    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:500; font-display:block; src:url('{{ asset('fonts/product-sans/ProductSans-Medium.woff2') }}') format('woff2'); }
+    @font-face { font-family:'Product Sans'; font-style:normal; font-weight:700; font-display:block; src:url('{{ asset('fonts/product-sans/ProductSans-Bold.woff2') }}') format('woff2'); }
+    @font-face { font-family:'Trajan Pro'; font-style:normal; font-weight:400; font-display:block; src:url('{{ asset('fonts/trajan-pro/TrajanPro-Regular.woff2') }}') format('woff2'); }
+    @font-face { font-family:'Trajan Pro'; font-style:normal; font-weight:700; font-display:block; src:url('{{ asset('fonts/trajan-pro/TrajanPro-Bold.woff2') }}') format('woff2'); }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       height: 100%; overflow: hidden;

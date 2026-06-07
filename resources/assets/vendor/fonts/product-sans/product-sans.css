@@ -2,7 +2,7 @@
   font-family: 'Product Sans';
   font-style: normal;
   font-weight: 300;
-  font-display: swap;
+  font-display: block;
   src: url('./ProductSans-Light.woff2') format('woff2');
 }
 
@@ -10,7 +10,7 @@
   font-family: 'Product Sans';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   src: url('./ProductSans-Regular.woff2') format('woff2');
 }
 
@@ -18,7 +18,7 @@
   font-family: 'Product Sans';
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: block;
   src: url('./ProductSans-Medium.woff2') format('woff2');
 }
 
@@ -26,6 +26,6 @@
   font-family: 'Product Sans';
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: block;
   src: url('./ProductSans-Bold.woff2') format('woff2');
 }
