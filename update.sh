@@ -25,7 +25,10 @@ if [ ! -f artisan ]; then
     exit 1
 fi
 
+# Simpan kepemilikan asli (user:group) sebelum perubahan
+ORIGINAL_OWNER=$(ls -ld artisan | awk '{print $3":"$4}')
 info "Project dir: $PROJECT_DIR"
+info "Original owner: $ORIGINAL_OWNER"
 
 # ── 1. Git Pull ──────────────────────────────────────────────
 step "1. Tarik perubahan dari GitHub"
@@ -83,38 +86,29 @@ else
     warn "Gagal download release. Pastikan release 'latest-build' sudah ada."
 fi
 
-# ── 4. Maintenance Mode ON ──────────────────────────────────
-step "4. Maintenance mode ON"
-php artisan down --retry=30 2>/dev/null || true
-info "Maintenance mode aktif"
-
-# ── 5. Migrate Database ─────────────────────────────────────
-step "5. Migrasi Database"
+# ── 4. Migrate Database ─────────────────────────────────────
+step "4. Migrasi Database"
 php artisan migrate --force
 info "Migrasi selesai ✓"
 
-# ── 6. Optimasi ─────────────────────────────────────────────
-step "6. Optimasi Cache"
+# ── 5. Optimasi ─────────────────────────────────────────────
+step "5. Optimasi Cache"
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 info "Optimasi selesai ✓"
 
-# ── 7. Storage Link ─────────────────────────────────────────
-step "7. Storage Link"
+# ── 6. Storage Link ─────────────────────────────────────────
+step "6. Storage Link"
 php artisan storage:link --force 2>/dev/null || true
 info "Storage link siap ✓"
 
-# ── 8. Permission ──────────────────────────────────────────
-step "8. Set Permission"
+# ── 7. Permission & Ownership ──────────────────────────────
+step "7. Set Permission & Ownership"
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
-info "Permission OK ✓"
-
-# ── 9. Maintenance Mode OFF ────────────────────────────────
-step "9. Maintenance mode OFF"
-php artisan up
-info "Aplikasi kembali aktif ✓"
+chown -R "$ORIGINAL_OWNER" "$PROJECT_DIR" 2>/dev/null || warn "Gagal restore ownership (butuh root/sudo)"
+info "Permission & ownership OK ✓"
 
 # ── Selesai ─────────────────────────────────────────────────
 step "Selesai!"
