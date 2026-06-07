@@ -15,6 +15,7 @@ export default defineConfig({
                 'resources/assets/vendor/fonts/trajan-pro/trajan-pro.css',
                 'resources/assets/vendor/fonts/amiri/amiri.css',
                 'resources/assets/vendor/scss/core.scss',
+                'resources/assets/vendor/libs/@form-validation/form-validation.scss',
             ],
             refresh: true,
         }),
