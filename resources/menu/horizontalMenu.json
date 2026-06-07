@@ -1,0 +1,52 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Beranda",
+      "icon": "menu-icon icon-base ti tabler-home",
+      "slug": "home"
+    },
+    {
+      "url": "/profil",
+      "name": "Profil",
+      "icon": "menu-icon icon-base ti tabler-info-circle",
+      "slug": "public.profile"
+    },
+    {
+      "url": "/berita",
+      "name": "Berita",
+      "icon": "menu-icon icon-base ti tabler-news",
+      "slug": "public.news"
+    },
+    {
+      "url": "/galeri",
+      "name": "Galeri",
+      "icon": "menu-icon icon-base ti tabler-photo",
+      "slug": "public.galleries"
+    },
+    {
+      "url": "/prestasi",
+      "name": "Prestasi",
+      "icon": "menu-icon icon-base ti tabler-trophy",
+      "slug": "public.achievements"
+    },
+    {
+      "url": "/ekstrakurikuler",
+      "name": "Ekstrakurikuler",
+      "icon": "menu-icon icon-base ti tabler-users",
+      "slug": "public.extracurriculars"
+    },
+    {
+      "url": "/kontak",
+      "name": "Kontak",
+      "icon": "menu-icon icon-base ti tabler-mail",
+      "slug": "public.contact"
+    },
+    {
+      "url": "/auth/login",
+      "name": "Login",
+      "icon": "menu-icon icon-base ti tabler-login",
+      "slug": "auth.login"
+    }
+  ]
+}

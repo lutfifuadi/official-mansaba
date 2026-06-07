@@ -1,0 +1,183 @@
+[data-skin="mansaba"] {
+  --mansaba-green: #1B5E42;
+  --mansaba-green-mid: #2E7D5E;
+  --mansaba-green-light: #4CAF7D;
+  --mansaba-gold: #C9972B;
+  --mansaba-gold-light: #F5C842;
+  --mansaba-cream: #FDF8EE;
+  --mansaba-cream-dark: #F4EDD5;
+  --mansaba-maroon: #7B2D3E;
+  --mansaba-dark: #1A1A2E;
+
+  --#{$prefix}primary: var(--mansaba-green);
+  --#{$prefix}primary-bg-subtle: rgba(27, 94, 66, 0.12);
+  --#{$prefix}primary-border-subtle: rgba(27, 94, 66, 0.3);
+  --#{$prefix}body-bg: var(--mansaba-cream);
+  --#{$prefix}paper-bg: #fff;
+  --#{$prefix}heading-color: var(--mansaba-dark);
+
+  .app-brand-text {
+    color: #fff !important;
+  }
+
+  .layout-menu {
+    background: linear-gradient(180deg, #0D3B2A 0%, #1B5E42 100%);
+    color: rgba(255, 255, 255, 0.8);
+
+    .menu-link,
+    .menu-sub .menu-link {
+      color: rgba(255, 255, 255, 0.75);
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    .menu-icon {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .menu-text {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .menu-toggle {
+      color: rgba(255, 255, 255, 0.5);
+      &:hover {
+        color: #fff;
+      }
+    }
+    .menu-toggle::after {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+    .menu-item.active > .menu-toggle::after {
+      background-color: var(--mansaba-gold-light);
+    }
+    .menu-toggle:hover::after {
+      background-color: #fff;
+    }
+    .menu-item.open > .menu-toggle::after {
+      background-color: rgba(255, 255, 255, 0.75);
+    }
+
+    .menu-header .menu-header-text {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .menu-item.active {
+      > .menu-link {
+        background: rgba(201, 151, 43, 0.18);
+        border-inline-start: 3px solid var(--mansaba-gold);
+        color: #fff;
+        .menu-icon,
+        .menu-text {
+          color: #fff;
+        }
+      }
+      > .menu-toggle {
+        color: var(--mansaba-gold-light);
+      }
+    }
+
+    .menu-item:not(.active) {
+      > .menu-link:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        .menu-icon,
+        .menu-text {
+          color: #fff;
+        }
+      }
+    }
+
+    .menu-sub .menu-item.active > .menu-link {
+      background: rgba(201, 151, 43, 0.12);
+      color: var(--mansaba-gold-light);
+    }
+
+    .menu-inner-shadow {
+      background: linear-gradient(#0D3B2A 5%, rgba(13, 59, 42, 0.15) 45%, rgba(13, 59, 42, 0.05) 80%, transparent);
+    }
+
+    .ps__rail-y {
+      background-color: transparent !important;
+      .ps__thumb-y {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+    }
+
+    .menu-item > .menu-link {
+      margin: 0 0.5rem;
+      border-radius: 0.375rem;
+    }
+  }
+
+  .layout-navbar .navbar-detached {
+    border-bottom: 2px solid var(--mansaba-gold);
+  }
+
+  .card {
+    --#{$prefix}card-box-shadow: 0 2px 12px rgba(27, 94, 66, 0.08);
+    --#{$prefix}card-border-color: rgba(27, 94, 66, 0.08);
+  }
+
+  .btn-primary {
+    --#{$prefix}btn-color: #fff;
+    --#{$prefix}btn-bg: var(--mansaba-green);
+    --#{$prefix}btn-border-color: var(--mansaba-green);
+    --#{$prefix}btn-hover-color: #fff;
+    --#{$prefix}btn-hover-bg: var(--mansaba-green-mid);
+    --#{$prefix}btn-hover-border-color: var(--mansaba-green-mid);
+    --#{$prefix}btn-active-color: #fff;
+    --#{$prefix}btn-active-bg: var(--mansaba-green-mid);
+  }
+
+  a:not(.btn) {
+    color: var(--mansaba-green);
+    &:hover {
+      color: var(--mansaba-green-light);
+    }
+  }
+
+  .text-primary {
+    color: var(--mansaba-green) !important;
+  }
+
+  .bg-label-primary {
+    background: rgba(27, 94, 66, 0.1) !important;
+    color: var(--mansaba-green) !important;
+  }
+
+  .avatar-initial.bg-label-primary {
+    background: rgba(27, 94, 66, 0.12) !important;
+    color: var(--mansaba-green) !important;
+  }
+
+  .badge.bg-label-primary {
+    background: rgba(27, 94, 66, 0.1) !important;
+    color: var(--mansaba-green) !important;
+  }
+
+  .progress-bar {
+    background-color: var(--mansaba-green);
+  }
+
+  .nav-pills .nav-link.active {
+    background-color: var(--mansaba-green);
+  }
+
+  .table thead th {
+    color: var(--mansaba-dark);
+    border-bottom: 2px solid var(--mansaba-gold);
+  }
+
+  .footer {
+    border-top: 1px solid var(--mansaba-gold);
+  }
+
+  .divider .divider-text {
+    color: var(--mansaba-gold);
+    &::before, &::after {
+      border-color: var(--mansaba-gold);
+    }
+  }
+}

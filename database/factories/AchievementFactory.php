@@ -1,0 +1,27 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Achievement;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Achievement>
+ */
+class AchievementFactory extends Factory
+{
+    protected $model = Achievement::class;
+
+    public function definition(): array
+    {
+        return [
+            'title' => fake()->sentence(5),
+            'student_name' => fake()->name(),
+            'category' => fake()->randomElement(['akademik', 'olahraga', 'seni', 'lainnya']),
+            'level' => fake()->randomElement(['kabupaten', 'provinsi', 'nasional', 'internasional']),
+            'description' => fake()->paragraph(),
+            'image' => null,
+            'achievement_date' => fake()->date(),
+        ];
+    }
+}

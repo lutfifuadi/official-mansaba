@@ -1,0 +1,40 @@
+{
+  "menu": [
+    {
+      "url": "/admin/dashboard",
+      "name": "Dashboard",
+      "icon": "menu-icon icon-base ti tabler-dashboard",
+      "slug": "admin.dashboard"
+    },
+    {
+      "menuHeader": "Konten"
+    },
+    {
+      "name": "Berita",
+      "icon": "menu-icon icon-base ti tabler-news",
+      "slug": "admin.news",
+      "submenu": [
+        { "url": "/admin/news", "name": "Semua Berita", "slug": "admin.news.index" },
+        { "url": "/admin/news/create", "name": "Tambah Berita", "slug": "admin.news.create" }
+      ]
+    },
+    {
+      "name": "Prestasi",
+      "icon": "menu-icon icon-base ti tabler-trophy",
+      "slug": "admin.achievements",
+      "submenu": [
+        { "url": "/admin/achievements", "name": "Semua Prestasi", "slug": "admin.achievements.index" },
+        { "url": "/admin/achievements/create", "name": "Tambah Prestasi", "slug": "admin.achievements.create" }
+      ]
+    },
+    {
+      "menuHeader": "Akun"
+    },
+    {
+      "url": "/admin/profile",
+      "name": "Profil Saya",
+      "icon": "menu-icon icon-base ti tabler-user",
+      "slug": "admin.profile"
+    }
+  ]
+}
