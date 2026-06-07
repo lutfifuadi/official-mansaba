@@ -25,6 +25,7 @@ npm-debug.log
 yarn-error.log
 /auth.json
 /.opencode
+/docs
 /.fleet
 /.idea
 /.nova
