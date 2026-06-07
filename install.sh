@@ -213,7 +213,7 @@ read -p "Pilihan [2]: " DB_ACTION
 DB_ACTION="${DB_ACTION:-2}"
 
 case $DB_ACTION in
-  1) php artisan migrate --force; info "Migrasi selesai" ;;
+   1) php artisan migrate --force --graceful; info "Migrasi selesai" ;;
   2)
     warn "SEMUA DATA DI DATABASE $DB_NAME AKAN DIHAPUS!"
     read -p "Ketik 'fresh' untuk lanjut: " CONFIRM

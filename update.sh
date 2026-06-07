@@ -88,7 +88,7 @@ fi
 
 # ── 4. Migrate Database ─────────────────────────────────────
 step "4. Migrasi Database"
-php artisan migrate --force
+php artisan migrate --force --graceful
 info "Migrasi selesai ✓"
 
 # ── 5. Optimasi ─────────────────────────────────────────────
