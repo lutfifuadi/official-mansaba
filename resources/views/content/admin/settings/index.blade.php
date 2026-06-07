@@ -256,7 +256,7 @@
                         @if (in_array($key, ['school_logo', 'favicon', 'headmaster_photo']))
                           <div class="mb-2">
                             <div class="d-flex align-items-center gap-3 mb-2">
-                              @php $imgUrl = !empty($val) ? (str_starts_with($val, 'http') ? $val : Storage::url($val)) : null; @endphp
+                              @php $imgUrl = !empty($val) ? (str_starts_with($val, 'http') ? $val : \App\Helpers\StorageHelper::url($val)) : null; @endphp
                               @if ($imgUrl)
                                 <div class="avatar avatar-md border" style="background:#f8f9fa;">
                                   <img src="{{ $imgUrl }}" alt="{{ $label }}" style="object-fit: contain; border-radius: 4px;">

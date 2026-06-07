@@ -80,7 +80,7 @@
           @isset($news)
             @if($news->image)
               <div class="mt-2">
-                <img src="{{ Storage::url($news->image) }}" alt="{{ $news->title }}" class="img-thumbnail" style="max-height: 150px;">
+                <img src="{{ \App\Helpers\StorageHelper::url($news->image) }}" alt="{{ $news->title }}" class="img-thumbnail" style="max-height: 150px;">
                 <small class="text-muted d-block">Kosongkan jika tidak ingin mengganti gambar.</small>
               </div>
             @endif

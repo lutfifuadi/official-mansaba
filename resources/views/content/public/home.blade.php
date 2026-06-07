@@ -161,7 +161,7 @@ use Illuminate\Support\Str;
         <div class="col-md-4 mansaba-fade-up">
           <div class="mansaba-card mansaba-card-news h-100">
             <div class="news-card-img" style="height:200px;overflow:hidden;position:relative;">
-              <img src="{{ $item->image ? Storage::url($item->image) : asset('storage/default-news.jpg') }}"
+              <img src="{{ $item->image ? \App\Helpers\StorageHelper::url($item->image) : asset('storage/default-news.jpg') }}"
                    alt="{{ $item->title ?? 'Berita' }}"
                    loading="lazy"
                    style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;"
@@ -277,7 +277,7 @@ use Illuminate\Support\Str;
           @php $firstImg = $item->images->first(); @endphp
           <div class="swiper-slide">
             <div class="gallery-slide-inner">
-              <img src="{{ $firstImg ? Storage::url($firstImg->image) : asset('assets/img/placeholder.jpg') }}"
+              <img src="{{ $firstImg ? \App\Helpers\StorageHelper::url($firstImg->image) : asset('assets/img/placeholder.jpg') }}"
                    alt="{{ $item->title ?? 'Foto Kegiatan' }}"
                    loading="lazy" />
               @if ($item->title ?? false)

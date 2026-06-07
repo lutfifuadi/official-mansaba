@@ -60,7 +60,7 @@
                   @if($item->images->count() > 0)
                     <div class="d-flex gap-1">
                       @foreach($item->images->take(3) as $gi)
-                        <img src="{{ Storage::url($gi->image) }}" alt="{{ $item->title }}" class="img-thumbnail" style="height:50px;width:50px;object-fit:cover;">
+                        <img src="{{ \App\Helpers\StorageHelper::url($gi->image) }}" alt="{{ $item->title }}" class="img-thumbnail" style="height:50px;width:50px;object-fit:cover;">
                       @endforeach
                       @if($item->images->count() > 3)
                         <span class="badge bg-label-secondary d-flex align-items-center">+{{ $item->images->count() - 3 }}</span>

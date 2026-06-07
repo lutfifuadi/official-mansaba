@@ -10,7 +10,7 @@
         <div class="d-flex align-items-center gap-3 mb-3">
           <div style="width:44px;height:44px;background:rgba(201,151,43,0.15);border:2px solid rgba(201,151,43,0.35);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             @if (!empty($globalSettings['school_logo']))
-              @php $logoUrl = str_starts_with($globalSettings['school_logo'], 'http') ? $globalSettings['school_logo'] : Storage::url($globalSettings['school_logo']); @endphp
+              @php $logoUrl = str_starts_with($globalSettings['school_logo'], 'http') ? $globalSettings['school_logo'] : \App\Helpers\StorageHelper::url($globalSettings['school_logo']); @endphp
               <img src="{{ $logoUrl }}" alt="Logo" loading="lazy" style="max-height: 40px; max-width: 40px; object-fit: contain;">
             @else
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#C9972B" opacity=".3"/><path d="M12 2L2 7l10 5 10-5L12 2z" fill="#C9972B"/></svg>

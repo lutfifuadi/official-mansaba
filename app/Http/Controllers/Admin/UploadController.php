@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
@@ -14,10 +14,10 @@ class UploadController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        $path = $request->file('image')->store('uploads/content', 's3');
+        $path = StorageHelper::putFile('uploads/content', $request->file('image'));
 
         return response()->json([
-            'url' => Storage::disk('s3')->url($path),
+            'url' => StorageHelper::url($path),
         ]);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use App\Models\GalleryImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class GalleryController extends Controller
 {
@@ -85,12 +85,9 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::with('images')->findOrFail($id);
 
-        try {
-            foreach ($gallery->images as $gi) {
-                Storage::disk('s3')->delete($gi->image);
-                $gi->delete();
-            }
-        } catch (\Exception $e) {
+        foreach ($gallery->images as $gi) {
+            StorageHelper::deleteFile($gi->image);
+            $gi->delete();
         }
 
         $gallery->delete();
@@ -102,10 +99,7 @@ class GalleryController extends Controller
     {
         $gi = GalleryImage::findOrFail($id);
 
-        try {
-            Storage::disk('s3')->delete($gi->image);
-        } catch (\Exception $e) {
-        }
+        StorageHelper::deleteFile($gi->image);
 
         $gi->delete();
 
@@ -118,7 +112,7 @@ class GalleryController extends Controller
 
         foreach ($files as $file) {
             $order++;
-            $path = $file->store('galleries', 's3');
+            $path = StorageHelper::putFile('galleries', $file);
             $gallery->images()->create([
                 'image' => $path,
                 'order' => $order,

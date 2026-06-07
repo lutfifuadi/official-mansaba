@@ -19,7 +19,7 @@ $navLinks = [
       <a class="navbar-brand d-flex align-items-center gap-2 me-4" href="{{ url('/') }}">
         <div style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;">
           @if (!empty($globalSettings['school_logo']))
-            @php $logoUrl = str_starts_with($globalSettings['school_logo'], 'http') ? $globalSettings['school_logo'] : Storage::url($globalSettings['school_logo']); @endphp
+            @php $logoUrl = str_starts_with($globalSettings['school_logo'], 'http') ? $globalSettings['school_logo'] : \App\Helpers\StorageHelper::url($globalSettings['school_logo']); @endphp
             <img src="{{ $logoUrl }}" alt="Logo" loading="lazy" style="max-height: 38px; max-width: 38px; object-fit: contain;">
           @else
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#C9972B" opacity=".3"/><path d="M12 2L2 7l10 5 10-5L12 2z" fill="#C9972B"/></svg>
@@ -47,7 +47,7 @@ $navLinks = [
           <a class="d-flex align-items-center gap-2 text-decoration-none" href="{{ url('/') }}">
             <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               @if (!empty($globalSettings['school_logo']))
-                @php $logoUrl = str_starts_with($globalSettings['school_logo'], 'http') ? $globalSettings['school_logo'] : Storage::url($globalSettings['school_logo']); @endphp
+                @php $logoUrl = str_starts_with($globalSettings['school_logo'], 'http') ? $globalSettings['school_logo'] : \App\Helpers\StorageHelper::url($globalSettings['school_logo']); @endphp
                 <img src="{{ $logoUrl }}" alt="Logo" loading="lazy" style="max-height: 34px; max-width: 34px; object-fit: contain;">
               @else
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#C9972B" opacity=".3"/><path d="M12 2L2 7l10 5 10-5L12 2z" fill="#C9972B"/></svg>

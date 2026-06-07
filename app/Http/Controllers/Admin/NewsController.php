@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\News;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class NewsController extends Controller
@@ -34,12 +34,11 @@ class NewsController extends Controller
 
         $validated['slug'] = Str::slug($validated['title']);
 
-        try {
-            if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('news', 's3');
+        if ($request->hasFile('image')) {
+            $validated['image'] = StorageHelper::putFile('news', $request->file('image'));
+            if (!$validated['image']) {
+                return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
             }
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         if (!empty($validated['is_published']) && empty($validated['published_at'])) {
@@ -75,15 +74,12 @@ class NewsController extends Controller
             $validated['slug'] = Str::slug($validated['title']);
         }
 
-        try {
-            if ($request->hasFile('image')) {
-                if ($news->image) {
-                    Storage::disk('s3')->delete($news->image);
-                }
-                $validated['image'] = $request->file('image')->store('news', 's3');
+        if ($request->hasFile('image')) {
+            StorageHelper::deleteFile($news->image);
+            $validated['image'] = StorageHelper::putFile('news', $request->file('image'));
+            if (!$validated['image']) {
+                return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
             }
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         if (!empty($validated['is_published']) && empty($validated['published_at'])) {
@@ -99,12 +95,7 @@ class NewsController extends Controller
     {
         $news = News::findOrFail($id);
 
-        try {
-            if ($news->image) {
-                Storage::disk('s3')->delete($news->image);
-            }
-        } catch (\Exception $e) {
-        }
+        StorageHelper::deleteFile($news->image);
 
         $news->delete();
 

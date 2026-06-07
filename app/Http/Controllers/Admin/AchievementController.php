@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Achievement;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class AchievementController extends Controller
 {
@@ -32,12 +32,11 @@ class AchievementController extends Controller
             'achievement_date' => 'nullable|date',
         ]);
 
-        try {
-            if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('achievements', 's3');
+        if ($request->hasFile('image')) {
+            $validated['image'] = StorageHelper::putFile('achievements', $request->file('image'));
+            if (!$validated['image']) {
+                return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
             }
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         Achievement::create($validated);
@@ -65,15 +64,12 @@ class AchievementController extends Controller
             'achievement_date' => 'nullable|date',
         ]);
 
-        try {
-            if ($request->hasFile('image')) {
-                if ($achievement->image) {
-                    Storage::disk('s3')->delete($achievement->image);
-                }
-                $validated['image'] = $request->file('image')->store('achievements', 's3');
+        if ($request->hasFile('image')) {
+            StorageHelper::deleteFile($achievement->image);
+            $validated['image'] = StorageHelper::putFile('achievements', $request->file('image'));
+            if (!$validated['image']) {
+                return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
             }
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         $achievement->update($validated);
@@ -84,12 +80,7 @@ class AchievementController extends Controller
     public function destroy($id)
     {
         $achievement = Achievement::findOrFail($id);
-        try {
-            if ($achievement->image) {
-                Storage::disk('s3')->delete($achievement->image);
-            }
-        } catch (\Exception $e) {
-        }
+        StorageHelper::deleteFile($achievement->image);
 
         $achievement->delete();
 

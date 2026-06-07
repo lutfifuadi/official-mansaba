@@ -2,7 +2,7 @@
 $settings = App\Models\Setting::all()->keyBy('key');
 $siteName = $settings->get('site_name')?->value ?? 'MAN 1 Kota Bandung';
 $logo = $settings->get('school_logo')?->value;
-$logoSrc = $logo ? (str_starts_with($logo, 'http') ? $logo : \Illuminate\Support\Facades\Storage::url($logo)) : null;
+$logoSrc = $logo ? (str_starts_with($logo, 'http') ? $logo : \App\Helpers\StorageHelper::url($logo)) : null;
 $facebook = $settings->get('facebook')?->value ?? '#';
 $instagram = $settings->get('instagram')?->value ?? '#';
 $youtube = $settings->get('youtube')?->value ?? '#';

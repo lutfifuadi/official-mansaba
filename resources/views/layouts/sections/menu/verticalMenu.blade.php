@@ -14,7 +14,7 @@ $configData = Helper::appClasses();
       <span class="app-brand-logo demo">
         @php $logo = $globalSettings['school_logo'] ?? ''; @endphp
         @if ($logo)
-          <img src="{{ str_starts_with($logo, 'http') ? $logo : Storage::url($logo) }}" alt="Logo" style="height:32px;width:auto;max-width:32px;object-fit:contain;">
+          <img src="{{ str_starts_with($logo, 'http') ? $logo : \App\Helpers\StorageHelper::url($logo) }}" alt="Logo" style="height:32px;width:auto;max-width:32px;object-fit:contain;">
         @else
           @include('_partials.macros')
         @endif

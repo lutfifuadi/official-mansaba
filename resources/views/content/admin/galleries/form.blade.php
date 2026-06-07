@@ -76,7 +76,7 @@
                 @foreach($gallery->images as $gi)
                   <div class="col-4 col-md-3 col-lg-2">
                     <div class="position-relative border rounded" style="padding:4px;">
-                      <img src="{{ Storage::url($gi->image) }}" alt="{{ $gallery->title }}" class="img-fluid rounded" style="height:100px;width:100%;object-fit:cover;">
+                      <img src="{{ \App\Helpers\StorageHelper::url($gi->image) }}" alt="{{ $gallery->title }}" class="img-fluid rounded" style="height:100px;width:100%;object-fit:cover;">
                       <form action="{{ route('admin.galleries.image.delete', $gi->id) }}" method="POST" class="position-absolute top-0 end-0 m-1" onsubmit="return confirm('Hapus gambar ini?')">
                         @csrf
                         @method('DELETE')

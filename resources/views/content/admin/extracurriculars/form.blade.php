@@ -90,7 +90,7 @@
           @isset($extracurricular)
             @if($extracurricular->image)
               <div class="mt-2">
-                <img src="{{ Storage::url($extracurricular->image) }}" alt="{{ $extracurricular->name }}" class="img-thumbnail" style="max-height: 150px;">
+                <img src="{{ \App\Helpers\StorageHelper::url($extracurricular->image) }}" alt="{{ $extracurricular->name }}" class="img-thumbnail" style="max-height: 150px;">
                 <small class="text-muted d-block">Kosongkan jika tidak ingin mengganti gambar.</small>
               </div>
             @endif

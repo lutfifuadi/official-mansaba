@@ -108,7 +108,7 @@
           @isset($achievement)
             @if($achievement->image)
               <div class="mt-2">
-                <img src="{{ Storage::url($achievement->image) }}" alt="{{ $achievement->title }}" class="img-thumbnail" style="max-height: 150px;">
+                <img src="{{ \App\Helpers\StorageHelper::url($achievement->image) }}" alt="{{ $achievement->title }}" class="img-thumbnail" style="max-height: 150px;">
                 <small class="text-muted d-block">Kosongkan jika tidak ingin mengganti gambar.</small>
               </div>
             @endif

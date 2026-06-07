@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Extracurricular;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ExtracurricularController extends Controller
@@ -34,12 +34,11 @@ class ExtracurricularController extends Controller
 
         $validated['slug'] = Str::slug($validated['name']);
 
-        try {
-            if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('extracurriculars', 's3');
+        if ($request->hasFile('image')) {
+            $validated['image'] = StorageHelper::putFile('extracurriculars', $request->file('image'));
+            if (!$validated['image']) {
+                return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
             }
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         Extracurricular::create($validated);
@@ -70,15 +69,12 @@ class ExtracurricularController extends Controller
             $validated['slug'] = Str::slug($validated['name']);
         }
 
-        try {
-            if ($request->hasFile('image')) {
-                if ($extracurricular->image) {
-                    Storage::disk('s3')->delete($extracurricular->image);
-                }
-                $validated['image'] = $request->file('image')->store('extracurriculars', 's3');
+        if ($request->hasFile('image')) {
+            StorageHelper::deleteFile($extracurricular->image);
+            $validated['image'] = StorageHelper::putFile('extracurriculars', $request->file('image'));
+            if (!$validated['image']) {
+                return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
             }
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         $extracurricular->update($validated);
@@ -89,12 +85,7 @@ class ExtracurricularController extends Controller
     public function destroy($id)
     {
         $extracurricular = Extracurricular::findOrFail($id);
-        try {
-            if ($extracurricular->image) {
-                Storage::disk('s3')->delete($extracurricular->image);
-            }
-        } catch (\Exception $e) {
-        }
+        StorageHelper::deleteFile($extracurricular->image);
 
         $extracurricular->delete();
 

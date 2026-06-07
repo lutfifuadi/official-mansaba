@@ -45,7 +45,7 @@
       <div class="col-md-4 col-sm-6 mansaba-fade-up">
         <div class="mansaba-card mansaba-card-news h-100">
           <div style="height:200px;overflow:hidden;position:relative;">
-            <img src="{{ $item->image ? Storage::url($item->image) : asset('storage/default-news.jpg') }}"
+            <img src="{{ $item->image ? \App\Helpers\StorageHelper::url($item->image) : asset('storage/default-news.jpg') }}"
                  alt="{{ $item->title ?? 'Berita' }}"
                  loading="lazy"
                  style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;"

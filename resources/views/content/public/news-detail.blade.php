@@ -10,7 +10,7 @@
   ];
   $ldNewsArticle = [
     'title' => $news->title,
-    'image' => $news->image ? Storage::url($news->image) : '',
+    'image' => $news->image ? \App\Helpers\StorageHelper::url($news->image) : '',
     'published_at' => $news->published_at?->toIso8601String(),
     'updated_at' => $news->updated_at?->toIso8601String(),
     'author' => $news->author,
@@ -41,7 +41,7 @@
       <div class="col-lg-10">
         <div class="mansaba-card">
           @if ($news->image ?? false)
-            <img class="card-img-top" src="{{ Storage::url($news->image) }}" alt="{{ $news->title }}" loading="lazy" style="max-height: 500px; object-fit: cover;">
+            <img class="card-img-top" src="{{ \App\Helpers\StorageHelper::url($news->image) }}" alt="{{ $news->title }}" loading="lazy" style="max-height: 500px; object-fit: cover;">
           @endif
           <div class="card-body p-4 p-md-5">
             <h2 class="card-title fw-bold mb-3" style="color:var(--mansaba-dark);">{{ $news->title ?? 'Judul Berita' }}</h2>

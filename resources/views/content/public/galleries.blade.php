@@ -55,21 +55,21 @@
           <div class="col-md-4 col-sm-6 mansaba-fade-up">
             <div class="mansaba-gallery-item" style="height:240px;">
               @php $firstImg = $item->images->first(); @endphp
-              <a href="{{ $firstImg ? Storage::url($firstImg->image) : '#' }}"
+              <a href="{{ $firstImg ? \App\Helpers\StorageHelper::url($firstImg->image) : '#' }}"
                  data-fancybox="gallery-{{ $item->id }}"
                  data-caption="{{ $item->title ?? '' }}">
-                <img src="{{ $firstImg ? Storage::url($firstImg->image) : asset('assets/img/placeholder.jpg') }}"
+                <img src="{{ $firstImg ? \App\Helpers\StorageHelper::url($firstImg->image) : asset('assets/img/placeholder.jpg') }}"
                      alt="{{ $item->title ?? 'Foto' }}"
                      loading="lazy"
                      style="width:100%;height:240px;object-fit:cover;display:block;">
               </a>
               @if($item->images->count() > 1)
                 @foreach($item->images->skip(1) as $gi)
-                  <a href="{{ Storage::url($gi->image) }}"
+                  <a href="{{ \App\Helpers\StorageHelper::url($gi->image) }}"
                      data-fancybox="gallery-{{ $item->id }}"
                      data-caption="{{ $item->title ?? '' }}"
                      class="d-none">
-                    <img src="{{ Storage::url($gi->image) }}" alt="{{ $item->title ?? '' }}" loading="lazy" style="display:none;">
+                    <img src="{{ \App\Helpers\StorageHelper::url($gi->image) }}" alt="{{ $item->title ?? '' }}" loading="lazy" style="display:none;">
                   </a>
                 @endforeach
               @endif
@@ -101,10 +101,10 @@
             @php $firstImg = $item->images->first(); @endphp
             <div class="col-md-4 col-sm-6">
               <div class="mansaba-gallery-item" style="height:240px;">
-                <a href="{{ $firstImg ? Storage::url($firstImg->image) : '#' }}"
+                <a href="{{ $firstImg ? \App\Helpers\StorageHelper::url($firstImg->image) : '#' }}"
                    data-fancybox="gallery-{{ Str::slug($cat) }}"
                    data-caption="{{ $item->title ?? '' }}">
-                  <img src="{{ $firstImg ? Storage::url($firstImg->image) : asset('assets/img/placeholder.jpg') }}"
+                  <img src="{{ $firstImg ? \App\Helpers\StorageHelper::url($firstImg->image) : asset('assets/img/placeholder.jpg') }}"
                        alt="{{ $item->title ?? 'Foto' }}"
                        loading="lazy"
                        style="width:100%;height:240px;object-fit:cover;display:block;">
