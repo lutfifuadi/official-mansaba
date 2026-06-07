@@ -63,6 +63,11 @@ else
     warn "Composer tidak ditemukan, skip."
 fi
 
+# ── 2b. Livewire Assets ────────────────────────────────────
+step "2b. Publish Livewire Assets"
+php artisan livewire:publish --assets 2>/dev/null || php artisan vendor:publish --tag=livewire:assets --force 2>/dev/null || true
+info "Livewire assets siap ✓"
+
 # ── 3. Frontend Assets ──────────────────────────────────────
 step "3. Frontend Assets (dari GitHub Release)"
 
