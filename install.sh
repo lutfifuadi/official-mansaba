@@ -254,7 +254,8 @@ info "Cache cleared"
 step "13. Selesai!"
 
 echo ""
-echo -e "  ${GREEN}Mansaba Official Website siap digunakan!${NC}"
+APP_NAME_DISPLAY=$(sed -n 's/^APP_NAME=//p' .env 2>/dev/null | head -1 | tr -d '"' || echo "Mansaba Official Website")
+echo -e "  ${GREEN}${APP_NAME_DISPLAY} siap digunakan!${NC}"
 echo ""
 echo "  Buka aplikasi: ${BOLD}$APP_URL${NC}"
 echo ""

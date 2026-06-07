@@ -30,6 +30,7 @@ info "Project dir: $PROJECT_DIR"
 # ── 1. Git Pull ──────────────────────────────────────────────
 step "1. Tarik perubahan dari GitHub"
 
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "master")
 REPO_URL="${GIT_REPO_URL:-}"
 
 if [ ! -d .git ]; then
@@ -37,15 +38,15 @@ if [ ! -d .git ]; then
         info "Folder belum berupa git repo. Inisialisasi dan clone dari: $REPO_URL"
         git init
         git remote add origin "$REPO_URL"
-        git fetch origin main --depth=1
-        git reset --hard origin/main
+        git fetch origin "$CURRENT_BRANCH" --depth=1
+        git reset --hard "origin/$CURRENT_BRANCH"
         info "Clone selesai ✓"
     else
         warn "Folder bukan repository git dan GIT_REPO_URL tidak diset."
         warn "Lewati langkah git pull. Set variabel GIT_REPO_URL=<url> untuk mengaktifkan."
     fi
 else
-    git pull origin main
+    git pull origin "$CURRENT_BRANCH"
     info "Kode terbaru dari GitHub ✓"
 fi
 
@@ -65,8 +66,10 @@ step "3. Frontend Assets (dari GitHub Release)"
 if [ -f public/build/manifest.json ]; then
     info "public/build sudah ada, lewati."
 else
-    REPO="lutfifuadi/lokal-emis"
-    info "Download frontend assets dari release terbaru..."
+    REPO="${GIT_REPO_URL##*github.com/}"
+    REPO="${REPO%%.git}"
+    REPO="${REPO:-lutfifuadi/official-mansaba}"
+    info "Download frontend assets dari release terbaru ($REPO)..."
     curl -sL "https://github.com/$REPO/releases/latest/download/aplikasi.zip" \
         -o /tmp/emis-assets.zip 2>/dev/null || true
 
@@ -119,7 +122,8 @@ info "Aplikasi kembali aktif ✓"
 # ── Selesai ─────────────────────────────────────────────────
 step "Selesai!"
 echo ""
-echo -e "  ${GREEN}Aplikasi Lokal EMIS berhasil diupdate!${NC}"
+APP_NAME_DISPLAY=$(sed -n 's/^APP_NAME=//p' .env 2>/dev/null | head -1 | tr -d '"' || echo "Mansaba Official Website")
+echo -e "  ${GREEN}${APP_NAME_DISPLAY} berhasil diupdate!${NC}"
 echo ""
 echo "  Perubahan yang dilakukan:"
 echo "    - Code: git pull dari GitHub"
