@@ -14,7 +14,7 @@
     'published_at' => $news->published_at?->toIso8601String(),
     'updated_at' => $news->updated_at?->toIso8601String(),
     'author' => $news->author,
-    'description' => strip_tags(Str::limit($news->content ?? '', 160)),
+    'description' => strip_tags(\Illuminate\Support\Str::limit($news->content ?? '', 160)),
   ];
 @endphp
 

@@ -127,6 +127,7 @@ return [
         // Other aliases...
         'Helper' => App\Helpers\Helpers::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Str' => Illuminate\Support\Str::class,
     ],
 
 ];
