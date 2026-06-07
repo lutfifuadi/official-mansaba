@@ -34,8 +34,12 @@ class ExtracurricularController extends Controller
 
         $validated['slug'] = Str::slug($validated['name']);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('extracurriculars', 's3');
+        try {
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('extracurriculars', 's3');
+            }
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         Extracurricular::create($validated);
@@ -66,11 +70,15 @@ class ExtracurricularController extends Controller
             $validated['slug'] = Str::slug($validated['name']);
         }
 
-        if ($request->hasFile('image')) {
-            if ($extracurricular->image) {
-                Storage::disk('s3')->delete($extracurricular->image);
+        try {
+            if ($request->hasFile('image')) {
+                if ($extracurricular->image) {
+                    Storage::disk('s3')->delete($extracurricular->image);
+                }
+                $validated['image'] = $request->file('image')->store('extracurriculars', 's3');
             }
-            $validated['image'] = $request->file('image')->store('extracurriculars', 's3');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         $extracurricular->update($validated);
@@ -81,9 +89,13 @@ class ExtracurricularController extends Controller
     public function destroy($id)
     {
         $extracurricular = Extracurricular::findOrFail($id);
-        if ($extracurricular->image) {
-            Storage::disk('s3')->delete($extracurricular->image);
+        try {
+            if ($extracurricular->image) {
+                Storage::disk('s3')->delete($extracurricular->image);
+            }
+        } catch (\Exception $e) {
         }
+
         $extracurricular->delete();
 
         return redirect()->route('admin.extracurriculars.index')->with('success', 'Ekstrakurikuler berhasil dihapus.');

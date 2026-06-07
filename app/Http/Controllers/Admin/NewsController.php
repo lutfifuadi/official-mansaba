@@ -34,8 +34,12 @@ class NewsController extends Controller
 
         $validated['slug'] = Str::slug($validated['title']);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('news', 's3');
+        try {
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('news', 's3');
+            }
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         if (!empty($validated['is_published']) && empty($validated['published_at'])) {
@@ -71,11 +75,15 @@ class NewsController extends Controller
             $validated['slug'] = Str::slug($validated['title']);
         }
 
-        if ($request->hasFile('image')) {
-            if ($news->image) {
-                Storage::disk('s3')->delete($news->image);
+        try {
+            if ($request->hasFile('image')) {
+                if ($news->image) {
+                    Storage::disk('s3')->delete($news->image);
+                }
+                $validated['image'] = $request->file('image')->store('news', 's3');
             }
-            $validated['image'] = $request->file('image')->store('news', 's3');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         if (!empty($validated['is_published']) && empty($validated['published_at'])) {
@@ -90,9 +98,14 @@ class NewsController extends Controller
     public function destroy($id)
     {
         $news = News::findOrFail($id);
-        if ($news->image) {
-            Storage::disk('s3')->delete($news->image);
+
+        try {
+            if ($news->image) {
+                Storage::disk('s3')->delete($news->image);
+            }
+        } catch (\Exception $e) {
         }
+
         $news->delete();
 
         return redirect()->route('admin.news.index')->with('success', 'Berita berhasil dihapus.');

@@ -54,6 +54,8 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->name('admin.')->gr
     Route::resource('announcements', AnnouncementController::class)->middleware('role:super_admin,admin,operator');
 
     Route::delete('/galleries/image/{id}', [App\Http\Controllers\Admin\GalleryController::class, 'deleteImage'])->middleware('role:super_admin,admin')->name('galleries.image.delete');
+
+    Route::post('/upload/image', [App\Http\Controllers\Admin\UploadController::class, 'image'])->middleware('role:super_admin,admin,operator,editor')->name('upload.image');
 });
 
 // ===================== SITEMAP =====================

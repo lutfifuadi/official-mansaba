@@ -32,8 +32,12 @@ class AchievementController extends Controller
             'achievement_date' => 'nullable|date',
         ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('achievements', 's3');
+        try {
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('achievements', 's3');
+            }
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         Achievement::create($validated);
@@ -61,11 +65,15 @@ class AchievementController extends Controller
             'achievement_date' => 'nullable|date',
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($achievement->image) {
-                Storage::disk('s3')->delete($achievement->image);
+        try {
+            if ($request->hasFile('image')) {
+                if ($achievement->image) {
+                    Storage::disk('s3')->delete($achievement->image);
+                }
+                $validated['image'] = $request->file('image')->store('achievements', 's3');
             }
-            $validated['image'] = $request->file('image')->store('achievements', 's3');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         $achievement->update($validated);
@@ -76,9 +84,13 @@ class AchievementController extends Controller
     public function destroy($id)
     {
         $achievement = Achievement::findOrFail($id);
-        if ($achievement->image) {
-            Storage::disk('s3')->delete($achievement->image);
+        try {
+            if ($achievement->image) {
+                Storage::disk('s3')->delete($achievement->image);
+            }
+        } catch (\Exception $e) {
         }
+
         $achievement->delete();
 
         return redirect()->route('admin.achievements.index')->with('success', 'Prestasi berhasil dihapus.');

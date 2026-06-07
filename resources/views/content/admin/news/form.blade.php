@@ -132,17 +132,62 @@
       theme: 'snow',
       placeholder: 'Tulis konten berita di sini...',
       modules: {
-        toolbar: [
-          [{ 'header': [1, 2, 3, false] }],
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          ['blockquote', 'code-block'],
-          [{ 'align': [] }],
-          ['link', 'image'],
-          ['clean']
-        ]
+        toolbar: {
+          container: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            ['blockquote', 'code-block'],
+            [{ 'align': [] }],
+            ['link', 'image'],
+            ['clean']
+          ],
+          handlers: {
+            image: imageHandler
+          }
+        }
       }
     });
+
+    function imageHandler() {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/jpeg,image/png,image/jpg,image/gif,image/webp');
+      input.click();
+
+      input.onchange = function() {
+        var file = input.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append('image', file);
+        formData.append('_token', '{{ csrf_token() }}');
+
+        var range = quill.getSelection(true);
+
+        var toolbar = quill.getModule('toolbar');
+        var btn = toolbar.container.querySelector('.ql-image');
+        btn.classList.add('ql-loading');
+
+        fetch('{{ route("admin.upload.image") }}', {
+          method: 'POST',
+          body: formData
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data.url) {
+            quill.insertEmbed(range.index, 'image', data.url);
+            quill.setSelection(range.index + 1);
+          }
+        })
+        .catch(function() {
+          alert('Gagal mengupload gambar. Silakan coba lagi.');
+        })
+        .finally(function() {
+          btn.classList.remove('ql-loading');
+        });
+      };
+    }
 
     var form = document.querySelector('form');
     var contentInput = document.getElementById('content');

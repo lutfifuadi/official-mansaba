@@ -26,18 +26,22 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:100',
         ]);
 
-        $gallery = Gallery::create([
-            'title' => $validated['title'],
-            'description' => $validated['description'] ?? '',
-            'category' => $validated['category'] ?? '',
-        ]);
+        try {
+            $gallery = Gallery::create([
+                'title' => $validated['title'],
+                'description' => $validated['description'] ?? '',
+                'category' => $validated['category'] ?? '',
+            ]);
 
-        $this->saveImages($gallery, $request->file('images'));
+            $this->saveImages($gallery, $request->file('images'));
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
+        }
 
         return redirect()->route('admin.galleries.index')->with('success', 'Galeri berhasil ditambahkan.');
     }
@@ -55,7 +59,7 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:100',
         ]);
@@ -66,8 +70,12 @@ class GalleryController extends Controller
             'category' => $validated['category'] ?? '',
         ]);
 
-        if ($request->hasFile('images')) {
-            $this->saveImages($gallery, $request->file('images'));
+        try {
+            if ($request->hasFile('images')) {
+                $this->saveImages($gallery, $request->file('images'));
+            }
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengupload gambar. Periksa koneksi storage atau coba lagi.');
         }
 
         return redirect()->route('admin.galleries.index')->with('success', 'Galeri berhasil diperbarui.');
@@ -77,9 +85,12 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::with('images')->findOrFail($id);
 
-        foreach ($gallery->images as $gi) {
-            Storage::disk('s3')->delete($gi->image);
-            $gi->delete();
+        try {
+            foreach ($gallery->images as $gi) {
+                Storage::disk('s3')->delete($gi->image);
+                $gi->delete();
+            }
+        } catch (\Exception $e) {
         }
 
         $gallery->delete();
@@ -90,7 +101,12 @@ class GalleryController extends Controller
     public function deleteImage($id)
     {
         $gi = GalleryImage::findOrFail($id);
-        Storage::disk('s3')->delete($gi->image);
+
+        try {
+            Storage::disk('s3')->delete($gi->image);
+        } catch (\Exception $e) {
+        }
+
         $gi->delete();
 
         return back()->with('success', 'Gambar berhasil dihapus.');
