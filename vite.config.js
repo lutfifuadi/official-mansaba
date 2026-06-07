@@ -15,6 +15,7 @@ export default defineConfig({
                 'resources/assets/vendor/fonts/trajan-pro/trajan-pro.css',
                 'resources/assets/vendor/fonts/amiri/amiri.css',
                 'resources/assets/vendor/fonts/iconify/iconify.css',
+                'resources/assets/vendor/fonts/flag-icons.scss',
 
                 // ── Vendor SCSS (always loaded) ──
                 'resources/assets/vendor/scss/core.scss',
@@ -31,6 +32,7 @@ export default defineConfig({
                 'resources/assets/vendor/libs/typeahead-js/typeahead.scss',
                 'resources/assets/vendor/libs/swiper/swiper.scss',
                 'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+                'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
                 'resources/assets/vendor/libs/quill/editor.scss',
                 'resources/assets/vendor/libs/apex-charts/apex-charts.scss',
 
