@@ -90,6 +90,7 @@ class SettingController extends Controller
             'coming_soon_date' => 'nullable|string|max:30',
             'maintenance_mode' => 'nullable|string|max:1',
             'maintenance_est_time' => 'nullable|string|max:255',
+            'nav_menu' => 'nullable|string',
             
             // Image Upload Fields
             'school_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',

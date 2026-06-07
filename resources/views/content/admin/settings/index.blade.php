@@ -125,6 +125,9 @@
         'twitter_handle'      => 'Twitter Handle (@username)',
         'twitter_card_type'   => 'Twitter Card Type (summary / summary_large_image)',
       ],
+      'Navigasi Menu' => [
+        'nav_menu'            => 'Menu Navigasi (JSON)',
+      ],
       'Mode Situs' => [
         'coming_soon_mode'    => 'Coming Soon Mode',
         'coming_soon_date'    => 'Target Tanggal Luncur',
@@ -170,6 +173,12 @@
         'color' => 'dark',
         'groups' => ['SEO — Umum', 'SEO — Open Graph', 'SEO — Twitter'],
       ],
+      'navigasi' => [
+        'label' => 'Navigasi',
+        'icon'  => 'tabler-menu-2',
+        'color' => 'secondary',
+        'groups' => ['Navigasi Menu'],
+      ],
       'mode' => [
         'label' => 'Mode Situs',
         'icon'  => 'tabler-switch',
@@ -194,6 +203,7 @@
       'SEO — Umum' => 'tabler-search-engine',
       'SEO — Open Graph' => 'tabler-share',
       'SEO — Twitter' => 'tabler-brand-twitter',
+      'Navigasi Menu' => 'tabler-menu-2',
       'Mode Situs' => 'tabler-switch',
     ];
   @endphp
@@ -249,11 +259,21 @@
                         </div>
                         <div class="p-3">
                           <div class="row">
-                    @foreach ($settingGroups[$groupName] as $key => $label)
+                      @foreach ($settingGroups[$groupName] as $key => $label)
                       @php $setting = $settings->firstWhere('key', $key); $val = $setting->value ?? ''; @endphp
-                      <div class="col-md-6 mb-3">
+                      <div class="col-md-6 mb-3 {{ $key === 'nav_menu' ? 'col-md-12' : '' }}">
                         <label for="setting_{{ $key }}" class="form-label">{{ $label }}</label>
-                        @if (in_array($key, ['school_logo', 'favicon', 'headmaster_photo']))
+                        @if ($key === 'nav_menu')
+                          <textarea class="form-control font-monospace @error($key) is-invalid @enderror"
+                                    id="setting_{{ $key }}"
+                                    name="{{ $key }}"
+                                    rows="10"
+                                    spellcheck="false">{{ old($key, $val) }}</textarea>
+                          <small class="text-muted d-block mt-1">
+                            Format JSON. Contoh:
+                            <code class="user-select-all">[{"label":"Beranda","url":"\/","path":""},{"label":"Berita","url":"\/berita","path":"berita"}]</code>
+                          </small>
+                        @elseif (in_array($key, ['school_logo', 'favicon', 'headmaster_photo']))
                           <div class="mb-2">
                             <div class="d-flex align-items-center gap-3 mb-2">
                               @php $imgUrl = !empty($val) ? (str_starts_with($val, 'http') ? $val : \App\Helpers\StorageHelper::url($val)) : null; @endphp

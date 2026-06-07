@@ -1,7 +1,10 @@
 @php
 use Illuminate\Support\Facades\Route;
 $currentRoute = request()->path();
-$navLinks = [
+
+$navMenuJson = $globalSettings['nav_menu'] ?? '[]';
+$parsed = json_decode($navMenuJson, true);
+$navLinks = is_array($parsed) && count($parsed) > 0 ? $parsed : [
   ['label' => 'Beranda',         'url' => route('home'),                        'path' => ''],
   ['label' => 'Berita',          'url' => route('public.news'),                 'path' => 'berita'],
   ['label' => 'Galeri',          'url' => route('public.galleries'),            'path' => 'galeri'],
@@ -102,10 +105,17 @@ $navLinks = [
                 </ul>
               </div>
               @endif
-              <a href="{{ url('/login') }}" class="btn btn-login btn-sm d-flex align-items-center justify-content-center gap-2 py-2" style="border-radius: 5px;">
-                <i class="ti tabler-login" style="font-size:0.95rem;"></i>
-                Masuk
-              </a>
+              @auth
+                <a href="{{ url('/admin') }}" class="btn btn-login btn-sm d-flex align-items-center justify-content-center gap-2 py-2" style="border-radius: 5px;">
+                  <i class="ti tabler-dashboard" style="font-size:0.95rem;"></i>
+                  Dashboard
+                </a>
+              @else
+                <a href="{{ url('/login') }}" class="btn btn-login btn-sm d-flex align-items-center justify-content-center gap-2 py-2" style="border-radius: 5px;">
+                  <i class="ti tabler-login" style="font-size:0.95rem;"></i>
+                  Masuk
+                </a>
+              @endauth
             </div>
           </div>
         </div>
@@ -136,10 +146,17 @@ $navLinks = [
             </ul>
           </div>
           @endif
-          <a href="{{ url('/login') }}" class="btn btn-login btn-sm d-flex align-items-center gap-2">
-            <i class="ti tabler-login" style="font-size:0.9rem;"></i>
-            Masuk
-          </a>
+          @auth
+            <a href="{{ url('/admin') }}" class="btn btn-login btn-sm d-flex align-items-center gap-2">
+              <i class="ti tabler-dashboard" style="font-size:0.9rem;"></i>
+              Dashboard
+            </a>
+          @else
+            <a href="{{ url('/login') }}" class="btn btn-login btn-sm d-flex align-items-center gap-2">
+              <i class="ti tabler-login" style="font-size:0.9rem;"></i>
+              Masuk
+            </a>
+          @endauth
         </div>
 
       </div>
