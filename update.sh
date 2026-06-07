@@ -63,27 +63,24 @@ fi
 # ── 3. Frontend Assets ──────────────────────────────────────
 step "3. Frontend Assets (dari GitHub Release)"
 
-if [ -f public/build/manifest.json ]; then
-    info "public/build sudah ada, lewati."
-else
-    REPO="${GIT_REPO_URL##*github.com/}"
-    REPO="${REPO%%.git}"
-    REPO="${REPO:-lutfifuadi/official-mansaba}"
-    info "Download frontend assets dari release terbaru ($REPO)..."
-    curl -sL "https://github.com/$REPO/releases/latest/download/aplikasi.zip" \
-        -o /tmp/emis-assets.zip 2>/dev/null || true
+REPO="${GIT_REPO_URL##*github.com/}"
+REPO="${REPO%%.git}"
+REPO="${REPO:-lutfifuadi/official-mansaba}"
+info "Download frontend assets dari release terbaru ($REPO)..."
+curl -sL "https://github.com/$REPO/releases/latest/download/aplikasi.zip" \
+    -o /tmp/emis-assets.zip 2>/dev/null || true
 
-    if [ -f /tmp/emis-assets.zip ]; then
-        unzip -o /tmp/emis-assets.zip "public/build/*" -d "$PROJECT_DIR" >/dev/null 2>&1 || true
-        rm -f /tmp/emis-assets.zip
-        if [ -f public/build/manifest.json ]; then
-            info "Frontend assets dari release ✓"
-        else
-            warn "public/build tidak ditemukan dalam release. Jalankan 'npm run build' manual."
-        fi
+if [ -f /tmp/emis-assets.zip ]; then
+    rm -rf "$PROJECT_DIR/public/build"
+    unzip -o /tmp/emis-assets.zip "public/build/*" -d "$PROJECT_DIR" >/dev/null 2>&1 || true
+    rm -f /tmp/emis-assets.zip
+    if [ -f public/build/manifest.json ]; then
+        info "Frontend assets dari release ✓"
     else
-        warn "Gagal download release. Pastikan release 'latest-build' sudah ada."
+        warn "public/build tidak ditemukan dalam release. Jalankan 'npm run build' manual."
     fi
+else
+    warn "Gagal download release. Pastikan release 'latest-build' sudah ada."
 fi
 
 # ── 4. Maintenance Mode ON ──────────────────────────────────
@@ -128,7 +125,7 @@ echo ""
 echo "  Perubahan yang dilakukan:"
 echo "    - Code: git pull dari GitHub"
 echo "    - PHP dependencies: composer install"
-echo "    - Frontend: npm run build"
+echo "    - Frontend: download dari GitHub Release"
 echo "    - Database: migrate"
 echo "    - Cache: dioptimasi ulang"
 echo ""
