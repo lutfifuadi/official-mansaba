@@ -76,5 +76,6 @@ export default defineConfig({
     ],
     build: {
         chunkSizeWarningLimit: 600,
+        modulePreload: false,
     },
 });
