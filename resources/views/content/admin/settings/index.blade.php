@@ -223,31 +223,33 @@
       </div>
     </div>
     <div class="card-body p-0">
-      <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-
-        <div class="row g-0">
-          {{-- Tab Navigation (Vertical Pills) --}}
-          <div class="col-md-3 border-end">
-            <div class="nav flex-column nav-pills p-4" role="tablist">
-              @foreach ($tabConfig as $tabKey => $tab)
-                <a class="nav-link d-flex align-items-center justify-content-start mb-1 {{ $loop->first ? 'active' : '' }}"
-                   data-bs-toggle="pill"
-                   href="#tab-{{ $tabKey }}"
-                   role="tab">
-                  <i class="icon-base ti {{ $tab['icon'] }} me-2"></i>
-                  <span>{{ $tab['label'] }}</span>
-                </a>
-              @endforeach
-            </div>
+      <div class="row g-0">
+        {{-- Tab Navigation (Vertical Pills) --}}
+        <div class="col-md-3 border-end">
+          <div class="nav flex-column nav-pills p-4" role="tablist">
+            @foreach ($tabConfig as $tabKey => $tab)
+              <a class="nav-link d-flex align-items-center justify-content-start mb-1 {{ ($loop->first && !request('tab')) || request('tab') === $tabKey ? 'active' : '' }}"
+                 data-bs-toggle="pill"
+                 href="#tab-{{ $tabKey }}"
+                 role="tab"
+                 id="nav-tab-{{ $tabKey }}">
+                <i class="icon-base ti {{ $tab['icon'] }} me-2"></i>
+                <span>{{ $tab['label'] }}</span>
+              </a>
+            @endforeach
           </div>
+        </div>
 
-          {{-- Tab Content --}}
-          <div class="col-md-9">
-            <div class="tab-content p-4">
-              @foreach ($tabConfig as $tabKey => $tab)
-                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="tab-{{ $tabKey }}" role="tabpanel">
+        {{-- Tab Content --}}
+        <div class="col-md-9">
+          <div class="tab-content p-4">
+            @foreach ($tabConfig as $tabKey => $tab)
+              <div class="tab-pane fade {{ ($loop->first && !request('tab')) || request('tab') === $tabKey ? 'show active' : '' }}" id="tab-{{ $tabKey }}" role="tabpanel">
+
+                <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  @method('PUT')
+                  <input type="hidden" name="_tab" value="{{ $tabKey }}">
 
                   @foreach ($tab['groups'] as $groupName)
                     @if(isset($settingGroups[$groupName]))
@@ -355,18 +357,18 @@
                     @endif
                   @endforeach
 
-                </div>
-              @endforeach
-            </div>
+                  <div class="d-flex justify-content-end pt-3 border-top mt-4">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="icon-base ti tabler-device-floppy me-1"></i> Simpan {{ $tab['label'] }}
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+            @endforeach
           </div>
         </div>
-
-        <div class="card-footer border-top d-flex justify-content-end py-3 px-4">
-          <button type="submit" class="btn btn-primary">
-            <i class="icon-base ti tabler-device-floppy me-1"></i> Simpan Pengaturan
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 @endsection

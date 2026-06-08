@@ -137,6 +137,22 @@ class SettingController extends Controller
 
         \Illuminate\Support\Facades\Cache::forget('settings.all');
 
-        return redirect()->route('admin.settings.index')->with('success', 'Pengaturan berhasil disimpan.');
+        $tab = $request->input('_tab', 'identitas');
+
+        $tabNames = [
+            'identitas' => 'Identitas & Statistik',
+            'tampilan'  => 'Tampilan Hero',
+            'konten'    => 'Section Konten',
+            'sosial'    => 'Sosial & Kontak',
+            'layanan'   => 'Layanan & Pengumuman',
+            'seo'       => 'SEO',
+            'navigasi'  => 'Navigasi',
+            'mode'      => 'Mode Situs',
+        ];
+
+        $label = $tabNames[$tab] ?? 'Pengaturan';
+
+        return redirect()->route('admin.settings.index', ['tab' => $tab])
+            ->with('success', "Pengaturan {$label} berhasil disimpan.");
     }
 }
