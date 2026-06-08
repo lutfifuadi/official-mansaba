@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
           trigger: new FormValidation.plugins.Trigger(),
           bootstrap5: new FormValidation.plugins.Bootstrap5({
             eleValidClass: '',
-            rowSelector: '.form-control-validation'
+            rowSelector: '.mb-4'
           }),
           submitButton: new FormValidation.plugins.SubmitButton(),
           defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
@@ -89,10 +89,41 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         init: instance => {
           instance.on('plugins.message.placed', e => {
-            if (e.element.parentElement.classList.contains('input-group')) {
-              e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+            const parent = e.element.parentElement;
+            if (parent && parent.classList.contains('input-group')) {
+              parent.insertAdjacentElement('afterend', e.messageElement);
             }
           });
+        }
+      });
+    }
+
+    // Password Show/Hide Toggle
+    const togglePassword = document.querySelector('#toggle-password');
+    if (togglePassword) {
+      togglePassword.addEventListener('click', function () {
+        const passwordInput = document.querySelector('#password');
+        const icon = this.querySelector('i');
+        if (passwordInput && icon) {
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          icon.classList.toggle('tabler-eye-off');
+          icon.classList.toggle('tabler-eye');
+        }
+      });
+    }
+
+    // Login Button Loading State
+    const loginForm = document.querySelector('#formAuthentication');
+    if (loginForm) {
+      loginForm.addEventListener('submit', function () {
+        const btn = document.querySelector('#btn-login');
+        if (btn) {
+          btn.disabled = true;
+          const textEl = document.querySelector('#btn-login-text');
+          const loadingEl = document.querySelector('#btn-login-loading');
+          if (textEl) textEl.classList.add('d-none');
+          if (loadingEl) loadingEl.classList.remove('d-none');
         }
       });
     }

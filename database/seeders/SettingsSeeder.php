@@ -10,6 +10,9 @@ class SettingsSeeder extends Seeder
     public function run(): void
     {
         $defaults = [
+            'visi'               => 'Terwujudnya peserta didik yang beriman, bertakwa, berilmu, berkarakter, berbudaya, dan berdaya saing global.',
+            'misi'               => 'Menyelenggarakan pendidikan yang berbasis iman dan takwa.|Mengembangkan potensi akademik dan non-akademik peserta didik secara optimal.|Membentuk karakter peserta didik yang Islami, disiplin, dan bertanggung jawab.|Menciptakan lingkungan madrasah yang bersih, nyaman, dan kondusif.|Membangun kerjasama dalam rangka peningkatan mutu pendidikan.',
+            'motto'              => 'Taqwa, Cerdas, Mandiri',
             'site_name'          => 'MAN 1 Kota Bandung',
             'site_description'   => 'Madrasah Aliyah Negeri 1 Kota Bandung — mewujudkan generasi yang beriman, berilmu, berkarakter, dan berdaya saing global.',
             'address'            => 'JL. HAJI ALPI CIJERAH, Kelurahan Cibuntu, Kec. Bandung Kulon, Kota Bandung, Jawa Barat',

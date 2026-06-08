@@ -18,6 +18,9 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
+            'visi' => 'nullable|string',
+            'misi' => 'nullable|string',
+            'motto' => 'nullable|string|max:255',
             'app_name' => 'nullable|string|max:255',
             'site_name' => 'nullable|string|max:255',
             'site_description' => 'nullable|string',

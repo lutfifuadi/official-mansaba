@@ -1,53 +1,81 @@
-<x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+<x-guest-layout split title="Masuk">
 
-        <h4 class="mb-1" style="font-family:'Trajan Pro',serif;color:var(--mansaba-dark);">{{ __('Welcome Back!') }}</h4>
-        <p class="mb-6 text-muted" style="font-size:0.9rem;">{{ __('Please sign in to your account') }}</p>
+  {{-- Mobile Logo (only visible on small screens) --}}
+  <div class="text-center mb-4 d-lg-none">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:rgba(27,94,66,0.1);overflow:hidden;">
+      @php $logoSetting = $globalSettings['school_logo'] ?? ''; @endphp
+      @if (!empty($logoSetting))
+        @php $logoUrl = str_starts_with($logoSetting, 'http') ? $logoSetting : \App\Helpers\StorageHelper::url($logoSetting); @endphp
+        <img src="{{ $logoUrl }}" alt="Logo" style="max-height:40px;max-width:40px;object-fit:contain;">
+      @else
+        @include('_partials.macros', ['width' => '32', 'height' => '22'])
+      @endif
+    </span>
+  </div>
 
-        <x-validation-errors class="mb-4" />
+  {{-- Heading --}}
+  <h4 class="mb-1" style="font-family:'Trajan Pro',serif;color:var(--mansaba-dark);">{{ __('Selamat Datang') }}</h4>
+  <p class="mb-6 text-muted" style="font-size:0.9rem;">{{ __('Silakan masuk ke akun Anda') }}</p>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+  {{-- Validation Errors --}}
+  <x-validation-errors class="mb-4" />
 
-            <div class="mb-4">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="mansaba-form-control block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="nama@email.com" />
-            </div>
+  {{-- Login Form --}}
+  <form id="formAuthentication" method="POST" action="{{ route('login') }}">
+    @csrf
 
-            <div class="mb-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="mansaba-form-control block mt-1 w-full" type="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
-            </div>
+    {{-- Email --}}
+    <div class="mb-4">
+      <x-label for="email" value="{{ __('Email') }}" />
+      <x-input id="email" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="nama@email.com" />
+    </div>
 
-            <div class="my-6">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="form-check mb-0">
-                        <x-checkbox id="remember_me" name="remember" />
-                        <label class="form-check-label" for="remember_me" style="font-size:0.88rem;color:var(--mansaba-text);">{{ __('Remember me') }}</label>
-                    </div>
-                    @if (\Illuminate\Support\Facades\Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" style="color:var(--mansaba-green);font-weight:600;font-size:0.85rem;text-decoration:none;">
-                            {{ __('Forgot your password?') }}
-                        </a>
-                    @endif
-                </div>
-            </div>
+    {{-- Password with Show/Hide Toggle --}}
+    <div class="mb-4">
+      <x-label for="password" value="{{ __('Password') }}" />
+      <div class="input-group">
+        <x-input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
+        <span class="input-group-text" id="toggle-password" style="cursor:pointer;">
+          <i class="ti tabler-eye-off"></i>
+        </span>
+      </div>
+    </div>
 
-            <div class="mb-4">
-                <button type="submit" class="mansaba-btn-submit btn w-100" style="padding:0.75rem 1.5rem;">
-                    <i class="ti tabler-login me-2"></i>{{ __('Log in') }}
-                </button>
-            </div>
-        </form>
+    {{-- Remember Me & Forgot Password --}}
+    <div class="my-6">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="form-check mb-0">
+          <x-checkbox id="remember_me" name="remember" />
+          <label class="form-check-label" for="remember_me" style="font-size:0.88rem;color:var(--mansaba-text);">{{ __('Ingat saya') }}</label>
+        </div>
+        @if (\Illuminate\Support\Facades\Route::has('password.request'))
+          <a href="{{ route('password.request') }}" style="color:var(--mansaba-green);font-weight:600;font-size:0.85rem;text-decoration:none;">
+            {{ __('Lupa password?') }}
+          </a>
+        @endif
+      </div>
+    </div>
 
-        <p class="text-center mt-4 mb-0" style="font-size:0.88rem;color:var(--mansaba-text);">
-            <span>{{ __('Don\'t have an account?') }}</span>
-            <a href="{{ route('register') }}" style="color:var(--mansaba-gold);font-weight:700;text-decoration:none;">
-                {{ __('Register') }}
-            </a>
-        </p>
-    </x-authentication-card>
+    {{-- Submit Button with Loading State --}}
+    <div class="mb-4">
+      <button type="submit" class="btn btn-primary w-100" id="btn-login" style="padding:0.75rem 1.5rem;font-weight:600;border-radius:8px;">
+        <span id="btn-login-text">
+          <i class="ti tabler-login me-2"></i>{{ __('Masuk') }}
+        </span>
+        <span id="btn-login-loading" class="d-none">
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ __('Memproses...') }}
+        </span>
+      </button>
+    </div>
+  </form>
+
+  {{-- Register Link --}}
+  <p class="text-center mt-4 mb-0" style="font-size:0.88rem;color:var(--mansaba-text);">
+    <span>{{ __('Belum punya akun?') }}</span>
+    <a href="{{ route('register') }}" style="color:var(--mansaba-gold);font-weight:700;text-decoration:none;">
+      {{ __('Daftar') }}
+    </a>
+  </p>
+
 </x-guest-layout>

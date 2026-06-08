@@ -22,6 +22,9 @@
       'Identitas Sekolah' => [
         'app_name'           => 'Nama Aplikasi',
         'site_name'          => 'Nama Situs',
+        'motto'              => 'Moto Sekolah (tagline pendek)',
+        'visi'               => 'Visi',
+        'misi'               => 'Misi (pisahkan tiap item dengan tanda |)',
         'site_description'   => 'Deskripsi Situs',
         'address'            => 'Alamat Sekolah',
         'phone'              => 'Nomor Telepon',
@@ -263,7 +266,12 @@
                       @php $setting = $settings->firstWhere('key', $key); $val = $setting->value ?? ''; @endphp
                       <div class="col-md-6 mb-3 {{ $key === 'nav_menu' ? 'col-md-12' : '' }}">
                         <label for="setting_{{ $key }}" class="form-label">{{ $label }}</label>
-                        @if ($key === 'nav_menu')
+                        @if (in_array($key, ['visi', 'misi']))
+                          <textarea class="form-control @error($key) is-invalid @enderror"
+                                    id="setting_{{ $key }}"
+                                    name="{{ $key }}"
+                                    rows="4">{{ old($key, $val) }}</textarea>
+                        @elseif ($key === 'nav_menu')
                           <textarea class="form-control font-monospace @error($key) is-invalid @enderror"
                                     id="setting_{{ $key }}"
                                     name="{{ $key }}"

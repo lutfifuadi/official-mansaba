@@ -57,7 +57,7 @@
           <h5 class="fw-bold mb-0" style="color:var(--mansaba-green);">Visi</h5>
         </div>
         <p class="fst-italic mb-0" style="line-height:1.8;color:var(--mansaba-text);">
-          "Terwujudnya peserta didik yang beriman, bertakwa, berilmu, berkarakter, berbudaya, dan berdaya saing global."
+          &ldquo;{{ $globalSettings['visi'] ?? 'Terwujudnya peserta didik yang beriman, bertakwa, berilmu, berkarakter, berbudaya, dan berdaya saing global.' }}&rdquo;
         </p>
       </div>
     </div>
@@ -70,11 +70,18 @@
           <h5 class="fw-bold mb-0" style="color:#8B6914;">Misi</h5>
         </div>
         <ol class="mb-0 ps-4" style="line-height:2;color:var(--mansaba-text);">
-          <li>Menyelenggarakan pendidikan yang berbasis iman dan takwa.</li>
-          <li>Mengembangkan potensi akademik dan non-akademik peserta didik secara optimal.</li>
-          <li>Membentuk karakter peserta didik yang Islami, disiplin, dan bertanggung jawab.</li>
-          <li>Menciptakan lingkungan madrasah yang bersih, nyaman, dan kondusif.</li>
-          <li>Membangun kerjasama dalam rangka peningkatan mutu pendidikan.</li>
+          @php
+            $misiItems = !empty($globalSettings['misi']) ? explode('|', $globalSettings['misi']) : [
+              'Menyelenggarakan pendidikan yang berbasis iman dan takwa.',
+              'Mengembangkan potensi akademik dan non-akademik peserta didik secara optimal.',
+              'Membentuk karakter peserta didik yang Islami, disiplin, dan bertanggung jawab.',
+              'Menciptakan lingkungan madrasah yang bersih, nyaman, dan kondusif.',
+              'Membangun kerjasama dalam rangka peningkatan mutu pendidikan.',
+            ];
+          @endphp
+          @foreach ($misiItems as $item)
+            <li>{{ trim($item) }}</li>
+          @endforeach
         </ol>
       </div>
     </div>
