@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::usePreloadTagAttributes(fn () => false);
 
+        Vite::useScriptTagAttributes(fn () => ['data-cfasync' => 'false']);
+
         Vite::useStyleTagAttributes(function (?string $src, string $url, ?array $chunk, ?array $manifest) {
             if ($src !== null) {
                 return [
