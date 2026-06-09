@@ -3,7 +3,7 @@
 @section('title', 'Menu Navigasi Publik')
 
 @section('vendor-script')
-  @vite(['resources/assets/vendor/libs/sortablejs/sortable.js'])
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 @endsection
 
 @section('content')
