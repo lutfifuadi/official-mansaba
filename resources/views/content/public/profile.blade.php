@@ -40,9 +40,16 @@
         </div>
         <h4 class="fw-bold mb-0" style="color:var(--mansaba-dark);">Sejarah</h4>
       </div>
-      <p style="line-height:1.8;color:var(--mansaba-text);">MAN 1 Kota Bandung didirikan pada tanggal 27 Januari 1992 berdasarkan Surat Keputusan Menteri Agama Nomor 42 tahun 1992. Berstatus sebagai Madrasah Aliyah Negeri, madrasah ini hadir di bawah naungan Kementerian Agama dengan komitmen mencetak generasi muda yang beriman, berilmu, dan berakhlak mulia.</p>
-      <p style="line-height:1.8;color:var(--mansaba-text);">Terletak di Jalan Haji Alpi Cijeerah, Kelurahan Cibuntu, Kecamatan Bandung Kulon, Kota Bandung, madrasah ini berdiri di atas lahan seluas 26.070 meter persegi — menjadikannya salah satu madrasah dengan lingkungan terluas dan paling representatif di Kota Bandung. Dengan akreditasi A yang diraih pada 22 Juni 2020 (SK BAN-SM Nomor 458/BAN-SM/SK/2020), MAN 1 Kota Bandung terus berbenah menjadi lembaga pendidikan Islam yang kompetitif dan berkualitas.</p>
-      <p style="line-height:1.8;color:var(--mansaba-text);" class="mb-0">Hingga saat ini, MAN 1 Kota Bandung terus berkembang menjadi madrasah unggulan dengan lebih dari 1.200 siswa aktif dan 84 tenaga pendidik profesional. Madrasah ini tidak hanya fokus pada prestasi akademik, tetapi juga pengembangan karakter dan keterampilan siswa melalui berbagai kegiatan ekstrakurikuler dan pembiasaan positif. Dengan tiga jurusan unggulan — IPA, IPS, dan Agama — MAN 1 Kota Bandung siap melahirkan lulusan yang berdaya saing global.</p>
+      @php
+        $sejarahParagraphs = !empty($globalSettings['sejarah']) ? explode("\n", $globalSettings['sejarah']) : [
+          'MAN 1 Kota Bandung didirikan pada tanggal 27 Januari 1992 berdasarkan Surat Keputusan Menteri Agama Nomor 42 tahun 1992. Berstatus sebagai Madrasah Aliyah Negeri, madrasah ini hadir di bawah naungan Kementerian Agama dengan komitmen mencetak generasi muda yang beriman, berilmu, dan berakhlak mulia.',
+          'Terletak di Jalan Haji Alpi Cijeerah, Kelurahan Cibuntu, Kecamatan Bandung Kulon, Kota Bandung, madrasah ini berdiri di atas lahan seluas 26.070 meter persegi — menjadikannya salah satu madrasah dengan lingkungan terluas dan paling representatif di Kota Bandung. Dengan akreditasi A yang diraih pada 22 Juni 2020 (SK BAN-SM Nomor 458/BAN-SM/SK/2020), MAN 1 Kota Bandung terus berbenah menjadi lembaga pendidikan Islam yang kompetitif dan berkualitas.',
+          'Hingga saat ini, MAN 1 Kota Bandung terus berkembang menjadi madrasah unggulan dengan lebih dari 1.200 siswa aktif dan 84 tenaga pendidik profesional. Madrasah ini tidak hanya fokus pada prestasi akademik, tetapi juga pengembangan karakter dan keterampilan siswa melalui berbagai kegiatan ekstrakurikuler dan pembiasaan positif. Dengan tiga jurusan unggulan — IPA, IPS, dan Agama — MAN 1 Kota Bandung siap melahirkan lulusan yang berdaya saing global.',
+        ];
+      @endphp
+      @foreach ($sejarahParagraphs as $paragraf)
+        <p style="line-height:1.8;color:var(--mansaba-text);" class="{{ $loop->last ? 'mb-0' : '' }}">{{ trim($paragraf) }}</p>
+      @endforeach
     </div>
   </div>
 
@@ -130,9 +137,9 @@
           <div class="table-responsive">
             <table class="table mansaba-table-profile table-bordered mb-0">
               <tbody>
-                <tr><th style="width:200px;">Total Siswa</th><td><strong>2.945</strong> (L: 1.215, P: 1.730)</td></tr>
-                <tr><th>Rombongan Belajar</th><td>36 Rombel</td></tr>
-                <tr><th>Jurusan</th><td>IPA, IPS, Bahasa, Keagamaan</td></tr>
+                <tr><th style="width:200px;">Total Siswa</th><td><strong>{{ $globalSettings['student_count'] ?? '2.945' }}</strong> (L: {{ $globalSettings['student_male'] ?? '1.215' }}, P: {{ $globalSettings['student_female'] ?? '1.730' }})</td></tr>
+                <tr><th>Rombongan Belajar</th><td>{{ $globalSettings['total_rombel'] ?? '36' }} Rombel</td></tr>
+                <tr><th>Jurusan</th><td>{{ $globalSettings['majors'] ?? 'IPA, IPS, Bahasa, Keagamaan' }}</td></tr>
               </tbody>
             </table>
           </div>
@@ -151,11 +158,11 @@
           <div class="table-responsive">
             <table class="table mansaba-table-profile table-bordered mb-0">
               <tbody>
-                <tr><th style="width:200px;">Total Guru Aktif</th><td><strong>95</strong> (L: 47, P: 48)</td></tr>
-                <tr><th>Tenaga Kependidikan</th><td>19 Orang</td></tr>
-                <tr><th>Total Personil</th><td>114 Orang</td></tr>
-                <tr><th>Guru PNS</th><td>65 Orang</td></tr>
-                <tr><th>Guru Non-PNS</th><td>30 Orang</td></tr>
+                <tr><th style="width:200px;">Total Guru Aktif</th><td><strong>{{ $globalSettings['teacher_count'] ?? '95' }}</strong> (L: {{ $globalSettings['teacher_male'] ?? '47' }}, P: {{ $globalSettings['teacher_female'] ?? '48' }})</td></tr>
+                <tr><th>Tenaga Kependidikan</th><td>{{ $globalSettings['staff_count'] ?? '19' }} Orang</td></tr>
+                <tr><th>Total Personil</th><td>{{ $globalSettings['total_personnel'] ?? '114' }} Orang</td></tr>
+                <tr><th>Guru PNS</th><td>{{ $globalSettings['teacher_pns'] ?? '65' }} Orang</td></tr>
+                <tr><th>Guru Non-PNS</th><td>{{ $globalSettings['teacher_non_pns'] ?? '30' }} Orang</td></tr>
               </tbody>
             </table>
           </div>
@@ -176,19 +183,22 @@
       <div class="table-responsive">
         <table class="table mansaba-table-profile table-bordered mb-0">
           <tbody>
-            @foreach ([
-              ['Nama Madrasah',   'MAN 1 Kota Bandung'],
-              ['NSM',             '131132730001'],
-              ['NPSN',            '20277069'],
-              ['Status',          '<span class="badge px-3 py-1" style="background:rgba(27,94,66,0.1);color:var(--mansaba-green);border-radius:5px;font-weight:700;">Negeri</span>'],
-              ['Akreditasi',      '<span class="badge px-3 py-1" style="background:rgba(201,151,43,0.1);color:#8B6914;border-radius:5px;font-weight:700;">A (Unggul)</span>'],
-              ['SK Akreditasi',   '458/BAN-SM/SK/2020 (22 Juni 2020)'],
-              ['Alamat',          'JL. HAJI ALPI CIJERAH, Cibuntu, Kec. Bandung Kulon, Kota Bandung, Jawa Barat'],
-              ['Luas Tanah',      '26.070 m²'],
-              ['Kepala Madrasah', 'Yayan Ristaman Jaya, S.Pd., S.E., M.M.'],
-              ['Tahun Berdiri',   '1992 (SK KMA No. 42 Tahun 1992)'],
-              ['Jurusan',         'IPA, IPS, Agama'],
-            ] as $row)
+            @php
+              $dataPokok = [
+                ['Nama Madrasah',   $globalSettings['site_name'] ?? 'MAN 1 Kota Bandung'],
+                ['NSM',             $globalSettings['nsm'] ?? '131132730001'],
+                ['NPSN',            $globalSettings['npsn'] ?? '20277069'],
+                ['Status',          '<span class="badge px-3 py-1" style="background:rgba(27,94,66,0.1);color:var(--mansaba-green);border-radius:5px;font-weight:700;">' . ($globalSettings['school_status'] ?? 'Negeri') . '</span>'],
+                ['Akreditasi',      '<span class="badge px-3 py-1" style="background:rgba(201,151,43,0.1);color:#8B6914;border-radius:5px;font-weight:700;">' . ($globalSettings['accreditation'] ?? 'A (Unggul)') . '</span>'],
+                ['SK Akreditasi',   $globalSettings['accreditation_sk'] ?? '458/BAN-SM/SK/2020 (22 Juni 2020)'],
+                ['Alamat',          $globalSettings['address'] ?? 'JL. HAJI ALPI CIJERAH, Cibuntu, Kec. Bandung Kulon, Kota Bandung, Jawa Barat'],
+                ['Luas Tanah',      $globalSettings['land_area'] ?? '26.070 m²'],
+                ['Kepala Madrasah', $globalSettings['headmaster_name'] ?? 'Yayan Ristaman Jaya, S.Pd., S.E., M.M.'],
+                ['Tahun Berdiri',   $globalSettings['founded_year'] ?? '1992 (SK KMA No. 42 Tahun 1992)'],
+                ['Jurusan',         $globalSettings['majors'] ?? 'IPA, IPS, Agama'],
+              ];
+            @endphp
+            @foreach ($dataPokok as $row)
             <tr>
               <th style="width:200px;">{{ $row[0] }}</th>
               <td>{!! $row[1] !!}</td>

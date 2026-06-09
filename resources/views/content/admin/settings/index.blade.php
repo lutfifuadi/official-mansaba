@@ -42,6 +42,29 @@
         'stats_label_3'      => 'Label Statistik 3',
         'stats_label_4'      => 'Label Statistik 4',
       ],
+      'Data Pokok Sekolah' => [
+        'nsm'                => 'NSM',
+        'npsn'               => 'NPSN',
+        'school_status'      => 'Status Sekolah',
+        'accreditation'      => 'Akreditasi',
+        'accreditation_sk'   => 'SK Akreditasi',
+        'land_area'          => 'Luas Tanah (m²)',
+      ],
+      'Data Siswa & Guru' => [
+        'student_male'       => 'Siswa Laki-laki',
+        'student_female'     => 'Siswa Perempuan',
+        'total_rombel'       => 'Total Rombel',
+        'majors'             => 'Jurusan',
+        'teacher_male'       => 'Guru Laki-laki',
+        'teacher_female'     => 'Guru Perempuan',
+        'staff_count'        => 'Tenaga Kependidikan',
+        'total_personnel'    => 'Total Personil',
+        'teacher_pns'        => 'Guru PNS',
+        'teacher_non_pns'    => 'Guru Non-PNS',
+      ],
+      'Sejarah' => [
+        'sejarah'            => 'Sejarah Sekolah (setiap paragraf dipisah baris baru)',
+      ],
       'Hero Section' => [
         'hero_title'         => 'Judul Hero',
         'hero_highlight'     => 'Teks Sorotan Hero',
@@ -135,31 +158,31 @@
 
     $tabConfig = [
       'identitas' => [
-        'label' => 'Identitas & Statistik',
+        'label' => 'Identitas',
         'icon'  => 'tabler-building',
         'color' => 'primary',
-        'groups' => ['Identitas Sekolah', 'Statistik'],
+        'groups' => ['Identitas Sekolah', 'Statistik', 'Data Pokok Sekolah', 'Data Siswa & Guru', 'Sejarah'],
       ],
       'tampilan' => [
-        'label' => 'Tampilan Hero',
+        'label' => 'Hero',
         'icon'  => 'tabler-palette',
         'color' => 'info',
         'groups' => ['Hero Section', 'Kepala Sekolah'],
       ],
       'konten' => [
-        'label' => 'Section Konten',
+        'label' => 'Konten',
         'icon'  => 'tabler-layout',
         'color' => 'warning',
         'groups' => ['Section Berita', 'Section Prestasi', 'Section Galeri', 'Section Ekstrakurikuler'],
       ],
       'sosial' => [
-        'label' => 'Sosial & Kontak',
+        'label' => 'Sosial',
         'icon'  => 'tabler-brand-facebook',
         'color' => 'success',
         'groups' => ['Sosial Media', 'Info Kontak'],
       ],
       'layanan' => [
-        'label' => 'Layanan & Pengumuman',
+        'label' => 'Layanan',
         'icon'  => 'tabler-world',
         'color' => 'danger',
         'groups' => ['Layanan Online', 'Pengumuman'],
@@ -171,13 +194,13 @@
         'groups' => ['SEO — Umum', 'SEO — Open Graph', 'SEO — Twitter'],
       ],
       'navigasi' => [
-        'label' => 'Navigasi',
+        'label' => 'Menu',
         'icon'  => 'tabler-menu-2',
         'color' => 'secondary',
         'groups' => ['Navigasi Menu'],
       ],
       'mode' => [
-        'label' => 'Mode Situs',
+        'label' => 'Mode',
         'icon'  => 'tabler-switch',
         'color' => 'success',
         'groups' => ['Mode Situs'],
@@ -187,6 +210,9 @@
     $groupIcons = [
       'Identitas Sekolah' => 'tabler-building',
       'Statistik' => 'tabler-chart-bar',
+      'Data Pokok Sekolah' => 'tabler-database',
+      'Data Siswa & Guru' => 'tabler-users',
+      'Sejarah' => 'tabler-history',
       'Hero Section' => 'tabler-photo',
       'Sosial Media' => 'tabler-brand-facebook',
       'Kepala Sekolah' => 'tabler-user-star',
@@ -217,26 +243,23 @@
       </div>
     </div>
     <div class="card-body p-0">
-      <div class="row g-0">
-        {{-- Tab Navigation (Vertical Pills) --}}
-        <div class="col-md-3 border-end">
-          <div class="nav flex-column nav-pills p-4" role="tablist">
-            @foreach ($tabConfig as $tabKey => $tab)
-              <a class="nav-link d-flex align-items-center justify-content-start mb-1 {{ ($loop->first && !request('tab')) || request('tab') === $tabKey ? 'active' : '' }}"
-                 data-bs-toggle="pill"
-                 href="#tab-{{ $tabKey }}"
-                 role="tab"
-                 id="nav-tab-{{ $tabKey }}">
-                <i class="icon-base ti {{ $tab['icon'] }} me-2"></i>
-                <span>{{ $tab['label'] }}</span>
-              </a>
-            @endforeach
-          </div>
-        </div>
+      {{-- Tab Navigation (Horizontal) --}}
+      <div class="nav nav-tabs nav-fill px-4 pt-3 border-bottom-0" role="tablist" style="background:#f8f9fa;">
+        @foreach ($tabConfig as $tabKey => $tab)
+          <a class="nav-link d-flex align-items-center justify-content-center gap-2 {{ ($loop->first && !request('tab')) || request('tab') === $tabKey ? 'active' : '' }}"
+             data-bs-toggle="pill"
+             href="#tab-{{ $tabKey }}"
+             role="tab"
+             id="nav-tab-{{ $tabKey }}"
+             style="border-bottom: 0;">
+            <i class="icon-base ti {{ $tab['icon'] }}"></i>
+            <span>{{ $tab['label'] }}</span>
+          </a>
+        @endforeach
+      </div>
 
-        {{-- Tab Content --}}
-        <div class="col-md-9">
-          <div class="tab-content p-4">
+      {{-- Tab Content --}}
+      <div class="tab-content p-4">
             @foreach ($tabConfig as $tabKey => $tab)
               <div class="tab-pane fade {{ ($loop->first && !request('tab')) || request('tab') === $tabKey ? 'show active' : '' }}" id="tab-{{ $tabKey }}" role="tabpanel">
 
@@ -262,7 +285,7 @@
                       @php $setting = $settings->firstWhere('key', $key); $val = $setting->value ?? ''; @endphp
                       <div class="col-md-6 mb-3 {{ $key === 'nav_menu' ? 'col-md-12' : '' }}">
                         <label for="setting_{{ $key }}" class="form-label">{{ $label }}</label>
-                        @if (in_array($key, ['visi', 'misi']))
+                        @if (in_array($key, ['visi', 'misi', 'sejarah']))
                           <textarea class="form-control @error($key) is-invalid @enderror"
                                     id="setting_{{ $key }}"
                                     name="{{ $key }}"
@@ -360,8 +383,6 @@
 
               </div>
             @endforeach
-          </div>
-        </div>
       </div>
     </div>
   </div>

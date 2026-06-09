@@ -89,7 +89,32 @@ class SettingController extends Controller
             'maintenance_mode' => 'nullable|string|max:1',
             'maintenance_est_time' => 'nullable|string|max:255',
             'nav_menu' => 'nullable|string',
-            
+
+            // Data Siswa
+            'student_male' => 'nullable|string|max:20',
+            'student_female' => 'nullable|string|max:20',
+            'total_rombel' => 'nullable|string|max:10',
+            'majors' => 'nullable|string|max:255',
+
+            // Data Guru & Tendik
+            'teacher_male' => 'nullable|string|max:20',
+            'teacher_female' => 'nullable|string|max:20',
+            'staff_count' => 'nullable|string|max:20',
+            'total_personnel' => 'nullable|string|max:20',
+            'teacher_pns' => 'nullable|string|max:20',
+            'teacher_non_pns' => 'nullable|string|max:20',
+
+            // Data Pokok Sekolah
+            'nsm' => 'nullable|string|max:30',
+            'npsn' => 'nullable|string|max:30',
+            'school_status' => 'nullable|string|max:50',
+            'accreditation' => 'nullable|string|max:50',
+            'accreditation_sk' => 'nullable|string|max:255',
+            'land_area' => 'nullable|string|max:50',
+
+            // Sejarah (text panjang)
+            'sejarah' => 'nullable|string',
+
             // Image Upload Fields
             'school_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',

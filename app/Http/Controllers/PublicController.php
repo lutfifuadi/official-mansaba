@@ -100,6 +100,12 @@ class PublicController extends Controller
 
     public function profile()
     {
-        return view('content.public.profile');
+        $settings = Cache::remember('settings.all', 3600, function () {
+            return Setting::pluck('value', 'key')->toArray();
+        });
+
+        return view('content.public.profile', [
+            'globalSettings' => $settings,
+        ]);
     }
 }
