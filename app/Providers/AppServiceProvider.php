@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Service;
 use App\Models\Setting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Vite;
@@ -35,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
                 return Setting::pluck('value', 'key')->toArray();
             });
             $view->with('globalSettings', $settings);
+        });
+
+        View::composer('layouts.sections.footer.footer-front', function ($view) {
+            $view->with('footerServices', Service::active()->ordered()->get());
         });
 
         View::share('catColors', [

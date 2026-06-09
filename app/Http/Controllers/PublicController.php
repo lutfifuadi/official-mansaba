@@ -7,6 +7,7 @@ use App\Models\Extracurricular;
 use App\Models\Gallery;
 use App\Models\Announcement;
 use App\Models\News;
+use App\Models\Service;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -25,6 +26,7 @@ class PublicController extends Controller
             return Setting::pluck('value', 'key')->toArray();
         });
         $announcements = Announcement::active()->latest('published_at')->take(3)->get();
+        $activeServices = Service::active()->ordered()->get();
 
         $foundedYear = (int)($settings['founded_year'] ?? 1990);
         $stats = [
@@ -43,6 +45,7 @@ class PublicController extends Controller
             'settings' => $settings,
             'stats' => $stats,
             'announcements' => $announcements,
+            'activeServices' => $activeServices,
         ]);
     }
 

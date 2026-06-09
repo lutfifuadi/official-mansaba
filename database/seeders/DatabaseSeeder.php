@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             SettingsSeeder::class,
+            ServiceSeeder::class,
             DummyDataSeeder::class,
         ]);
 

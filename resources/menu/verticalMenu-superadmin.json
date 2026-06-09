@@ -55,6 +55,15 @@
       ]
     },
     {
+      "name": "Layanan Online",
+      "icon": "menu-icon icon-base ti tabler-world",
+      "slug": "admin.services",
+      "submenu": [
+        { "url": "/admin/services", "name": "Semua Layanan", "slug": "admin.services.index" },
+        { "url": "/admin/services/create", "name": "Tambah Layanan", "slug": "admin.services.create" }
+      ]
+    },
+    {
       "menuHeader": "Analitik"
     },
     {

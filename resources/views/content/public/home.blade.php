@@ -439,19 +439,8 @@ document.addEventListener('DOMContentLoaded', function() {
 {{-- ════════════════════════════════════
     LAYANAN ONLINE
 ════════════════════════════════════ --}}
-@php
-  $services = [
-    'service_ptsp'         => ['icon' => 'building-arch',      'label' => 'PTSP'],
-    'service_esurat'       => ['icon' => 'file-text',          'label' => 'ESurat'],
-    'service_presensi'     => ['icon' => 'user-check',         'label' => 'Presensi Online'],
-    'service_ujian_online' => ['icon' => 'edit',               'label' => 'Ujian Online'],
-    'service_rdm'          => ['icon' => 'book',               'label' => 'RDM'],
-    'service_emis'         => ['icon' => 'database',           'label' => 'Lokal EMIS'],
-  ];
-  $activeServices = array_filter($services, fn($key) => !empty($settings[$key]) && $settings[$key] !== '#', ARRAY_FILTER_USE_KEY);
-@endphp
 
-@if (count($activeServices) > 0)
+@if ($activeServices->count() > 0)
   <section class="section-bg-cream py-5">
     <div class="container-xxl">
       <div class="mansaba-section-header">
@@ -461,15 +450,17 @@ document.addEventListener('DOMContentLoaded', function() {
         <p>Akses berbagai layanan online MAN 1 Kota Bandung dengan mudah dan cepat</p>
       </div>
       <div class="row g-3 justify-content-center">
-        @foreach ($activeServices as $key => $svc)
-          <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ $settings[$key] }}" target="_blank" rel="noopener" class="mansaba-service-card">
-              <div class="service-icon">
-                <i class="ti tabler-{{ $svc['icon'] }}"></i>
-              </div>
-              <span class="service-label">{{ $svc['label'] }}</span>
-            </a>
-          </div>
+        @foreach ($activeServices as $svc)
+          @if (!empty($svc->url) && $svc->url !== '#')
+            <div class="col-6 col-md-4 col-lg-2">
+              <a href="{{ $svc->url }}" target="_blank" rel="noopener" class="mansaba-service-card">
+                <div class="service-icon">
+                  <i class="ti tabler-{{ $svc->icon }}"></i>
+                </div>
+                <span class="service-label">{{ $svc->name }}</span>
+              </a>
+            </div>
+          @endif
         @endforeach
       </div>
     </div>

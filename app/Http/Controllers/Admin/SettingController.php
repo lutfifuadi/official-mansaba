@@ -61,12 +61,7 @@ class SettingController extends Controller
             'contact_label_address' => 'nullable|string|max:255',
             'contact_label_phone' => 'nullable|string|max:255',
             'contact_label_email' => 'nullable|string|max:255',
-            'service_ptsp' => 'nullable|string|max:255',
-            'service_esurat' => 'nullable|string|max:255',
-            'service_presensi' => 'nullable|string|max:255',
-            'service_ujian_online' => 'nullable|string|max:255',
-            'service_rdm' => 'nullable|string|max:255',
-            'service_emis' => 'nullable|string|max:255',
+
             'footer_text' => 'nullable|string|max:500',
             'footer_show_credit' => 'nullable|string|max:1',
             'meta_title_home' => 'nullable|string|max:255',

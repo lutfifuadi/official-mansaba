@@ -57,12 +57,7 @@ class SettingsSeeder extends Seeder
             'contact_label_address' => 'Alamat',
             'contact_label_phone'   => 'Telepon',
             'contact_label_email'   => 'Email',
-            'service_ptsp'         => '#',
-            'service_esurat'       => '#',
-            'service_presensi'     => '#',
-            'service_ujian_online' => '#',
-            'service_rdm'          => '#',
-            'service_emis'         => '#',
+
             'registration_enabled'  => '1',
             'coming_soon_mode'     => '0',
             'coming_soon_date'     => '2026-08-17 08:00:00',

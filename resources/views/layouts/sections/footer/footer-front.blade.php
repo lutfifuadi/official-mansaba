@@ -58,19 +58,9 @@
       <!-- Layanan -->
       <div class="col-6 col-lg-2">
         <h6 class="footer-heading">Layanan</h6>
-        @php
-          $footerServices = [
-            'service_ptsp'         => 'PTSP',
-            'service_esurat'       => 'ESurat',
-            'service_presensi'     => 'Presensi',
-            'service_ujian_online' => 'Ujian Online',
-            'service_rdm'          => 'RDM',
-            'service_emis'         => 'Lokal EMIS',
-          ];
-        @endphp
-        @foreach ($footerServices as $key => $label)
-          @if (!empty($globalSettings[$key]) && $globalSettings[$key] !== '#')
-            <a href="{{ $globalSettings[$key] }}" class="footer-link" target="_blank" rel="noopener">{{ $label }}</a>
+        @foreach ($footerServices as $svc)
+          @if (!empty($svc->url) && $svc->url !== '#')
+            <a href="{{ $svc->url }}" class="footer-link" target="_blank" rel="noopener">{{ $svc->name }}</a>
           @endif
         @endforeach
         <a href="{{ route('login') }}" class="footer-link">Login</a>

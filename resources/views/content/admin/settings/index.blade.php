@@ -91,12 +91,6 @@
         'contact_label_email'   => 'Label Email',
       ],
       'Layanan Online' => [
-        'service_ptsp'         => 'PTSP (URL)',
-        'service_esurat'       => 'ESurat (URL)',
-        'service_presensi'     => 'Presensi Online (URL)',
-        'service_ujian_online' => 'Ujian Online (URL)',
-        'service_rdm'          => 'RDM (URL)',
-        'service_emis'         => 'Lokal EMIS (URL)',
         'registration_enabled' => 'Registrasi Pengguna Baru',
       ],
       'Footer' => [
