@@ -78,4 +78,23 @@
     </a>
   </p>
 
+  {{-- Fallback: Password toggle jika pages-auth.js gagal di live site --}}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var toggle = document.querySelector('#toggle-password');
+      var password = document.querySelector('#password');
+      if (toggle && password) {
+        toggle.addEventListener('click', function () {
+          var icon = this.querySelector('i');
+          if (icon) {
+            var isPassword = password.type === 'password';
+            password.type = isPassword ? 'text' : 'password';
+            icon.classList.toggle('tabler-eye-off');
+            icon.classList.toggle('tabler-eye');
+          }
+        });
+      }
+    });
+  </script>
+
 </x-guest-layout>
