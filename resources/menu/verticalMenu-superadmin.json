@@ -76,6 +76,12 @@
       "menuHeader": "Manajemen"
     },
     {
+      "url": "/admin/menus",
+      "name": "Menu Navigasi",
+      "icon": "menu-icon icon-base ti tabler-menu-2",
+      "slug": "admin.menus"
+    },
+    {
       "url": "/admin/settings",
       "name": "Pengaturan",
       "icon": "menu-icon icon-base ti tabler-settings",

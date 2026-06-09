@@ -5,12 +5,12 @@ $currentRoute = request()->path();
 $navMenuJson = $globalSettings['nav_menu'] ?? '[]';
 $parsed = json_decode($navMenuJson, true);
 $navLinks = is_array($parsed) && count($parsed) > 0 ? $parsed : [
-  ['label' => 'Beranda',         'url' => route('home'),                        'path' => ''],
-  ['label' => 'Berita',          'url' => route('public.news'),                 'path' => 'berita'],
-  ['label' => 'Galeri',          'url' => route('public.galleries'),            'path' => 'galeri'],
-  ['label' => 'Prestasi',        'url' => route('public.achievements'),         'path' => 'prestasi'],
-  ['label' => 'Ekstrakurikuler', 'url' => route('public.extracurriculars'),     'path' => 'ekstrakurikuler'],
-  ['label' => 'Profil',          'url' => route('public.profile'),              'path' => 'profil'],
+  ['label' => 'Beranda',         'url' => route('home'),                        'path' => '',            'icon' => 'tabler-home'],
+  ['label' => 'Berita',          'url' => route('public.news'),                 'path' => 'berita',       'icon' => 'tabler-news'],
+  ['label' => 'Galeri',          'url' => route('public.galleries'),            'path' => 'galeri',       'icon' => 'tabler-photo'],
+  ['label' => 'Prestasi',        'url' => route('public.achievements'),         'path' => 'prestasi',     'icon' => 'tabler-trophy'],
+  ['label' => 'Ekstrakurikuler', 'url' => route('public.extracurriculars'),     'path' => 'ekstrakurikuler', 'icon' => 'tabler-users'],
+  ['label' => 'Profil',          'url' => route('public.profile'),              'path' => 'profil',       'icon' => 'tabler-building'],
 ];
 @endphp
 <!-- Navbar Islami: Start -->
@@ -68,6 +68,9 @@ $navLinks = is_array($parsed) && count($parsed) > 0 ? $parsed : [
             <li class="nav-item">
               <a class="nav-link {{ str_starts_with($currentRoute, $link['path']) && $link['path'] !== '' ? 'active' : ($currentRoute === '' && $link['path'] === '' ? 'active' : '') }}"
                  href="{{ $link['url'] }}">
+                @if(!empty($link['icon']))
+                  <i class="icon-base ti {{ $link['icon'] }} me-1" style="font-size:0.9rem;"></i>
+                @endif
                 {{ $link['label'] }}
               </a>
             </li>

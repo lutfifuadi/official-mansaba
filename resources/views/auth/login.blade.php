@@ -31,11 +31,11 @@
     </div>
 
     {{-- Password with Show/Hide Toggle --}}
-    <div class="mb-4">
+    <div class="mb-4 form-password-toggle">
       <x-label for="password" value="{{ __('Password') }}" />
-      <div class="input-group">
+      <div class="input-group input-group-merge">
         <x-input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
-        <span class="input-group-text" id="toggle-password" style="cursor:pointer;">
+        <span class="input-group-text cursor-pointer">
           <i class="ti tabler-eye-off"></i>
         </span>
       </div>
@@ -78,23 +78,6 @@
     </a>
   </p>
 
-  {{-- Fallback: Password toggle jika pages-auth.js gagal di live site --}}
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var toggle = document.querySelector('#toggle-password');
-      var password = document.querySelector('#password');
-      if (toggle && password) {
-        toggle.addEventListener('click', function () {
-          var icon = this.querySelector('i');
-          if (icon) {
-            var isPassword = password.type === 'password';
-            password.type = isPassword ? 'text' : 'password';
-            icon.classList.toggle('tabler-eye-off');
-            icon.classList.toggle('tabler-eye');
-          }
-        });
-      }
-    });
-  </script>
+
 
 </x-guest-layout>
