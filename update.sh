@@ -130,6 +130,16 @@ foreach (\$files as \$f) {
         \$tableName = \$m[1]; // personal_access_tokens, users, news, dll
     } elseif (preg_match('/^add_\w+_to_(\w+)_table$/', \$shortName, \$m)) {
         \$tableName = \$m[1]; // services, news, dll
+    } elseif (preg_match('/^(?:make|change)_(\w+)_/', \$shortName, \$m)) {
+        \$tableName = \$m[1]; // make_galleries_... → galleries
+    }
+
+    // Fallback: baca file PHP langsung cari Schema::table('X')
+    if (!\$tableName) {
+        \$content = file_get_contents(\$f);
+        if (preg_match("/Schema::table\('(\w+)'/", \$content, \$m)) {
+            \$tableName = \$m[1];
+        }
     }
 
     // Hanya daftarkan jika tabelnya sudah ada di database
