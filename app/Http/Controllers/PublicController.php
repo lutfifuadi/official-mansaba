@@ -108,4 +108,17 @@ class PublicController extends Controller
             'globalSettings' => $settings,
         ]);
     }
+
+    public function services()
+    {
+        $services = Service::active()->ordered()->get();
+        $categories = Service::active()->select('category')->distinct()->whereNotNull('category')->pluck('category');
+        return view('content.public.services.index', compact('services', 'categories'));
+    }
+
+    public function serviceDetail($slug)
+    {
+        $service = Service::where('slug', $slug)->active()->firstOrFail();
+        return view('content.public.services.detail', compact('service'));
+    }
 }

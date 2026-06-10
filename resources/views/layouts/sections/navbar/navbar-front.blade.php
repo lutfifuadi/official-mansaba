@@ -10,6 +10,7 @@ $navLinks = is_array($parsed) && count($parsed) > 0 ? $parsed : [
   ['label' => 'Galeri',          'url' => route('public.galleries'),            'path' => 'galeri',       'icon' => 'tabler-photo'],
   ['label' => 'Prestasi',        'url' => route('public.achievements'),         'path' => 'prestasi',     'icon' => 'tabler-trophy'],
   ['label' => 'Ekstrakurikuler', 'url' => route('public.extracurriculars'),     'path' => 'ekstrakurikuler', 'icon' => 'tabler-users'],
+  ['label' => 'Layanan',         'url' => route('public.services'),             'path' => 'layanan',      'icon' => 'tabler-layout-grid'],
   ['label' => 'Profil',          'url' => route('public.profile'),              'path' => 'profil',       'icon' => 'tabler-building'],
 ];
 @endphp

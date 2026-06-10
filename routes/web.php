@@ -25,6 +25,8 @@ Route::get('/prestasi', [PublicController::class, 'achievements'])->name('public
 Route::get('/ekstrakurikuler', [PublicController::class, 'extracurriculars'])->name('public.extracurriculars');
 Route::get('/ekstrakurikuler/{slug}', [PublicController::class, 'extracurricularDetail'])->name('public.extracurricular-detail');
 Route::get('/profil', [PublicController::class, 'profile'])->name('public.profile');
+Route::get('/layanan', [PublicController::class, 'services'])->name('public.services');
+Route::get('/layanan/{slug}', [PublicController::class, 'serviceDetail'])->name('public.services.detail');
 
 // ===================== ADMIN ROUTES (Jetstream / Fortify handles auth) =====================
 

@@ -39,6 +39,7 @@
               <th style="width:50px;">Urutan</th>
               <th>Nama</th>
               <th>Ikon</th>
+              <th>Kategori</th>
               <th>URL</th>
               <th>Status</th>
               <th style="width:120px;">Aksi</th>
@@ -50,6 +51,13 @@
                 <td><span class="badge bg-label-secondary">{{ $item->sort_order }}</span></td>
                 <td class="fw-semibold">{{ $item->name }}</td>
                 <td><code>{{ $item->icon }}</code></td>
+                <td>
+                  @if($item->category)
+                    <span class="badge bg-label-warning">{{ $item->category }}</span>
+                  @else
+                    <span class="text-muted"><small>—</small></span>
+                  @endif
+                </td>
                 <td>
                   @if($item->url && $item->url !== '#')
                     <a href="{{ $item->url }}" target="_blank" class="text-truncate d-inline-block" style="max-width:250px;">
@@ -83,7 +91,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="6" class="text-center py-5">
+                <td colspan="7" class="text-center py-5">
                   <div class="avatar avatar-lg mb-3">
                     <span class="avatar-initial rounded bg-label-secondary">
                       <i class="icon-base ti tabler-world-off icon-lg"></i>

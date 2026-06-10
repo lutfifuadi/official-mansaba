@@ -23,11 +23,17 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'       => 'required|string|max:255|unique:services,name',
-            'icon'       => 'nullable|string|max:100',
-            'url'        => 'nullable|string|max:500',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active'  => 'nullable|string|max:1',
+            'name'            => 'required|string|max:255|unique:services,name',
+            'icon'            => 'nullable|string|max:100',
+            'category'        => 'nullable|string|max:100',
+            'icon_color'      => 'nullable|string|max:20',
+            'description'     => 'nullable|string',
+            'requirements'    => 'nullable|string',
+            'procedures'      => 'nullable|string',
+            'contact_person'  => 'nullable|string|max:255',
+            'url'             => 'nullable|string|max:500',
+            'sort_order'      => 'nullable|integer|min:0',
+            'is_active'       => 'nullable|string|max:1',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -49,11 +55,17 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
 
         $validated = $request->validate([
-            'name'       => 'required|string|max:255|unique:services,name,' . $service->id,
-            'icon'       => 'nullable|string|max:100',
-            'url'        => 'nullable|string|max:500',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active'  => 'nullable|string|max:1',
+            'name'            => 'required|string|max:255|unique:services,name,' . $service->id,
+            'icon'            => 'nullable|string|max:100',
+            'category'        => 'nullable|string|max:100',
+            'icon_color'      => 'nullable|string|max:20',
+            'description'     => 'nullable|string',
+            'requirements'    => 'nullable|string',
+            'procedures'      => 'nullable|string',
+            'contact_person'  => 'nullable|string|max:255',
+            'url'             => 'nullable|string|max:500',
+            'sort_order'      => 'nullable|integer|min:0',
+            'is_active'       => 'nullable|string|max:1',
         ]);
 
         if ($request->name !== $service->name) {

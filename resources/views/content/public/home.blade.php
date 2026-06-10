@@ -463,6 +463,11 @@ document.addEventListener('DOMContentLoaded', function() {
           @endif
         @endforeach
       </div>
+      <div class="text-center mt-4">
+        <a href="{{ route('public.services') }}" class="btn btn-outline-success px-4" style="border-color:var(--mansaba-green);color:var(--mansaba-green);border-radius:5px;font-weight:600;">
+          <i class="ti tabler-grid-dots me-2"></i>Lihat Semua Layanan
+        </a>
+      </div>
     </div>
   </section>
 @endif

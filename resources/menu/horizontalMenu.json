@@ -37,6 +37,12 @@
       "slug": "public.extracurriculars"
     },
     {
+      "url": "/layanan",
+      "name": "Layanan",
+      "icon": "menu-icon icon-base ti tabler-apps",
+      "slug": "public.services"
+    },
+    {
       "url": "/kontak",
       "name": "Kontak",
       "icon": "menu-icon icon-base ti tabler-mail",

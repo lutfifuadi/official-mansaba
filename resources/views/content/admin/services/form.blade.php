@@ -65,10 +65,74 @@
         </div>
 
         <div class="mb-3">
-          <label for="url" class="form-label">URL Layanan</label>
-          <input type="url" class="form-control @error('url') is-invalid @enderror" id="url" name="url" value="{{ old('url', isset($service) ? $service->url : '') }}" placeholder="https://...">
-          <small class="text-muted">Biarkan kosong atau isi <code>#</code> jika layanan belum tersedia.</small>
-          @error('url')
+          <label for="category" class="form-label">Kategori <span class="text-danger">*</span></label>
+          <select class="form-select @error('category') is-invalid @enderror" id="category" name="category" required>
+            <option value="">Pilih Kategori</option>
+            @foreach(['Akademik', 'Administrasi', 'Kesiswaan', 'Kepegawaian', 'Teknis/IT', 'Lainnya'] as $cat)
+              <option value="{{ $cat }}" {{ old('category', isset($service) ? $service->category : '') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+            @endforeach
+          </select>
+          @error('category')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="icon_color" class="form-label">Warna Ikon</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="color" class="form-control form-control-color @error('icon_color') is-invalid @enderror" id="icon_color" name="icon_color" value="{{ old('icon_color', isset($service) ? $service->icon_color : '#1B5E42') }}" style="width:60px;height:38px;padding:3px;">
+              <span class="text-muted small">{{ old('icon_color', isset($service) ? $service->icon_color : '#1B5E42') }}</span>
+            </div>
+            @error('icon_color')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+          <div class="col-md-6">
+            <label for="url" class="form-label">URL Layanan</label>
+            <input type="url" class="form-control @error('url') is-invalid @enderror" id="url" name="url" value="{{ old('url', isset($service) ? $service->url : '') }}" placeholder="https://...">
+            <small class="text-muted">Biarkan kosong atau isi <code>#</code> jika layanan belum tersedia.</small>
+            @error('url')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+        </div>
+
+        <hr class="my-4">
+        <h6 class="fw-semibold mb-3" style="color:var(--mansaba-dark);"><i class="ti tabler-info-circle me-1"></i> Informasi Detail</h6>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Deskripsi</label>
+          <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="4" placeholder="Deskripsi lengkap tentang layanan ini...">{{ old('description', isset($service) ? $service->description : '') }}</textarea>
+          @error('description')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="requirements" class="form-label">Persyaratan</label>
+            <textarea class="form-control @error('requirements') is-invalid @enderror" id="requirements" name="requirements" rows="5" placeholder="Tulis persyaratan, satu per baris...">{{ old('requirements', isset($service) ? $service->requirements : '') }}</textarea>
+            <small class="text-muted">Tulis setiap persyaratan dalam baris terpisah.</small>
+            @error('requirements')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+          <div class="col-md-6">
+            <label for="procedures" class="form-label">Prosedur</label>
+            <textarea class="form-control @error('procedures') is-invalid @enderror" id="procedures" name="procedures" rows="5" placeholder="Tulis prosedur langkah demi langkah, satu per baris...">{{ old('procedures', isset($service) ? $service->procedures : '') }}</textarea>
+            <small class="text-muted">Tulis setiap langkah dalam baris terpisah.</small>
+            @error('procedures')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="contact_person" class="form-label">Kontak Penanggung Jawab</label>
+          <input type="text" class="form-control @error('contact_person') is-invalid @enderror" id="contact_person" name="contact_person" value="{{ old('contact_person', isset($service) ? $service->contact_person : '') }}" placeholder="Nama + jabatan (opsional: nomor telepon/email)">
+          <small class="text-muted">Contoh: Bpk. Ahmad Fauzi (Waka Kesiswaan) — 0812-3456-7890</small>
+          @error('contact_person')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>

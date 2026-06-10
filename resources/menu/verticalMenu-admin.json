@@ -55,8 +55,8 @@
       ]
     },
     {
-      "name": "Layanan Online",
-      "icon": "menu-icon icon-base ti tabler-world",
+      "name": "Layanan",
+      "icon": "menu-icon icon-base ti tabler-apps",
       "slug": "admin.services",
       "submenu": [
         { "url": "/admin/services", "name": "Semua Layanan", "slug": "admin.services.index" },
