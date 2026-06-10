@@ -120,13 +120,16 @@ foreach (\$files as \$f) {
     if (in_array(\$name, \$ran)) continue;
 
     // Cerdas: cari nama tabel dari nama file migration (create_X_table / add_X_to_Y / dll)
+    // Format file migration: YYYY_MM_DD_HHMMSS_create_X_table.php
     \$tableName = null;
-    if (preg_match('/^create_(\w+)_table$/', \$name, \$m)) {
-        \$tableName = \$m[1]; // users, news, settings, dll
-    } elseif (preg_match('/^add_\w+_to_(\w+)_table$/', \$name, \$m)) {
-        \$tableName = \$m[1]; // services
-    } elseif (preg_match('/^(\w+)_table$/', \$name, \$m)) {
-        \$tableName = \$m[1];
+
+    // Hapus prefix timestamp (YYYY_MM_DD_HHMMSS_)
+    \$shortName = preg_replace('/^\d{4}_\d{2}_\d{2}_\d{6}_/', '', \$name);
+
+    if (preg_match('/^create_(\w+)_table$/', \$shortName, \$m)) {
+        \$tableName = \$m[1]; // personal_access_tokens, users, news, dll
+    } elseif (preg_match('/^add_\w+_to_(\w+)_table$/', \$shortName, \$m)) {
+        \$tableName = \$m[1]; // services, news, dll
     }
 
     // Hanya daftarkan jika tabelnya sudah ada di database
