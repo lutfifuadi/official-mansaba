@@ -95,19 +95,21 @@ fi
 # ── 4. Migrate Database ─────────────────────────────────────
 step "4. Migrasi Database"
 
-# 4a. Sync tabel migrations: daftarkan semua file migration yang belum tercatat
-#     agar php artisan migrate mendeteksi "Nothing to migrate" dengan benar
+# 4a. Jalankan migration dulu (akan buat tabel baru jika ada migration baru)
+php artisan migrate --force --graceful 2>&1 || true
+
+# 4b. Sync tabel migrations: daftarkan file migration yang tabelnya SUDAH ADA di database
+#     (tapi belum tercatat di tabel migrations). Ini agar kedepannya "Nothing to migrate".
 php -r "
 \$app = require __DIR__.'/bootstrap/app.php';
 \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 \$db = \$app->make('db');
+\$schema = \$db->getSchemaBuilder();
 
-// Buat tabel migrations jika belum ada
-if (!\$db->getSchemaBuilder()->hasTable('migrations')) {
-    \$db->statement('CREATE TABLE IF NOT EXISTS migrations (id INT AUTO_INCREMENT PRIMARY KEY, migration VARCHAR(255), batch INT)');
+if (!\$schema->hasTable('migrations')) {
+    echo '[INFO] Tabel migrations tidak ditemukan, skip sync.' . PHP_EOL; exit;
 }
 
-// Ambil daftar migration yang sudah tercatat
 \$ran = \$db->table('migrations')->pluck('migration')->toArray();
 \$files = glob(__DIR__ . '/database/migrations/*.php');
 \$batch = (\$db->table('migrations')->max('batch') ?? 0) + 1;
@@ -115,7 +117,20 @@ if (!\$db->getSchemaBuilder()->hasTable('migrations')) {
 
 foreach (\$files as \$f) {
     \$name = basename(\$f, '.php');
-    if (!in_array(\$name, \$ran)) {
+    if (in_array(\$name, \$ran)) continue;
+
+    // Cerdas: cari nama tabel dari nama file migration (create_X_table / add_X_to_Y / dll)
+    \$tableName = null;
+    if (preg_match('/^create_(\w+)_table$/', \$name, \$m)) {
+        \$tableName = \$m[1]; // users, news, settings, dll
+    } elseif (preg_match('/^add_\w+_to_(\w+)_table$/', \$name, \$m)) {
+        \$tableName = \$m[1]; // services
+    } elseif (preg_match('/^(\w+)_table$/', \$name, \$m)) {
+        \$tableName = \$m[1];
+    }
+
+    // Hanya daftarkan jika tabelnya sudah ada di database
+    if (\$tableName && \$schema->hasTable(\$tableName)) {
         \$db->table('migrations')->insert([
             'migration' => \$name,
             'batch'     => \$batch,
@@ -123,11 +138,12 @@ foreach (\$files as \$f) {
         \$inserted++;
     }
 }
-
-echo '[INFO] ' . \$inserted . ' migration tercatat (sudah ada, dilewati).' . PHP_EOL;
+if (\$inserted > 0) {
+    echo '[INFO] ' . \$inserted . ' migration tersync (tabel sudah ada).' . PHP_EOL;
+}
 " 2>/dev/null || true
 
-# 4b. Tambahkan kolom services jika belum ada (fallback untuk tabel yg mungkin ke-skip)
+# 4c. Tambahkan kolom services jika belum ada (fallback jika migration terlewat)
 php -r "
 \$app = require __DIR__.'/bootstrap/app.php';
 \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
@@ -145,8 +161,6 @@ if (\$schema->hasTable('services') && !\$schema->hasColumn('services', 'category
 }
 " 2>/dev/null || true
 
-# 4c. Jalankan migration (sekarang seharusnya "Nothing to migrate" karena sudah disync)
-php artisan migrate --force 2>&1 || true
 info "Migrasi selesai ✓"
 
 # ── 5. Optimasi ─────────────────────────────────────────────
