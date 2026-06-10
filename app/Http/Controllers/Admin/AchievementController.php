@@ -5,19 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Achievement;
+use App\Models\Extracurricular;
 use Illuminate\Http\Request;
 
 class AchievementController extends Controller
 {
     public function index()
     {
-        $achievements = Achievement::latest()->paginate(10);
+        $achievements = Achievement::with('extracurriculars')->latest()->paginate(10);
         return view('content.admin.achievements.index', compact('achievements'));
     }
 
     public function create()
     {
-        return view('content.admin.achievements.form');
+        $extracurriculars = Extracurricular::all();
+        return view('content.admin.achievements.form', compact('extracurriculars'));
     }
 
     public function store(Request $request)
@@ -30,6 +32,8 @@ class AchievementController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'achievement_date' => 'nullable|date',
+            'extracurricular_ids' => 'nullable|array',
+            'extracurricular_ids.*' => 'exists:extracurriculars,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -39,15 +43,17 @@ class AchievementController extends Controller
             }
         }
 
-        Achievement::create($validated);
+        $achievement = Achievement::create($validated);
+        $achievement->extracurriculars()->sync($validated['extracurricular_ids'] ?? []);
 
         return redirect()->route('admin.achievements.index')->with('success', 'Prestasi berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
-        $achievement = Achievement::findOrFail($id);
-        return view('content.admin.achievements.form', compact('achievement'));
+        $extracurriculars = Extracurricular::all();
+        $achievement = Achievement::with('extracurriculars')->findOrFail($id);
+        return view('content.admin.achievements.form', compact('achievement', 'extracurriculars'));
     }
 
     public function update(Request $request, $id)
@@ -62,6 +68,8 @@ class AchievementController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'achievement_date' => 'nullable|date',
+            'extracurricular_ids' => 'nullable|array',
+            'extracurricular_ids.*' => 'exists:extracurriculars,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -73,6 +81,7 @@ class AchievementController extends Controller
         }
 
         $achievement->update($validated);
+        $achievement->extracurriculars()->sync($validated['extracurricular_ids'] ?? []);
 
         return redirect()->route('admin.achievements.index')->with('success', 'Prestasi berhasil diperbarui.');
     }

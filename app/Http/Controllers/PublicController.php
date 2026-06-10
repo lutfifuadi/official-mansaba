@@ -19,7 +19,7 @@ class PublicController extends Controller
     public function home()
     {
         $berita = News::published()->latest()->take(3)->get();
-        $prestasi = Achievement::latest()->take(3)->get();
+        $prestasi = Achievement::with('extracurriculars')->latest()->take(3)->get();
         $extracurriculars = Extracurricular::all();
         $galleries = Gallery::with('images')->latest()->take(6)->get();
         $settings = Cache::remember('settings.all', 3600, function () {
@@ -78,7 +78,7 @@ class PublicController extends Controller
 
     public function achievements()
     {
-        $achievements = Achievement::latest()->paginate(12);
+        $achievements = Achievement::with('extracurriculars')->latest()->paginate(12);
         $levels = Achievement::select('level')->distinct()->pluck('level');
         return view('content.public.achievements', compact('achievements', 'levels'));
     }
@@ -91,7 +91,7 @@ class PublicController extends Controller
 
     public function extracurricularDetail($slug)
     {
-        $extracurricular = Extracurricular::where('slug', $slug)->firstOrFail();
+        $extracurricular = Extracurricular::with('achievements')->where('slug', $slug)->firstOrFail();
         return view('content.public.extracurricular-detail', [
             'ekskul' => $extracurricular,
             'extracurricular' => $extracurricular

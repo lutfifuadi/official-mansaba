@@ -49,6 +49,7 @@
               <th>Nama Siswa</th>
               <th>Kategori</th>
               <th>Tingkat</th>
+              <th>Ekstrakurikuler</th>
               <th>Tanggal</th>
               <th>Aksi</th>
             </tr>
@@ -73,6 +74,17 @@
                     <span class="badge bg-label-secondary">{{ $item->level }}</span>
                   @endif
                 </td>
+                <td>
+                  @if($item->extracurriculars->isNotEmpty())
+                    <div class="d-flex flex-wrap gap-1">
+                      @foreach($item->extracurriculars as $ekskul)
+                        <span class="badge bg-label-info">{{ $ekskul->name }}</span>
+                      @endforeach
+                    </div>
+                  @else
+                    <span class="text-muted">-</span>
+                  @endif
+                </td>
                 <td>{{ $item->achievement_date ? $item->achievement_date->format('d M Y') : '-' }}</td>
                 <td>
                   <div class="d-flex align-items-center gap-1">
@@ -91,7 +103,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="7" class="text-center py-5">
+                <td colspan="8" class="text-center py-5">
                   <div class="avatar avatar-lg mb-3">
                     <span class="avatar-initial rounded bg-label-secondary">
                       <i class="icon-base ti tabler-trophy-off icon-lg"></i>

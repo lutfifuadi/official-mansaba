@@ -96,6 +96,33 @@
                   @endif
                 </div>
 
+                @if($extracurricular->achievements->isNotEmpty())
+                  <div class="mt-5 pt-4 border-top" style="border-color:rgba(27,94,66,0.1)!important;">
+                    <h5 class="fw-bold mb-4" style="color:var(--mansaba-dark);">
+                      <i class="ti tabler-trophy me-2" style="color:var(--mansaba-gold);"></i>
+                      Prestasi Terkait
+                    </h5>
+                    <div class="row g-3">
+                      @foreach($extracurricular->achievements as $prestasi)
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-start gap-3 p-3" style="background:rgba(201,151,43,0.05);border-radius:8px;border:1px solid rgba(201,151,43,0.15);">
+                            <div style="width:40px;height:40px;background:var(--mansaba-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                              <i class="ti tabler-trophy" style="color:#fff;font-size:1.1rem;"></i>
+                            </div>
+                            <div>
+                              <div class="fw-bold" style="color:var(--mansaba-dark);font-size:0.9rem;">{{ $prestasi->title }}</div>
+                              <small class="text-muted">{{ $prestasi->student_name }} · {{ $prestasi->level ?? '-' }}</small>
+                              @if($prestasi->achievement_date)
+                                <br><small style="color:var(--mansaba-green);">{{ $prestasi->achievement_date->format('d M Y') }}</small>
+                              @endif
+                            </div>
+                          </div>
+                        </div>
+                      @endforeach
+                    </div>
+                  </div>
+                @endif
+
                 <div class="mt-5 pt-4 border-top" style="border-color:rgba(27,94,66,0.1)!important;">
                   <a href="{{ url('public/extracurriculars') }}" class="btn px-4 py-2" style="background:var(--mansaba-green);color:#fff;border-radius:5px;font-weight:600;">
                     <i class="ti tabler-arrow-left me-2"></i>Kembali

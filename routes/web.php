@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\AchievementController as AdminAchievementController;
 use App\Http\Controllers\Admin\ExtracurricularController as AdminExtracurricularController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ThemeController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -48,6 +49,9 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->name('admin.')->gr
 
     Route::get('/settings', [SettingController::class, 'index'])->middleware('role:super_admin,admin')->name('settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->middleware('role:super_admin,admin')->name('settings.update');
+
+    Route::get('/theme', [ThemeController::class, 'index'])->middleware('role:super_admin,admin')->name('theme.index');
+    Route::put('/theme', [ThemeController::class, 'update'])->middleware('role:super_admin,admin')->name('theme.update');
 
     Route::resource('services', ServiceController::class)->middleware('role:super_admin,admin,operator');
 

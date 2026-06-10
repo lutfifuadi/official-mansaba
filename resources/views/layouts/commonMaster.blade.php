@@ -25,7 +25,44 @@
   // Get semiDark value from configData - only applies to admin layouts
   $semiDarkEnabled = $isAdminLayout && filter_var($configData['semiDark'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-  // Generate primary color CSS if color is set
+  // ─────────────────────────────────────────────────────────────
+  // OVERRIDE THEME SETTINGS FROM DATABASE (prioritas tertinggi)
+  // Database settings (diset via halaman /admin/theme) akan
+  // meng-override cookie dan config default.
+  // ─────────────────────────────────────────────────────────────
+  if ($isAdminLayout) {
+      // Primary Color
+      if (!empty($globalSettings['theme_primary_color'] ?? '')) {
+          $configData['color'] = $globalSettings['theme_primary_color'];
+      }
+
+      // Theme Mode (light/dark/system)
+      if (!empty($globalSettings['theme_mode'] ?? '')) {
+          $dbTheme = $globalSettings['theme_mode'];
+          $configData['themeOpt'] = $dbTheme;
+          // Untuk data-bs-theme, 'system' perlu di-resolve ke light/dark
+          $configData['theme'] = $dbTheme === 'system'
+              ? (isset($_COOKIE['admin-colorPref']) && $_COOKIE['admin-colorPref'] === 'dark' ? 'dark' : 'light')
+              : $dbTheme;
+      }
+
+      // Skin
+      if (!empty($globalSettings['theme_skin'] ?? '')) {
+          $configData['skinName'] = $globalSettings['theme_skin'];
+      }
+
+      // Semi Dark
+      if (isset($globalSettings['theme_semi_dark'])) {
+          $semiDarkDb = filter_var($globalSettings['theme_semi_dark'], FILTER_VALIDATE_BOOLEAN);
+          $configData['semiDark'] = $semiDarkDb;
+          $semiDarkEnabled = $isAdminLayout && $semiDarkDb;
+          $configData['menuAttributes'] = Helpers::getMenuAttributes($semiDarkEnabled);
+      }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // Generate primary color CSS
+  // ─────────────────────────────────────────────────────────────
   $primaryColorCSS = '';
   if (isset($configData['color']) && $configData['color']) {
       $primaryColorCSS = Helpers::generatePrimaryColorCSS($configData['color']);
@@ -139,7 +176,8 @@
       $primaryColorCSS &&
           (config('custom.custom.primaryColor') ||
               isset($_COOKIE['admin-primaryColor']) ||
-              isset($_COOKIE['front-primaryColor'])))
+              isset($_COOKIE['front-primaryColor']) ||
+              !empty($globalSettings['theme_primary_color'] ?? '')))
     <!-- Primary Color Style -->
     <style id="primary-color-style">
       {!! $primaryColorCSS !!}

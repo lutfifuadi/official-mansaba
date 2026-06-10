@@ -81,6 +81,7 @@
               <th>Prestasi</th>
               <th>Peserta</th>
               <th>Kategori</th>
+              <th>Ekstrakurikuler</th>
               <th>Tingkat</th>
               <th>Tahun</th>
             </tr>
@@ -100,12 +101,21 @@
                 </td>
                 <td style="font-size:0.88rem;">{{ $item->participant ?? $item->student_name ?? '-' }}</td>
                 <td><span class="badge-mansaba-green badge px-2 py-1">{{ $item->category ?? '-' }}</span></td>
+                <td>
+                  @if($item->extracurriculars->isNotEmpty())
+                    @foreach($item->extracurriculars as $ekskul)
+                      <span class="badge bg-label-info" style="font-size:0.75rem;">{{ $ekskul->name }}</span>
+                    @endforeach
+                  @else
+                    <span class="text-muted" style="font-size:0.85rem;">-</span>
+                  @endif
+                </td>
                 <td><span class="badge-mansaba-gold badge px-2 py-1">{{ $item->level ?? '-' }}</span></td>
                 <td style="font-size:0.88rem;white-space:nowrap;">{{ $item->date ?? $item->year ?? '-' }}</td>
               </tr>
             @empty
               <tr>
-                <td colspan="6" class="text-center py-5">
+                <td colspan="7" class="text-center py-5">
                   <i class="ti tabler-trophy" style="font-size:3rem;color:#ccc;"></i>
                   <p class="text-muted mt-3 mb-0">Belum ada data prestasi.</p>
                 </td>

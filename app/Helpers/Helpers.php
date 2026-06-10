@@ -283,12 +283,8 @@ class Helpers
   {
     if (!$color) return '';
 
-    // Check if the color actually came from a cookie or explicit configuration
-    // Don't generate CSS if there's no specific need for a custom color
-    $configColor = config('custom.custom.primaryColor', null);
-    $isFromCookie = isset($_COOKIE['admin-primaryColor']) || isset($_COOKIE['front-primaryColor']);
-
-    if (!$configColor && !$isFromCookie) return '';
+    // Validasi format hex color (harus diawali #)
+    if (!preg_match('/^#[a-fA-F0-9]{6}$/', $color)) return '';
 
     $r = hexdec(substr($color, 1, 2));
     $g = hexdec(substr($color, 3, 2));

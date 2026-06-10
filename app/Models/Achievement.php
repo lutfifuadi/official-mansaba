@@ -16,4 +16,9 @@ class Achievement extends Model
             'achievement_date' => 'date',
         ];
     }
+
+    public function extracurriculars()
+    {
+        return $this->belongsToMany(Extracurricular::class);
+    }
 }

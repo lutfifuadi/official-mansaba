@@ -83,6 +83,24 @@
         </div>
 
         <div class="mb-3">
+          <label for="extracurricular_ids" class="form-label">Ekstrakurikuler Terkait</label>
+          <select class="form-select @error('extracurricular_ids') is-invalid @enderror" id="extracurricular_ids" name="extracurricular_ids[]" multiple>
+            <option value="">-- Pilih Ekstrakurikuler --</option>
+            @foreach($extracurriculars ?? [] as $ekskul)
+              <option value="{{ $ekskul->id }}"
+                {{ isset($achievement) && $achievement->extracurriculars->contains($ekskul->id) ? 'selected' : '' }}
+                {{ in_array($ekskul->id, old('extracurricular_ids', [])) ? 'selected' : '' }}>
+                {{ $ekskul->name }}
+              </option>
+            @endforeach
+          </select>
+          <small class="text-muted">Pilih satu atau lebih ekstrakurikuler terkait (opsional). Tahan Ctrl/Cmd untuk memilih banyak.</small>
+          @error('extracurricular_ids')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
+
+        <div class="mb-3">
           <label for="achievement_date" class="form-label">Tanggal Prestasi</label>
           <input type="date" class="form-control @error('achievement_date') is-invalid @enderror" id="achievement_date" name="achievement_date" value="{{ old('achievement_date', isset($achievement) && $achievement->achievement_date ? $achievement->achievement_date->format('Y-m-d') : '') }}">
           @error('achievement_date')
