@@ -25,20 +25,29 @@ if [ ! -f artisan ]; then
     exit 1
 fi
 
-# Deteksi kepemilikan yang benar (prioritas: user PHP-FPM > www-data > owner artisan)
-SERVER_USER=$(ps aux | grep -E "php-fpm|php-fpm[0-9]" | grep -v grep | awk 'NR==1{print $1}')
-if [ -z "$SERVER_USER" ]; then
-    # Fallback ke www-data (paling umum)
-    SERVER_USER="www-data"
+# Deteksi kepemilikan yang benar
+# Metode 1 (PRIMARY): Dari direktori project via stat (Linux)
+ORIGINAL_OWNER=$(stat -c '%U:%G' "$PROJECT_DIR" 2>/dev/null)
+DETECT_METHOD="stat -c"
+if [ -z "$ORIGINAL_OWNER" ]; then
+    # Metode 1b (PRIMARY fallback): Dari direktori project via ls (macOS)
+    ORIGINAL_OWNER=$(ls -ld "$PROJECT_DIR" | awk '{print $3":"$4}' 2>/dev/null)
+    DETECT_METHOD="ls -ld"
 fi
-# Cek apakah user tersebut ada di sistem
-if ! id "$SERVER_USER" &>/dev/null; then
-    # Fallback ke owner artisan
-    SERVER_USER=$(ls -ld artisan | awk '{print $3}')
+if [ -z "$ORIGINAL_OWNER" ]; then
+    # Metode 2 (SECONDARY): Deteksi dari proses PHP-FPM
+    SERVER_USER=$(ps aux | grep -E "php-fpm|php-fpm[0-9]" | grep -v grep | awk 'NR==1{print $1}')
+    if [ -z "$SERVER_USER" ]; then
+        SERVER_USER="www-data"
+    fi
+    if ! id "$SERVER_USER" &>/dev/null; then
+        SERVER_USER=$(ls -ld artisan | awk '{print $3}')
+    fi
+    ORIGINAL_OWNER="${SERVER_USER}:${SERVER_USER}"
+    DETECT_METHOD="php-fpm"
 fi
-ORIGINAL_OWNER="${SERVER_USER}:${SERVER_USER}"
 info "Project dir: $PROJECT_DIR"
-info "Server user: $SERVER_USER"
+info "Deteksi owner via: $DETECT_METHOD"
 info "Target owner: $ORIGINAL_OWNER"
 
 # ── 1. Git Pull ──────────────────────────────────────────────
