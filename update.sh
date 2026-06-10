@@ -71,7 +71,8 @@ info "Livewire assets siap ✓"
 # ── 3. Frontend Assets ──────────────────────────────────────
 step "3. Frontend Assets (dari GitHub Release)"
 
-REPO="${GIT_REPO_URL##*github.com/}"
+REPO="${GIT_REPO_URL#*github.com/}"
+REPO="${REPO#*github.com:}"
 REPO="${REPO%%.git}"
 REPO="${REPO:-lutfifuadi/official-mansaba}"
 info "Download frontend assets dari release terbaru ($REPO)..."
