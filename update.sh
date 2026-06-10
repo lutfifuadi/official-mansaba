@@ -38,7 +38,11 @@ if [ -z "$ORIGINAL_OWNER" ]; then
     # Metode 2 (SECONDARY): Deteksi dari proses PHP-FPM
     SERVER_USER=$(ps aux | grep -E "php-fpm|php-fpm[0-9]" | grep -v grep | awk 'NR==1{print $1}')
     if [ -z "$SERVER_USER" ]; then
-        SERVER_USER="www-data"
+        # Fallback: gunakan user dari owner direktori project (bukan hardcode www-data)
+        SERVER_USER=$(ls -ld "$PROJECT_DIR" | awk '{print $3}')
+        if [ -z "$SERVER_USER" ]; then
+            SERVER_USER="www-data"
+        fi
     fi
     if ! id "$SERVER_USER" &>/dev/null; then
         SERVER_USER=$(ls -ld artisan | awk '{print $3}')
