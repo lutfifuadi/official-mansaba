@@ -25,10 +25,21 @@ if [ ! -f artisan ]; then
     exit 1
 fi
 
-# Simpan kepemilikan asli (user:group) sebelum perubahan
-ORIGINAL_OWNER=$(ls -ld artisan | awk '{print $3":"$4}')
+# Deteksi kepemilikan yang benar (prioritas: user PHP-FPM > www-data > owner artisan)
+SERVER_USER=$(ps aux | grep -E "php-fpm|php-fpm[0-9]" | grep -v grep | awk 'NR==1{print $1}')
+if [ -z "$SERVER_USER" ]; then
+    # Fallback ke www-data (paling umum)
+    SERVER_USER="www-data"
+fi
+# Cek apakah user tersebut ada di sistem
+if ! id "$SERVER_USER" &>/dev/null; then
+    # Fallback ke owner artisan
+    SERVER_USER=$(ls -ld artisan | awk '{print $3}')
+fi
+ORIGINAL_OWNER="${SERVER_USER}:${SERVER_USER}"
 info "Project dir: $PROJECT_DIR"
-info "Original owner: $ORIGINAL_OWNER"
+info "Server user: $SERVER_USER"
+info "Target owner: $ORIGINAL_OWNER"
 
 # ── 1. Git Pull ──────────────────────────────────────────────
 step "1. Tarik perubahan dari GitHub"
