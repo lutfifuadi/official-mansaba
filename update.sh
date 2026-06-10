@@ -99,6 +99,9 @@ info "Migrasi selesai ✓"
 
 # ── 5. Optimasi ─────────────────────────────────────────────
 step "5. Optimasi Cache"
+
+# Hapus cache lama dulu agar Laravel bisa boot tanpa error (misal: Pail tidak ada di production)
+rm -f bootstrap/cache/*.php 2>/dev/null || true
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
