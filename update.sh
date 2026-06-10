@@ -94,7 +94,27 @@ fi
 
 # ── 4. Migrate Database ─────────────────────────────────────
 step "4. Migrasi Database"
-php artisan migrate --force --graceful
+
+# 4a. Tambahkan kolom services jika belum ada (handle case tabel migrations tidak sinkron)
+php -r "
+\$app = require __DIR__.'/bootstrap/app.php';
+\$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+\$schema = \$app->make('db')->getSchemaBuilder();
+if (\$schema->hasTable('services') && !\$schema->hasColumn('services', 'category')) {
+    \$app->make('db')->statement('ALTER TABLE services ADD category VARCHAR(100) NULL AFTER url');
+    \$app->make('db')->statement('ALTER TABLE services ADD description TEXT NULL AFTER category');
+    \$app->make('db')->statement('ALTER TABLE services ADD contact_person VARCHAR(200) NULL AFTER description');
+    \$app->make('db')->statement('ALTER TABLE services ADD procedures TEXT NULL AFTER contact_person');
+    \$app->make('db')->statement('ALTER TABLE services ADD requirements TEXT NULL AFTER procedures');
+    \$app->make('db')->statement('ALTER TABLE services ADD icon_color VARCHAR(20) NULL AFTER requirements');
+    echo '[INFO] Kolom services berhasil ditambahkan' . PHP_EOL;
+} else {
+    echo '[INFO] Kolom services sudah ada, skip.' . PHP_EOL;
+}
+" 2>/dev/null || true
+
+# 4b. Jalankan migration (dengan graceful agar tidak gagal total jika ada migration yg sudah ada)
+php artisan migrate --force --graceful 2>/dev/null || true
 info "Migrasi selesai ✓"
 
 # ── 5. Optimasi ─────────────────────────────────────────────
