@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 
 class MenuServiceProvider extends ServiceProvider
 {
+    private $menuData = null;
+
     public function register(): void
     {
         //
@@ -14,10 +16,18 @@ class MenuServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $verticalMenuData = $this->loadMenu('verticalMenu');
-        $horizontalMenuData = $this->loadMenu('horizontalMenu');
-
-        View::share('menuData', [$verticalMenuData, $horizontalMenuData]);
+        View::composer([
+            'layouts.sections.menu.verticalMenu',
+            'layouts.sections.menu.horizontalMenu'
+        ], function ($view) {
+            if ($this->menuData === null) {
+                $this->menuData = [
+                    $this->loadMenu('verticalMenu'),
+                    $this->loadMenu('horizontalMenu')
+                ];
+            }
+            $view->with('menuData', $this->menuData);
+        });
     }
 
     private function loadMenu(string $type)

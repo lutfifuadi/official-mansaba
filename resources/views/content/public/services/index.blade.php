@@ -167,16 +167,7 @@ function serviceCatalog() {
   return {
     search: '',
     category: 'all',
-    services: @json($services->map(fn($s) => [
-      'id' => $s->id,
-      'name' => $s->name,
-      'slug' => $s->slug,
-      'icon' => $s->icon,
-      'url' => $s->url,
-      'category' => $s->category,
-      'description' => $s->description,
-      'icon_color' => $s->icon_color,
-    ])),
+    services: @json($servicesJson),
     categories: @json($categories),
     get filteredServices() {
       return this.services.filter(s => {

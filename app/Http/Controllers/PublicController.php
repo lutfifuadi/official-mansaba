@@ -113,7 +113,20 @@ class PublicController extends Controller
     {
         $services = Service::active()->ordered()->get();
         $categories = Service::active()->select('category')->distinct()->whereNotNull('category')->pluck('category');
-        return view('content.public.services.index', compact('services', 'categories'));
+
+        // Prepare services data for Alpine.js JSON (tanpa closure agar @json aman)
+        $servicesJson = $services->map(fn($s) => [
+            'id'          => $s->id,
+            'name'        => $s->name,
+            'slug'        => $s->slug,
+            'icon'        => $s->icon,
+            'url'         => $s->url,
+            'category'    => $s->category,
+            'description' => $s->description,
+            'icon_color'  => $s->icon_color,
+        ])->values();
+
+        return view('content.public.services.index', compact('services', 'categories', 'servicesJson'));
     }
 
     public function serviceDetail($slug)
