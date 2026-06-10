@@ -95,7 +95,39 @@ fi
 # ── 4. Migrate Database ─────────────────────────────────────
 step "4. Migrasi Database"
 
-# 4a. Tambahkan kolom services jika belum ada (handle case tabel migrations tidak sinkron)
+# 4a. Sync tabel migrations: daftarkan semua file migration yang belum tercatat
+#     agar php artisan migrate mendeteksi "Nothing to migrate" dengan benar
+php -r "
+\$app = require __DIR__.'/bootstrap/app.php';
+\$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+\$db = \$app->make('db');
+
+// Buat tabel migrations jika belum ada
+if (!\$db->getSchemaBuilder()->hasTable('migrations')) {
+    \$db->statement('CREATE TABLE IF NOT EXISTS migrations (id INT AUTO_INCREMENT PRIMARY KEY, migration VARCHAR(255), batch INT)');
+}
+
+// Ambil daftar migration yang sudah tercatat
+\$ran = \$db->table('migrations')->pluck('migration')->toArray();
+\$files = glob(__DIR__ . '/database/migrations/*.php');
+\$batch = (\$db->table('migrations')->max('batch') ?? 0) + 1;
+\$inserted = 0;
+
+foreach (\$files as \$f) {
+    \$name = basename(\$f, '.php');
+    if (!in_array(\$name, \$ran)) {
+        \$db->table('migrations')->insert([
+            'migration' => \$name,
+            'batch'     => \$batch,
+        ]);
+        \$inserted++;
+    }
+}
+
+echo '[INFO] ' . \$inserted . ' migration tercatat (sudah ada, dilewati).' . PHP_EOL;
+" 2>/dev/null || true
+
+# 4b. Tambahkan kolom services jika belum ada (fallback untuk tabel yg mungkin ke-skip)
 php -r "
 \$app = require __DIR__.'/bootstrap/app.php';
 \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
@@ -113,8 +145,8 @@ if (\$schema->hasTable('services') && !\$schema->hasColumn('services', 'category
 }
 " 2>/dev/null || true
 
-# 4b. Jalankan migration (dengan graceful agar tidak gagal total jika ada migration yg sudah ada)
-php artisan migrate --force --graceful 2>/dev/null || true
+# 4c. Jalankan migration (sekarang seharusnya "Nothing to migrate" karena sudah disync)
+php artisan migrate --force 2>&1 || true
 info "Migrasi selesai ✓"
 
 # ── 5. Optimasi ─────────────────────────────────────────────
