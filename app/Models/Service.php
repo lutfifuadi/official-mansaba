@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-    protected $fillable = ['name', 'slug', 'icon', 'url', 'sort_order', 'is_active'];
+    protected $fillable = [
+        'name', 'slug', 'icon', 'url', 'category', 'description',
+        'contact_person', 'procedures', 'requirements', 'icon_color',
+        'sort_order', 'is_active',
+    ];
 
     protected $casts = [
         'is_active' => 'boolean',
