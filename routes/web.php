@@ -49,7 +49,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->name('admin.')->gr
     Route::get('/settings', [SettingController::class, 'index'])->middleware('role:super_admin,admin')->name('settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->middleware('role:super_admin,admin')->name('settings.update');
 
-    Route::resource('services', ServiceController::class)->middleware('role:super_admin,admin');
+    Route::resource('services', ServiceController::class)->middleware('role:super_admin,admin,operator');
 
     Route::resource('users', UserController::class)->middleware('role:super_admin');
 
