@@ -34,6 +34,7 @@ export default defineConfig({
                 'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
                 'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
                 'resources/assets/vendor/libs/quill/editor.scss',
+                'resources/assets/vendor/libs/select2/select2.scss',
                 'resources/assets/vendor/libs/apex-charts/apex-charts.scss',
 
                 // ── JS: App ──
@@ -68,6 +69,7 @@ export default defineConfig({
                 'resources/assets/vendor/libs/@form-validation/auto-focus.js',
                 'resources/assets/vendor/libs/swiper/swiper.js',
                 'resources/assets/vendor/libs/quill/quill.js',
+                'resources/assets/vendor/libs/select2/select2.js',
                 'resources/assets/vendor/libs/apex-charts/apexcharts.js',
                 'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
             ],

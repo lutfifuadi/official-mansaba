@@ -3,11 +3,11 @@
 @section('title', isset($achievement) ? 'Edit Prestasi' : 'Tambah Prestasi')
 
 @section('vendor-style')
-@vite(['resources/assets/vendor/libs/quill/editor.scss'])
+@vite(['resources/assets/vendor/libs/quill/editor.scss', 'resources/assets/vendor/libs/select2/select2.scss'])
 @endsection
 
 @section('vendor-script')
-@vite(['resources/assets/vendor/libs/quill/quill.js'])
+@vite(['resources/assets/vendor/libs/quill/quill.js', 'resources/assets/vendor/libs/select2/select2.js'])
 @endsection
 
 @section('content')
@@ -84,8 +84,7 @@
 
         <div class="mb-3">
           <label for="extracurricular_ids" class="form-label">Ekstrakurikuler Terkait</label>
-          <select class="form-select @error('extracurricular_ids') is-invalid @enderror" id="extracurricular_ids" name="extracurricular_ids[]" multiple>
-            <option value="">-- Pilih Ekstrakurikuler --</option>
+          <select class="select2 form-select @error('extracurricular_ids') is-invalid @enderror" id="extracurricular_ids" name="extracurricular_ids[]" multiple data-placeholder="Pilih Ekstrakurikuler">
             @foreach($extracurriculars ?? [] as $ekskul)
               <option value="{{ $ekskul->id }}"
                 {{ isset($achievement) && $achievement->extracurriculars->contains($ekskul->id) ? 'selected' : '' }}
@@ -94,7 +93,7 @@
               </option>
             @endforeach
           </select>
-          <small class="text-muted">Pilih satu atau lebih ekstrakurikuler terkait (opsional). Tahan Ctrl/Cmd untuk memilih banyak.</small>
+          <small class="text-muted">Ketik untuk mencari, atau pilih satu/lebih ekstrakurikuler terkait (opsional).</small>
           @error('extracurricular_ids')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
@@ -150,6 +149,7 @@
 @section('page-script')
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // ── Quill Editor ──
     var quill = new Quill('#quill-editor', {
       theme: 'snow',
       placeholder: 'Tulis deskripsi di sini...',
@@ -166,6 +166,17 @@
     var form = document.querySelector('form');
     var input = document.getElementById('description');
     form.addEventListener('submit', function() { input.value = quill.root.innerHTML; });
+
+    // ── Select2: Ekstrakurikuler ──
+    if (typeof jQuery !== 'undefined' && jQuery.fn.select2) {
+      var $ekskulSelect = jQuery('#extracurricular_ids');
+      if ($ekskulSelect.length) {
+        $ekskulSelect.wrap('<div class="position-relative"></div>').select2({
+          placeholder: $ekskulSelect.data('placeholder') || 'Pilih Ekstrakurikuler',
+          dropdownParent: $ekskulSelect.parent()
+        });
+      }
+    }
   });
 </script>
 @endsection
