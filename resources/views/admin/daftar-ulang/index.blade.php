@@ -256,6 +256,7 @@
 </style>
 @endsection
 
+@section('page-script')
 <script>
   window.periodeConfig = {
     XI: {
@@ -269,7 +270,6 @@
   };
 </script>
 
-@section('page-script')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   // 1. State

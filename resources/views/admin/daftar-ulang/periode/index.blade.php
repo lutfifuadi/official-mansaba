@@ -114,10 +114,14 @@
                 <td>{{ $periode->tanggal_buka->format('d M Y') }}</td>
                 <td>{{ $periode->tanggal_tutup->format('d M Y') }}</td>
                 <td>
-                  @if($periode->is_active && today()->between($periode->tanggal_buka, $periode->tanggal_tutup))
-                    <span class="badge bg-success">Aktif</span>
+                  @if(!$periode->is_active)
+                    <span class="badge bg-secondary">Nonaktif</span>
+                  @elseif(today()->lt($periode->tanggal_buka))
+                    <span class="badge bg-warning">Aktif (Belum Buka)</span>
+                  @elseif(today()->gt($periode->tanggal_tutup))
+                    <span class="badge bg-danger">Aktif (Sudah Tutup)</span>
                   @else
-                    <span class="badge bg-secondary">Tidak Aktif</span>
+                    <span class="badge bg-success">Aktif (Berjalan)</span>
                   @endif
                 </td>
                 <td>
@@ -148,6 +152,8 @@
     </div>
   </div>
 </div>
+@endsection
+
 @section('page-script')
 <script>
 document.addEventListener('DOMContentLoaded', function() {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DaftarUlangPeriode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DaftarUlangPeriodeController extends Controller
 {
@@ -42,55 +43,77 @@ class DaftarUlangPeriodeController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
 
-        // Jika ID disediakan, update record yang existing berdasarkan ID.
-        // Jika tidak, gunakan updateOrCreate berdasarkan tahun_ajaran + kelas_target
-        // untuk mencegah duplikasi (unique constraint di DB).
-        if (!empty($validated['id'])) {
-            // Update existing record by ID
-            $periode = DaftarUlangPeriode::findOrFail($validated['id']);
-            
-            // Cek apakah kombinasi tahun_ajaran + kelas_target sudah ada di record LAIN
-            $exists = DaftarUlangPeriode::where('tahun_ajaran', $validated['tahun_ajaran'])
-                ->where('kelas_target', $validated['kelas_target'])
-                ->where('id', '!=', $periode->id)
-                ->exists();
-            
-            if ($exists) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['tahun_ajaran' => 'Kombinasi tahun ajaran dan kelas target sudah ada pada periode lain.']);
-            }
+        try {
+            // Jika ID disediakan, update record yang existing berdasarkan ID.
+            // Jika tidak, gunakan updateOrCreate berdasarkan tahun_ajaran + kelas_target
+            // untuk mencegah duplikasi (unique constraint di DB).
+            DB::transaction(function () use ($validated, $request) {
+                if (!empty($validated['id'])) {
+                    // Update existing record by ID
+                    $periode = DaftarUlangPeriode::findOrFail($validated['id']);
+                    
+                    // Cek apakah kombinasi tahun_ajaran + kelas_target sudah ada di record LAIN
+                    $exists = DaftarUlangPeriode::where('tahun_ajaran', $validated['tahun_ajaran'])
+                        ->where('kelas_target', $validated['kelas_target'])
+                        ->where('id', '!=', $periode->id)
+                        ->exists();
+                    
+                    if ($exists) {
+                        throw new \Exception('Kombinasi tahun ajaran dan kelas target sudah ada pada periode lain.');
+                    }
 
-            $periode->update([
-                'tahun_ajaran' => $validated['tahun_ajaran'],
-                'kelas_target' => $validated['kelas_target'],
-                'tanggal_buka' => $validated['tanggal_buka'],
-                'tanggal_tutup' => $validated['tanggal_tutup'],
-                'is_active' => $request->has('is_active') ? $request->boolean('is_active') : true,
-            ]);
-        } else {
-            // Cek apakah kombinasi tahun_ajaran + kelas_target sudah ada
-            $exists = DaftarUlangPeriode::where('tahun_ajaran', $validated['tahun_ajaran'])
-                ->where('kelas_target', $validated['kelas_target'])
-                ->exists();
-            
-            if ($exists) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['tahun_ajaran' => 'Kombinasi tahun ajaran dan kelas target sudah ada. Gunakan form edit untuk mengubahnya.']);
-            }
+                    $isActive = $request->boolean('is_active');
 
-            // Create new record
-            $periode = DaftarUlangPeriode::create([
-                'tahun_ajaran' => $validated['tahun_ajaran'],
-                'kelas_target' => $validated['kelas_target'],
-                'tanggal_buka' => $validated['tanggal_buka'],
-                'tanggal_tutup' => $validated['tanggal_tutup'],
-                'is_active' => $request->has('is_active') ? $request->boolean('is_active') : true,
-                'created_by' => Auth::id(),
-            ]);
+                    $periode->update([
+                        'tahun_ajaran' => $validated['tahun_ajaran'],
+                        'kelas_target' => $validated['kelas_target'],
+                        'tanggal_buka' => $validated['tanggal_buka'],
+                        'tanggal_tutup' => $validated['tanggal_tutup'],
+                        'is_active' => $isActive,
+                    ]);
+
+                    // Jika status is_active bernilai true, matikan periode lain dengan kelas_target yang sama
+                    if ($isActive) {
+                        DaftarUlangPeriode::where('kelas_target', $validated['kelas_target'])
+                            ->where('id', '!=', $periode->id)
+                            ->update(['is_active' => false]);
+                    }
+                } else {
+                    // Cek apakah kombinasi tahun_ajaran + kelas_target sudah ada
+                    $exists = DaftarUlangPeriode::where('tahun_ajaran', $validated['tahun_ajaran'])
+                        ->where('kelas_target', $validated['kelas_target'])
+                        ->exists();
+                    
+                    if ($exists) {
+                        throw new \Exception('Kombinasi tahun ajaran dan kelas target sudah ada. Gunakan form edit untuk mengubahnya.');
+                    }
+
+                    $isActive = $request->boolean('is_active');
+
+                    // Create new record
+                    $periode = DaftarUlangPeriode::create([
+                        'tahun_ajaran' => $validated['tahun_ajaran'],
+                        'kelas_target' => $validated['kelas_target'],
+                        'tanggal_buka' => $validated['tanggal_buka'],
+                        'tanggal_tutup' => $validated['tanggal_tutup'],
+                        'is_active' => $isActive,
+                        'created_by' => Auth::id(),
+                    ]);
+
+                    // Jika status is_active bernilai true, matikan periode lain dengan kelas_target yang sama
+                    if ($isActive) {
+                        DaftarUlangPeriode::where('kelas_target', $validated['kelas_target'])
+                            ->where('id', '!=', $periode->id)
+                            ->update(['is_active' => false]);
+                    }
+                }
+            });
+
+            return redirect()->back()->with('success', 'Periode daftar ulang berhasil disimpan.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['tahun_ajaran' => $e->getMessage()]);
         }
-
-        return redirect()->back()->with('success', 'Periode daftar ulang berhasil disimpan.');
     }
 }

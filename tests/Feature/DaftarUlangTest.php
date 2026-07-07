@@ -48,6 +48,44 @@ class DaftarUlangTest extends TestCase
         ]);
     }
 
+    public function test_activating_period_deactivates_other_periods_of_same_class_target(): void
+    {
+        // 1. Buat satu periode kelas 'XI' yang aktif
+        $firstPeriod = DaftarUlangPeriode::create([
+            'tahun_ajaran' => '2025/2026',
+            'kelas_target' => 'XI',
+            'tanggal_buka' => '2025-06-01',
+            'tanggal_tutup' => '2025-08-31',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        // 2. Jalankan request store untuk membuat periode kelas 'XI' baru yang aktif
+        $response = $this->actingAs($this->superAdmin)
+            ->post(route('admin.daftar-ulang-periode.store'), [
+                'tahun_ajaran' => '2026/2027',
+                'kelas_target' => 'XI',
+                'tanggal_buka' => '2026-06-01',
+                'tanggal_tutup' => '2026-08-31',
+                'is_active' => true,
+            ]);
+
+        $response->assertRedirect();
+
+        // 3. Pastikan di database, periode kelas 'XI' yang pertama otomatis berubah menjadi is_active = false
+        $this->assertDatabaseHas('daftar_ulang_periode', [
+            'id' => $firstPeriod->id,
+            'is_active' => false,
+        ]);
+
+        // Dan periode baru aktif
+        $this->assertDatabaseHas('daftar_ulang_periode', [
+            'tahun_ajaran' => '2026/2027',
+            'kelas_target' => 'XI',
+            'is_active' => true,
+        ]);
+    }
+
     public function test_non_super_admin_cannot_manage_periods(): void
     {
         $response = $this->actingAs($this->admin)
