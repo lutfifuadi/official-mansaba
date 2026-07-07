@@ -101,6 +101,28 @@
       "name": "Profil Saya",
       "icon": "menu-icon icon-base ti tabler-user",
       "slug": "admin.profile"
+    },
+    {
+      "name": "Daftar Ulang",
+      "icon": "menu-icon icon-base ti tabler-user-check",
+      "slug": "daftar-ulang",
+      "submenu": [
+        {
+          "url": "/admin/daftar-ulang/dashboard",
+          "name": "Dashboard",
+          "slug": "daftar-ulang.dashboard"
+        },
+        {
+          "url": "/admin/daftar-ulang",
+          "name": "Verifikasi Checklist",
+          "slug": "daftar-ulang.index"
+        },
+        {
+          "url": "/admin/daftar-ulang-siswa",
+          "name": "Data Siswa",
+          "slug": "daftar-ulang-siswa.index"
+        }
+      ]
     }
   ]
 }

@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             ServiceSeeder::class,
             DummyDataSeeder::class,
+            DaftarUlangSeeder::class,
         ]);
 
         $users = [

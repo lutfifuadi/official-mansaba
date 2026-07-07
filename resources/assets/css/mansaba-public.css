@@ -28,6 +28,17 @@ body .layout-front {
   color: var(--mansaba-text);
 }
 
+.layout-front h1,
+.layout-front h2,
+.layout-front h3,
+.layout-front h4,
+.layout-front h5,
+.layout-front h6,
+.layout-front .font-heading {
+  font-family: 'Product Sans', sans-serif;
+  font-weight: 700;
+}
+
 /* ══════════════════════════════════════
    ISLAMIC GEOMETRIC PATTERN (SVG BG)
 ══════════════════════════════════════ */

@@ -32,6 +32,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.agents
 
 !/public/assets
 !/public/assets/*

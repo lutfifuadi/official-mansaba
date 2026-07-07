@@ -15,6 +15,9 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\VisitStatController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\language\LanguageController;
+use App\Http\Controllers\Admin\DaftarUlangController;
+use App\Http\Controllers\Admin\DaftarUlangPeriodeController;
+use App\Http\Controllers\Admin\DaftarUlangSiswaController;
 
 // ===================== PUBLIC ROUTES =====================
 
@@ -68,6 +71,29 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->name('admin.')->gr
 
     Route::get('/menus', [App\Http\Controllers\Admin\MenuController::class, 'index'])->middleware('role:super_admin,admin')->name('menus.index');
     Route::post('/menus', [App\Http\Controllers\Admin\MenuController::class, 'store'])->middleware('role:super_admin,admin')->name('menus.store');
+
+    // ===================== DAFTAR ULANG SISWA LAMA =====================
+    // Halaman checklist dan dashboard monitoring: role admin, operator, super_admin
+    Route::middleware('role:super_admin,admin,operator')->group(function () {
+        Route::get('/daftar-ulang', [DaftarUlangController::class, 'index'])->name('daftar-ulang.index');
+        Route::get('/daftar-ulang/dashboard', [DaftarUlangController::class, 'dashboard'])->name('daftar-ulang.dashboard');
+        Route::post('/daftar-ulang/{siswa_id}/checklist', [DaftarUlangController::class, 'updateChecklist'])->name('daftar-ulang.update-checklist');
+        
+        // Import data siswa dari Excel (hanya super_admin dan admin, dicek di controller)
+        Route::post('/daftar-ulang/import', [DaftarUlangSiswaController::class, 'import'])->name('daftar-ulang.import');
+        
+        // Siswa CRUD (excluding destroy which is super_admin only)
+        Route::resource('daftar-ulang-siswa', DaftarUlangSiswaController::class)->except(['destroy']);
+    });
+
+    // Halaman konfigurasi periode dan penghapusan siswa: role super_admin saja
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/daftar-ulang/periode', [DaftarUlangPeriodeController::class, 'index'])->name('daftar-ulang-periode.index');
+        Route::post('/daftar-ulang/periode', [DaftarUlangPeriodeController::class, 'store'])->name('daftar-ulang-periode.store');
+        Route::post('/daftar-ulang/reset', [DaftarUlangController::class, 'reset'])->name('daftar-ulang.reset');
+        
+        Route::delete('/daftar-ulang-siswa/{id}', [DaftarUlangSiswaController::class, 'destroy'])->name('daftar-ulang-siswa.destroy');
+    });
 });
 
 // ===================== SITEMAP =====================
