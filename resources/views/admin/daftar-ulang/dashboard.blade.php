@@ -2,6 +2,18 @@
 
 @section('title', 'Dashboard Progress Daftar Ulang')
 
+@section('vendor-style')
+@vite([
+  'resources/assets/vendor/libs/apex-charts/apex-charts.scss'
+])
+@endsection
+
+@section('vendor-script')
+@vite([
+  'resources/assets/vendor/libs/apex-charts/apexcharts.js'
+])
+@endsection
+
 @section('content')
 <!-- Row 1: Global Stats Cards -->
 <div class="row g-5 mb-5">
@@ -150,6 +162,274 @@
           <div class="col-6">
             <p class="mb-1 text-muted">Belum Lengkap</p>
             <h4 class="mb-0 text-danger" id="dash-xii-belum">{{ $jumlahBelumLengkapXII }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 2.5: Nav Tabs Detail Segmentasi Per Tingkat -->
+<div class="nav-align-top mb-5">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-detail-semua" role="tab" aria-selected="true">
+        <i class="icon-base ti tabler-chart-pie me-1_5"></i> Semua Tingkat
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-detail-xi" role="tab" aria-selected="false">
+        <i class="icon-base ti tabler-school me-1_5"></i> Kelas XI
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-detail-xii" role="tab" aria-selected="false">
+        <i class="icon-base ti tabler-school me-1_5"></i> Kelas XII
+      </button>
+    </li>
+  </ul>
+  <div class="tab-content p-0 bg-transparent shadow-none border-0 mt-4">
+    <!-- TAB SEMUA TINGKAT -->
+    <div class="tab-pane fade show active" id="tab-detail-semua" role="tabpanel">
+      <div class="row g-5">
+        <!-- Kolom Kiri: Donut Chart Kelompok Kelengkapan -->
+        <div class="col-md-6 col-lg-7">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Segmentasi Kelompok Kelengkapan</h5>
+                <small class="text-muted">Porsi kelengkapan berkas siswa secara keseluruhan</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="kelompokDonutChart" style="min-height: 290px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Kolom Kanan: Daftar Kurang Berkas Terbanyak -->
+        <div class="col-md-6 col-lg-5">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Kurang Berkas Terbanyak</h5>
+                <small class="text-muted">Item berkas yang paling banyak kurang kumpul</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Progress Bars untuk masing-masing item berkas -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Ijazah</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-ijazah-count">{{ $ringkasanKurang['ijazah'] }} siswa</span>
+                    <span class="fw-semibold text-danger" id="kurang-ijazah-persen">{{ $totalSiswa > 0 ? round(($ringkasanKurang['ijazah'] / $totalSiswa) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-danger" id="kurang-ijazah-bar" role="progressbar" style="width: {{ $totalSiswa > 0 ? ($ringkasanKurang['ijazah'] / $totalSiswa) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswa > 0 ? ($ringkasanKurang['ijazah'] / $totalSiswa) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Akte Kelahiran</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-akte-count">{{ $ringkasanKurang['akte_kelahiran'] }} siswa</span>
+                    <span class="fw-semibold text-warning" id="kurang-akte-persen">{{ $totalSiswa > 0 ? round(($ringkasanKurang['akte_kelahiran'] / $totalSiswa) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-warning" id="kurang-akte-bar" role="progressbar" style="width: {{ $totalSiswa > 0 ? ($ringkasanKurang['akte_kelahiran'] / $totalSiswa) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswa > 0 ? ($ringkasanKurang['akte_kelahiran'] / $totalSiswa) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Raport</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-raport-count">{{ $ringkasanKurang['raport'] }} siswa</span>
+                    <span class="fw-semibold text-info" id="kurang-raport-persen">{{ $totalSiswa > 0 ? round(($ringkasanKurang['raport'] / $totalSiswa) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-info" id="kurang-raport-bar" role="progressbar" style="width: {{ $totalSiswa > 0 ? ($ringkasanKurang['raport'] / $totalSiswa) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswa > 0 ? ($ringkasanKurang['raport'] / $totalSiswa) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-0">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Kartu Keluarga</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-kk-count">{{ $ringkasanKurang['kartu_keluarga'] }} siswa</span>
+                    <span class="fw-semibold text-primary" id="kurang-kk-persen">{{ $totalSiswa > 0 ? round(($ringkasanKurang['kartu_keluarga'] / $totalSiswa) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-primary" id="kurang-kk-bar" role="progressbar" style="width: {{ $totalSiswa > 0 ? ($ringkasanKurang['kartu_keluarga'] / $totalSiswa) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswa > 0 ? ($ringkasanKurang['kartu_keluarga'] / $totalSiswa) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB KELAS XI -->
+    <div class="tab-pane fade" id="tab-detail-xi" role="tabpanel">
+      <div class="row g-5">
+        <!-- Kolom Kiri: Donut Chart Kelompok Kelengkapan XI -->
+        <div class="col-md-6 col-lg-7">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Segmentasi Kelompok Kelengkapan Kelas XI</h5>
+                <small class="text-muted">Porsi kelengkapan berkas siswa target Kelas XI</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="kelompokDonutChartXI" style="min-height: 290px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Kolom Kanan: Daftar Kurang Berkas Terbanyak XI -->
+        <div class="col-md-6 col-lg-5">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Kurang Berkas Terbanyak Kelas XI</h5>
+                <small class="text-muted">Item berkas yang paling banyak kurang kumpul Kelas XI</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Progress Bars XI -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Ijazah</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-ijazah-count-xi">{{ $ringkasanKurangXI['ijazah'] }} siswa</span>
+                    <span class="fw-semibold text-danger" id="kurang-ijazah-persen-xi">{{ $totalSiswaXI > 0 ? round(($ringkasanKurangXI['ijazah'] / $totalSiswaXI) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-danger" id="kurang-ijazah-bar-xi" role="progressbar" style="width: {{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['ijazah'] / $totalSiswaXI) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['ijazah'] / $totalSiswaXI) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Akte Kelahiran</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-akte-count-xi">{{ $ringkasanKurangXI['akte_kelahiran'] }} siswa</span>
+                    <span class="fw-semibold text-warning" id="kurang-akte-persen-xi">{{ $totalSiswaXI > 0 ? round(($ringkasanKurangXI['akte_kelahiran'] / $totalSiswaXI) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-warning" id="kurang-akte-bar-xi" role="progressbar" style="width: {{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['akte_kelahiran'] / $totalSiswaXI) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['akte_kelahiran'] / $totalSiswaXI) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Raport</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-raport-count-xi">{{ $ringkasanKurangXI['raport'] }} siswa</span>
+                    <span class="fw-semibold text-info" id="kurang-raport-persen-xi">{{ $totalSiswaXI > 0 ? round(($ringkasanKurangXI['raport'] / $totalSiswaXI) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-info" id="kurang-raport-bar-xi" role="progressbar" style="width: {{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['raport'] / $totalSiswaXI) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['raport'] / $totalSiswaXI) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-0">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Kartu Keluarga</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-kk-count-xi">{{ $ringkasanKurangXI['kartu_keluarga'] }} siswa</span>
+                    <span class="fw-semibold text-primary" id="kurang-kk-persen-xi">{{ $totalSiswaXI > 0 ? round(($ringkasanKurangXI['kartu_keluarga'] / $totalSiswaXI) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-primary" id="kurang-kk-bar-xi" role="progressbar" style="width: {{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['kartu_keluarga'] / $totalSiswaXI) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXI > 0 ? ($ringkasanKurangXI['kartu_keluarga'] / $totalSiswaXI) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB KELAS XII -->
+    <div class="tab-pane fade" id="tab-detail-xii" role="tabpanel">
+      <div class="row g-5">
+        <!-- Kolom Kiri: Donut Chart Kelompok Kelengkapan XII -->
+        <div class="col-md-6 col-lg-7">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Segmentasi Kelompok Kelengkapan Kelas XII</h5>
+                <small class="text-muted">Porsi kelengkapan berkas siswa target Kelas XII</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="kelompokDonutChartXII" style="min-height: 290px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Kolom Kanan: Daftar Kurang Berkas Terbanyak XII -->
+        <div class="col-md-6 col-lg-5">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Kurang Berkas Terbanyak Kelas XII</h5>
+                <small class="text-muted">Item berkas yang paling banyak kurang kumpul Kelas XII</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Progress Bars XII -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Ijazah</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-ijazah-count-xii">{{ $ringkasanKurangXII['ijazah'] }} siswa</span>
+                    <span class="fw-semibold text-danger" id="kurang-ijazah-persen-xii">{{ $totalSiswaXII > 0 ? round(($ringkasanKurangXII['ijazah'] / $totalSiswaXII) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-danger" id="kurang-ijazah-bar-xii" role="progressbar" style="width: {{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['ijazah'] / $totalSiswaXII) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['ijazah'] / $totalSiswaXII) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Akte Kelahiran</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-akte-count-xii">{{ $ringkasanKurangXII['akte_kelahiran'] }} siswa</span>
+                    <span class="fw-semibold text-warning" id="kurang-akte-persen-xii">{{ $totalSiswaXII > 0 ? round(($ringkasanKurangXII['akte_kelahiran'] / $totalSiswaXII) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-warning" id="kurang-akte-bar-xii" role="progressbar" style="width: {{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['akte_kelahiran'] / $totalSiswaXII) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['akte_kelahiran'] / $totalSiswaXII) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Raport</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-raport-count-xii">{{ $ringkasanKurangXII['raport'] }} siswa</span>
+                    <span class="fw-semibold text-info" id="kurang-raport-persen-xii">{{ $totalSiswaXII > 0 ? round(($ringkasanKurangXII['raport'] / $totalSiswaXII) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-info" id="kurang-raport-bar-xii" role="progressbar" style="width: {{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['raport'] / $totalSiswaXII) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['raport'] / $totalSiswaXII) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-0">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Kartu Keluarga</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-kk-count-xii">{{ $ringkasanKurangXII['kartu_keluarga'] }} siswa</span>
+                    <span class="fw-semibold text-primary" id="kurang-kk-persen-xii">{{ $totalSiswaXII > 0 ? round(($ringkasanKurangXII['kartu_keluarga'] / $totalSiswaXII) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-primary" id="kurang-kk-bar-xii" role="progressbar" style="width: {{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['kartu_keluarga'] / $totalSiswaXII) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaXII > 0 ? ($ringkasanKurangXII['kartu_keluarga'] / $totalSiswaXII) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -364,8 +644,200 @@ function updateDashboardStats(stats) {
         fBar.setAttribute('aria-valuenow', stats.persen || 0);
     }
 
+    // 7. Update Donut Charts (Global, XI, XII)
+    updateChartData(kelompokChart, stats.statistik_kelompok);
+    updateChartData(kelompokChartXI, stats.statistik_kelompok_xi);
+    updateChartData(kelompokChartXII, stats.statistik_kelompok_xii);
+
+    // 8. Update Ringkasan Berkas Kurang (Global, XI, XII)
+    if (stats.ringkasan_kurang) {
+        updateProgressBars('', stats.ringkasan_kurang, stats.total);
+    }
+    if (stats.ringkasan_kurang_xi) {
+        updateProgressBars('-xi', stats.ringkasan_kurang_xi, stats.total_xi);
+    }
+    if (stats.ringkasan_kurang_xii) {
+        updateProgressBars('-xii', stats.ringkasan_kurang_xii, stats.total_xii);
+    }
+
     console.log('[Dashboard] Statistik diperbarui:', stats);
 }
+
+// ============================================================
+// FUNGSI UTAMA: Helper Pembaruan UI Dinamis
+// ============================================================
+function updateChartData(chart, data) {
+    if (chart && data) {
+        chart.updateSeries([
+            data.lengkap || 0,
+            data.hampir_lengkap || 0,
+            data.setengah_lengkap || 0,
+            data.baru_memulai || 0,
+            data.belum_kumpul || 0
+        ]);
+    }
+}
+
+function updateProgressBars(suffix, ringkasan, total) {
+    var items = ['ijazah', 'akte_kelahiran', 'raport', 'kartu_keluarga'];
+    var idMap = {
+        'ijazah': 'ijazah',
+        'akte_kelahiran': 'akte',
+        'raport': 'raport',
+        'kartu_keluarga': 'kk'
+    };
+
+    items.forEach(function(item) {
+        var count = ringkasan[item] || 0;
+        var persen = total > 0 ? Math.round((count / total) * 100 * 10) / 10 : 0;
+        
+        var countId = 'kurang-' + idMap[item] + '-count' + suffix;
+        var persenId = 'kurang-' + idMap[item] + '-persen' + suffix;
+        var barId = 'kurang-' + idMap[item] + '-bar' + suffix;
+
+        var elCount = document.getElementById(countId);
+        if (elCount) elCount.textContent = count + ' siswa';
+
+        var elPersen = document.getElementById(persenId);
+        if (elPersen) elPersen.textContent = persen + '%';
+
+        var elBar = document.getElementById(barId);
+        if (elBar) {
+            elBar.style.width = persen + '%';
+            elBar.setAttribute('aria-valuenow', persen);
+        }
+    });
+}
+
+// ============================================================
+// INI: ApexCharts Donut Chart Kelompok Kelengkapan (Global, XI, XII)
+// ============================================================
+var kelompokChart;
+var kelompokChartXI;
+var kelompokChartXII;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Helper opsi chart ApexCharts
+    function getChartOptions(seriesData) {
+        return {
+            chart: {
+                height: 320,
+                type: 'donut',
+                parentHeightOffset: 0
+            },
+            labels: ['Lengkap', 'Hampir Lengkap', 'Setengah Lengkap', 'Baru Memulai', 'Belum Kumpul'],
+            series: seriesData,
+            colors: ['#28c76f', '#a855f7', '#ff9f43', '#00bad1', '#ea5455'], // Sukses, Ungu, Warning, Info, Danger
+            stroke: {
+                width: 5,
+                colors: [document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#2f3349' : '#fff']
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val, opt) {
+                    return parseInt(val) + '%';
+                }
+            },
+            legend: {
+                show: true,
+                position: 'bottom',
+                horizontalAlign: 'center',
+                labels: {
+                    colors: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#b6bee3' : '#5d596c'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            value: {
+                                show: true,
+                                fontSize: '26px',
+                                fontWeight: '600',
+                                color: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#b6bee3' : '#5d596c',
+                                formatter: function (val) {
+                                    return val + ' siswa';
+                                }
+                            },
+                            total: {
+                                show: true,
+                                label: 'Total Siswa',
+                                fontSize: '15px',
+                                color: '#a5a3ae',
+                                formatter: function (w) {
+                                    return w.globals.seriesTotals.reduce(function (a, b) {
+                                        return a + b;
+                                    }, 0) + ' siswa';
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            responsive: [
+                {
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            height: 350
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            ]
+        };
+    }
+
+    // Inisialisasi Chart Global
+    var chartElementGlobal = document.querySelector('#kelompokDonutChart');
+    if (chartElementGlobal) {
+        kelompokChart = new ApexCharts(chartElementGlobal, getChartOptions([
+            {{ $statistikKelompok['lengkap'] }},
+            {{ $statistikKelompok['hampir_lengkap'] }},
+            {{ $statistikKelompok['setengah_lengkap'] }},
+            {{ $statistikKelompok['baru_memulai'] }},
+            {{ $statistikKelompok['belum_kumpul'] }}
+        ]));
+        kelompokChart.render();
+    }
+
+    // Inisialisasi Chart Kelas XI
+    var chartElementXI = document.querySelector('#kelompokDonutChartXI');
+    if (chartElementXI) {
+        kelompokChartXI = new ApexCharts(chartElementXI, getChartOptions([
+            {{ $statistikKelompokXI['lengkap'] }},
+            {{ $statistikKelompokXI['hampir_lengkap'] }},
+            {{ $statistikKelompokXI['setengah_lengkap'] }},
+            {{ $statistikKelompokXI['baru_memulai'] }},
+            {{ $statistikKelompokXI['belum_kumpul'] }}
+        ]));
+        kelompokChartXI.render();
+    }
+
+    // Inisialisasi Chart Kelas XII
+    var chartElementXII = document.querySelector('#kelompokDonutChartXII');
+    if (chartElementXII) {
+        kelompokChartXII = new ApexCharts(chartElementXII, getChartOptions([
+            {{ $statistikKelompokXII['lengkap'] }},
+            {{ $statistikKelompokXII['hampir_lengkap'] }},
+            {{ $statistikKelompokXII['setengah_lengkap'] }},
+            {{ $statistikKelompokXII['baru_memulai'] }},
+            {{ $statistikKelompokXII['belum_kumpul'] }}
+        ]));
+        kelompokChartXII.render();
+    }
+
+    // Trigger resize event saat berpindah tab untuk memicu reflow render ApexCharts yang mulus
+    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function(tabEl) {
+        tabEl.addEventListener('shown.bs.tab', function () {
+            window.dispatchEvent(new Event('resize'));
+        });
+    });
+});
 
 // ============================================================
 // LAPIS 2: Fallback AJAX — fetch stats dari API setiap 30 detik

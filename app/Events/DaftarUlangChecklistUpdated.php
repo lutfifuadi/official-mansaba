@@ -61,6 +61,14 @@ class DaftarUlangChecklistUpdated implements ShouldBroadcast
             'status' => $this->checklist['status'],
             'verified_by_name' => $this->checklist['verified_by_name'] ?? '-',
             'verified_at' => $this->checklist['verified_at'] ?? null,
+            'skor_kelengkapan' => $this->checklist['skor_kelengkapan'] ?? 0,
+            'nama_kelompok' => $this->checklist['nama_kelompok'] ?? 'Belum Kumpul',
+            'kurang_item' => $this->checklist['kurang_item'] ?? ['Raport', 'Kartu Keluarga', 'Akte Kelahiran', 'Ijazah'],
+            'segmentasi' => $this->checklist['segmentasi'] ?? [
+                'skor_kelengkapan' => $this->checklist['skor_kelengkapan'] ?? 0,
+                'nama_kelompok' => $this->checklist['nama_kelompok'] ?? 'Belum Kumpul',
+                'kurang_item' => $this->checklist['kurang_item'] ?? ['Raport', 'Kartu Keluarga', 'Akte Kelahiran', 'Ijazah'],
+            ],
             'stats' => $this->stats,
         ];
     }

@@ -23,6 +23,10 @@ class DaftarUlangTest extends TestCase
     {
         parent::setUp();
 
+        \Illuminate\Support\Facades\Event::fake([
+            \App\Events\DaftarUlangChecklistUpdated::class,
+        ]);
+
         $this->superAdmin = User::factory()->create(['role' => 'super_admin']);
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->operator = User::factory()->create(['role' => 'operator']);

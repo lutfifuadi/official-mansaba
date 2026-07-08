@@ -23,6 +23,12 @@ class DaftarUlangChecklist extends Model
         'verified_at',
     ];
 
+    protected $appends = [
+        'skor_kelengkapan',
+        'nama_kelompok',
+        'kurang_item',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -45,6 +51,52 @@ class DaftarUlangChecklist extends Model
     public function siswa(): BelongsTo
     {
         return $this->belongsTo(DaftarUlangSiswa::class, 'siswa_id');
+    }
+
+    /**
+     * Get the checklist completion score (0-4).
+     */
+    public function getSkorKelengkapanAttribute(): int
+    {
+        $skor = 0;
+        if ($this->raport) $skor++;
+        if ($this->kartu_keluarga) $skor++;
+        if ($this->akte_kelahiran) $skor++;
+        if ($this->ijazah) $skor++;
+        return $skor;
+    }
+
+    /**
+     * Get the group name based on completeness.
+     */
+    public function getNamaKelompokAttribute(): string
+    {
+        $skor = $this->skor_kelengkapan;
+        switch ($skor) {
+            case 4:
+                return 'Lengkap';
+            case 3:
+                return 'Hampir Lengkap';
+            case 2:
+                return 'Setengah Lengkap';
+            case 1:
+                return 'Baru Memulai';
+            default:
+                return 'Belum Kumpul';
+        }
+    }
+
+    /**
+     * Get missing items.
+     */
+    public function getKurangItemAttribute(): array
+    {
+        $kurang = [];
+        if (!$this->raport) $kurang[] = 'Raport';
+        if (!$this->kartu_keluarga) $kurang[] = 'Kartu Keluarga';
+        if (!$this->akte_kelahiran) $kurang[] = 'Akte Kelahiran';
+        if (!$this->ijazah) $kurang[] = 'Ijazah';
+        return $kurang;
     }
 
     /**

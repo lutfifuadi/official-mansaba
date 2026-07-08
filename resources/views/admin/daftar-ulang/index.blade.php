@@ -7,6 +7,27 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- Header Page / Judul Halaman -->
+<div class="d-flex justify-content-between align-items-md-center flex-column flex-md-row mb-5 gap-4">
+  <div>
+    <h4 class="mb-1">Verifikasi Dokumen Daftar Ulang</h4>
+    <p class="text-muted mb-0" id="periode-aktif-text">
+      @if($kelas === 'XI' && $periodeXI)
+        Periode Aktif: {{ $periodeXI->tanggal_buka->format('d M Y') }} s/d {{ $periodeXI->tanggal_tutup->format('d M Y') }}
+      @elseif($kelas === 'XII' && $periodeXII)
+        Periode Aktif: {{ $periodeXII->tanggal_buka->format('d M Y') }} s/d {{ $periodeXII->tanggal_tutup->format('d M Y') }}
+      @else
+        Periode Aktif: Tidak Ada Periode Aktif
+      @endif
+    </p>
+  </div>
+  @if(auth()->user() && in_array(auth()->user()->role, ['super_admin', 'admin', 'operator']))
+    <button type="button" class="btn btn-label-danger" id="btn-reset-data">
+      <i class="icon-base ti tabler-trash me-1"></i> Reset Data
+    </button>
+  @endif
+</div>
+
 <div class="row g-5 mb-4">
   <!-- Statistik -->
   <div class="col-sm-6 col-xl-3">
@@ -105,37 +126,41 @@
   <div class="card-header border-bottom">
     <form action="{{ route('admin.daftar-ulang.index') }}" method="GET" id="filter-form">
       <input type="hidden" name="kelas" value="{{ $kelas }}">
-      <div class="d-flex justify-content-between align-items-md-center flex-column flex-md-row gap-4">
-        <div class="d-flex align-items-center gap-3">
-          <div>
-            <h5 class="card-title mb-1">Verifikasi Dokumen Daftar Ulang</h5>
-            <p class="text-muted mb-0" id="periode-aktif-text">
-              @if($kelas === 'XI' && $periodeXI)
-                Periode Aktif: {{ $periodeXI->tanggal_buka->format('d M Y') }} s/d {{ $periodeXI->tanggal_tutup->format('d M Y') }}
-              @elseif($kelas === 'XII' && $periodeXII)
-                Periode Aktif: {{ $periodeXII->tanggal_buka->format('d M Y') }} s/d {{ $periodeXII->tanggal_tutup->format('d M Y') }}
-              @else
-                Periode Aktif: Tidak Ada Periode Aktif
-              @endif
-            </p>
-          </div>
-          @if(auth()->user() && in_array(auth()->user()->role, ['super_admin', 'admin', 'operator']))
-            <button type="button" class="btn btn-sm btn-label-danger ms-3" id="btn-reset-data">
-              <i class="icon-base ti tabler-trash me-1"></i> Reset Data
-            </button>
-          @endif
-        </div>
-        <div class="d-flex flex-column flex-sm-row gap-3">
-          <div class="input-group input-group-merge" style="min-width: 250px;">
+      <div class="row g-3">
+        <div class="col-12 col-md-4 col-lg-3">
+          <div class="input-group input-group-merge">
             <span class="input-group-text"><i class="icon-base ti tabler-search"></i></span>
             <input type="text" name="search" class="form-control" placeholder="Cari Nama atau NIS..." id="siswa-search" value="{{ request('search') }}">
           </div>
-          <select name="status" class="form-select" id="status-filter" style="min-width: 150px;">
+        </div>
+        <div class="col-12 col-md-4 col-lg-2">
+          <select name="status" class="form-select" id="status-filter">
             <option value="">Semua Status</option>
             <option value="lengkap" {{ request('status') === 'lengkap' ? 'selected' : '' }}>Lengkap</option>
             <option value="belum_lengkap" {{ request('status') === 'belum_lengkap' ? 'selected' : '' }}>Belum Lengkap</option>
           </select>
-          <button type="submit" class="btn btn-primary">Cari</button>
+        </div>
+        <div class="col-12 col-md-4 col-lg-3">
+          <select name="kelompok" class="form-select" id="kelompok-filter">
+            <option value="">Semua Kelompok</option>
+            <option value="lengkap" {{ request('kelompok') === 'lengkap' ? 'selected' : '' }}>✅ Lengkap (4/4)</option>
+            <option value="hampir_lengkap" {{ request('kelompok') === 'hampir_lengkap' ? 'selected' : '' }}>🟢 Hampir Lengkap (3/4)</option>
+            <option value="setengah_lengkap" {{ request('kelompok') === 'setengah_lengkap' ? 'selected' : '' }}>🟡 Setengah Lengkap (2/4)</option>
+            <option value="baru_memulai" {{ request('kelompok') === 'baru_memulai' ? 'selected' : '' }}>🟠 Baru Memulai (1/4)</option>
+            <option value="belum_kumpul" {{ request('kelompok') === 'belum_kumpul' ? 'selected' : '' }}>🔴 Belum Kumpul (0/4)</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-9 col-lg-3">
+          <select name="kurang_berkas" class="form-select" id="kurang-berkas-filter">
+            <option value="">Semua Berkas Kurang</option>
+            <option value="raport" {{ request('kurang_berkas') === 'raport' ? 'selected' : '' }}>📚 Kurang Raport</option>
+            <option value="kartu_keluarga" {{ request('kurang_berkas') === 'kartu_keluarga' ? 'selected' : '' }}>👨‍👩‍👧‍👦 Kurang KK</option>
+            <option value="akte_kelahiran" {{ request('kurang_berkas') === 'akte_kelahiran' ? 'selected' : '' }}>👶 Kurang Akte</option>
+            <option value="ijazah" {{ request('kurang_berkas') === 'ijazah' ? 'selected' : '' }}>📄 Kurang Ijazah</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-3 col-lg-1">
+          <button type="submit" class="btn btn-primary w-100">Cari</button>
         </div>
       </div>
     </form>
@@ -179,6 +204,8 @@
                 <th class="text-center">Status</th>
                 <th>Verifikator</th>
                 <th>Tgl Verifikasi</th>
+                <th class="text-center">Kelompok</th>
+                <th>Kekurangan Berkas</th>
               </tr>
             </thead>
             <tbody id="table-body" data-periode-active="{{ ($kelas === 'XI' ? ($periodeXI && today()->between($periodeXI->tanggal_buka, $periodeXI->tanggal_tutup) && $periodeXI->is_active) : ($periodeXII && today()->between($periodeXII->tanggal_buka, $periodeXII->tanggal_tutup) && $periodeXII->is_active)) ? 'true' : 'false' }}">
@@ -186,12 +213,24 @@
                 @php
                   $checklist = $siswa->checklist;
                   $isLengkap = $checklist && $checklist->raport && $checklist->kartu_keluarga && $checklist->akte_kelahiran && $checklist->ijazah;
+
+                  // Data segmentasi kelompok
+                  $kelompok = $checklist ? $checklist->nama_kelompok : 'Belum Kumpul';
+                  $kurangItems = $checklist ? $checklist->kurang_item : ['Raport', 'Kartu Keluarga', 'Akte Kelahiran', 'Ijazah'];
+                  $kelompokBadgeMap = [
+                    'Lengkap' => 'bg-label-success',
+                    'Hampir Lengkap' => 'bg-label-primary',
+                    'Setengah Lengkap' => 'bg-label-warning',
+                    'Baru Memulai' => 'bg-label-info',
+                    'Belum Kumpul' => 'bg-label-danger',
+                  ];
+                  $kelompokBadge = $kelompokBadgeMap[$kelompok] ?? 'bg-label-secondary';
                 @endphp
                 <tr data-siswa-id="{{ $siswa->id }}" data-kelas="{{ $siswa->kelas_tujuan }}" data-nama="{{ $siswa->nama_lengkap }}" data-nis="{{ $siswa->nis }}" data-status="{{ $checklist->status ?? 'belum_lengkap' }}">
                   <td>{{ $siswas->firstItem() + $index }}</td>
                   <td>{{ $siswa->nis }}</td>
-                  <td>
-                    <span class="fw-semibold text-heading">{{ $siswa->nama_lengkap }}</span>
+                  <td class="text-nowrap">
+                    <span class="fw-semibold text-heading text-nowrap">{{ $siswa->nama_lengkap }}</span>
                     <div class="text-muted small">Kelas: {{ $siswa->kelas_tujuan }} (Asal: {{ $siswa->kelas_asal }})</div>
                   </td>
                   <td class="text-center">
@@ -213,12 +252,24 @@
                       <span class="badge bg-label-danger">Belum Lengkap</span>
                     @endif
                   </td>
-                  <td class="verifikator-cell">{{ $checklist->verifiedBy->name ?? '-' }}</td>
-                  <td class="tgl-verifikasi-cell">{{ $checklist->verified_at ? $checklist->verified_at->format('d M Y H:i') : '-' }}</td>
+                  <td class="verifikator-cell text-nowrap">{{ $checklist->verifiedBy->name ?? '-' }}</td>
+                  <td class="tgl-verifikasi-cell text-nowrap">{{ $checklist->verified_at ? $checklist->verified_at->format('d M Y H:i') : '-' }}</td>
+                  <td class="text-center kelompok-cell">
+                    <span class="badge {{ $kelompokBadge }}">{{ $kelompok }}</span>
+                  </td>
+                  <td class="kekurangan-cell">
+                    @if(empty($kurangItems))
+                      <span class="text-success fw-medium">✓ Lengkap</span>
+                    @else
+                      @foreach($kurangItems as $item)
+                        <span class="badge bg-label-danger me-1">{{ $item }}</span>
+                      @endforeach
+                    @endif
+                  </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="10" class="text-center py-4 text-muted">
+                  <td colspan="12" class="text-center py-4 text-muted">
                     Tidak ada data siswa ditemukan untuk kriteria ini.
                   </td>
                 </tr>
@@ -312,7 +363,9 @@
                         payload.akte_kelahiran,
                         payload.ijazah,
                         payload.verified_by_name || 'Admin',
-                        formattedDate
+                        formattedDate,
+                        payload.nama_kelompok,
+                        payload.kurang_item
                     );
                 }
 
@@ -334,6 +387,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentStatus = '{{ request('status') }}';
   let currentSearch = '{{ request('search') }}';
   let currentPage = {{ $siswas->currentPage() }};
+  let currentKelompok = '{{ request('kelompok') }}';
+  let currentKurangBerkas = '{{ request('kurang_berkas') }}';
   let abortController = null;
 
   const tableBody = document.getElementById('table-body');
@@ -377,6 +432,20 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchData();
   });
 
+  // Kelompok Filter change
+  document.getElementById('kelompok-filter').addEventListener('change', function() {
+    currentKelompok = this.value;
+    currentPage = 1;
+    fetchData();
+  });
+
+  // Kurang Berkas Filter change
+  document.getElementById('kurang-berkas-filter').addEventListener('change', function() {
+    currentKurangBerkas = this.value;
+    currentPage = 1;
+    fetchData();
+  });
+
   // Tab Kelas Click
   document.querySelectorAll('.tab-kelas').forEach(tab => {
     tab.addEventListener('click', function(e) {
@@ -408,6 +477,8 @@ document.addEventListener('DOMContentLoaded', function() {
     e.preventDefault();
     currentSearch = siswaSearchInput.value.trim();
     currentStatus = statusFilterSelect.value;
+    currentKelompok = document.getElementById('kelompok-filter').value;
+    currentKurangBerkas = document.getElementById('kurang-berkas-filter').value;
     currentPage = 1;
     fetchData();
   });
@@ -483,7 +554,9 @@ document.addEventListener('DOMContentLoaded', function() {
           responseData.akte_kelahiran, 
           responseData.ijazah, 
           responseData.verified_by_name || 'Admin', 
-          formattedDate
+          formattedDate,
+          responseData.nama_kelompok,
+          responseData.kurang_item
         );
         showToast('Checklist berhasil disimpan!', 'success');
         
@@ -534,6 +607,8 @@ document.addEventListener('DOMContentLoaded', function() {
     params.append('kelas', currentKelas);
     if (currentStatus) params.append('status', currentStatus);
     if (currentSearch) params.append('search', currentSearch);
+    if (currentKelompok) params.append('kelompok', currentKelompok);
+    if (currentKurangBerkas) params.append('kurang_berkas', currentKurangBerkas);
     params.append('page', currentPage);
 
     updateUrl();
@@ -565,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error(err);
         tableBody.innerHTML = `
           <tr>
-            <td colspan="10" class="text-center py-4 text-danger">
+            <td colspan="12" class="text-center py-4 text-danger">
               Gagal memuat data. Silakan coba lagi.
             </td>
           </tr>
@@ -593,6 +668,8 @@ document.addEventListener('DOMContentLoaded', function() {
           <td class="text-center"><div class="skeleton-line" style="width: 80px; height: 24px; border-radius: 4px; margin: 0 auto;"></div></td>
           <td><div class="skeleton-line" style="width: 80px;"></div></td>
           <td><div class="skeleton-line" style="width: 100px;"></div></td>
+          <td class="text-center"><div class="skeleton-line" style="width: 100px; height: 24px; border-radius: 4px; margin: 0 auto;"></div></td>
+          <td><div class="skeleton-line" style="width: 120px;"></div></td>
         </tr>
       `;
     }
@@ -632,7 +709,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!data || data.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="10" class="text-center py-4 text-muted">
+          <td colspan="12" class="text-center py-4 text-muted">
             Tidak ada data siswa ditemukan untuk kriteria ini.
           </td>
         </tr>
@@ -664,6 +741,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
 
+      // Data segmentasi kelompok
+      const namaKelompok = (ch && ch.nama_kelompok) ? ch.nama_kelompok : 'Belum Kumpul';
+      const kurangItems = (ch && ch.kurang_item) ? ch.kurang_item : ['Raport', 'Kartu Keluarga', 'Akte Kelahiran', 'Ijazah'];
+      const kelompokBadgeHtml = renderKelompokBadge(namaKelompok);
+      const kekuranganHtml = renderKekuranganBadge(kurangItems);
+
       const disabledAttr = isCurrentlyActive ? '' : 'disabled';
       const checklistStatusAttr = (ch && ch.status) ? ch.status : 'belum_lengkap';
 
@@ -671,8 +754,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <tr data-siswa-id="${siswa.id}" data-kelas="${siswa.kelas_tujuan}" data-nama="${siswa.nama_lengkap}" data-nis="${siswa.nis}" data-status="${checklistStatusAttr}">
           <td>${(from || 1) + index}</td>
           <td>${siswa.nis}</td>
-          <td>
-            <span class="fw-semibold text-heading">${siswa.nama_lengkap}</span>
+          <td class="text-nowrap">
+            <span class="fw-semibold text-heading text-nowrap">${siswa.nama_lengkap}</span>
             <div class="text-muted small">Kelas: ${siswa.kelas_tujuan} (Asal: ${siswa.kelas_asal})</div>
           </td>
           <td class="text-center">
@@ -690,8 +773,14 @@ document.addEventListener('DOMContentLoaded', function() {
           <td class="text-center status-badge-cell">
             ${statusBadge}
           </td>
-          <td class="verifikator-cell">${verifiedBy}</td>
-          <td class="tgl-verifikasi-cell">${verifiedAt}</td>
+          <td class="verifikator-cell text-nowrap">${verifiedBy}</td>
+          <td class="tgl-verifikasi-cell text-nowrap">${verifiedAt}</td>
+          <td class="text-center kelompok-cell">
+            ${kelompokBadgeHtml}
+          </td>
+          <td class="kekurangan-cell">
+            ${kekuranganHtml}
+          </td>
         </tr>
       `;
     });
@@ -818,11 +907,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Helper to render kelompok badge
+  function renderKelompokBadge(namaKelompok) {
+    const kelompokBadgeMap = {
+      'Lengkap': 'bg-label-success',
+      'Hampir Lengkap': 'bg-label-primary',
+      'Setengah Lengkap': 'bg-label-warning',
+      'Baru Memulai': 'bg-label-info',
+      'Belum Kumpul': 'bg-label-danger'
+    };
+    const badgeClass = kelompokBadgeMap[namaKelompok] || 'bg-label-secondary';
+    return `<span class="badge ${badgeClass}">${namaKelompok}</span>`;
+  }
+
+  // Helper to render kekurangan badge
+  function renderKekuranganBadge(kurangItems) {
+    if (!kurangItems || kurangItems.length === 0) {
+      return '<span class="text-success fw-medium">✓ Lengkap</span>';
+    }
+    let html = '';
+    kurangItems.forEach(item => {
+      html += `<span class="badge bg-label-danger me-1">${item}</span>`;
+    });
+    return html;
+  }
+
   // Helper to update visual row state on checklist update
-  function updateRowVisual(row, raport, kk, akte, ijazah, verifikator, tanggal) {
+  function updateRowVisual(row, raport, kk, akte, ijazah, verifikator, tanggal, namaKelompok = null, kurangItems = null) {
     const statusCell = row.querySelector('.status-badge-cell');
     const verifikatorCell = row.querySelector('.verifikator-cell');
     const tglCell = row.querySelector('.tgl-verifikasi-cell');
+    const kelompokCell = row.querySelector('.kelompok-cell');
+    const kekuranganCell = row.querySelector('.kekurangan-cell');
     
     const isLengkap = raport && kk && akte && ijazah;
     
@@ -835,6 +951,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     verifikatorCell.textContent = verifikator;
     tglCell.textContent = tanggal;
+
+    // Hitung kelompok dan kekurangan secara client-side jika tidak disediakan (e.g. loading state atau error rollback)
+    if (!namaKelompok || !kurangItems) {
+      const items = [];
+      let score = 0;
+      if (raport) score++; else items.push('Raport');
+      if (kk) score++; else items.push('Kartu Keluarga');
+      if (akte) score++; else items.push('Akte Kelahiran');
+      if (ijazah) score++; else items.push('Ijazah');
+
+      kurangItems = items;
+
+      const kelompokNames = {
+        4: 'Lengkap',
+        3: 'Hampir Lengkap',
+        2: 'Setengah Lengkap',
+        1: 'Baru Memulai',
+        0: 'Belum Kumpul'
+      };
+      namaKelompok = kelompokNames[score];
+    }
+
+    if (kelompokCell) {
+      kelompokCell.innerHTML = renderKelompokBadge(namaKelompok);
+    }
+    if (kekuranganCell) {
+      kekuranganCell.innerHTML = renderKekuranganBadge(kurangItems);
+    }
   }
 
   // Update browser URL query string
