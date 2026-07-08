@@ -80,7 +80,7 @@
                   <a href="{{ route('admin.daftar-ulang-siswa.edit', $siswa->id) }}" class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect" title="Edit">
                     <i class="icon-base ti tabler-pencil"></i>
                   </a>
-                  @if(auth()->user()->isSuperAdmin())
+                  @if(in_array(auth()->user()->role, ['super_admin', 'admin', 'operator']))
                     <button type="button" class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect text-danger btn-delete-siswa" data-siswa-id="{{ $siswa->id }}" data-nama="{{ $siswa->nama_lengkap }}" title="Hapus">
                       <i class="icon-base ti tabler-trash"></i>
                     </button>

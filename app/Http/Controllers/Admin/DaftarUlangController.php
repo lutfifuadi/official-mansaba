@@ -250,8 +250,8 @@ class DaftarUlangController extends Controller
      */
     public function reset(Request $request)
     {
-        // Proteksi role: Pastikan Auth::user()->isSuperAdmin() bernilai true
-        if (!Auth::user() || !Auth::user()->isSuperAdmin()) {
+        // Proteksi role: super_admin, admin, dan operator
+        if (!Auth::user() || !in_array(Auth::user()->role, ['super_admin', 'admin', 'operator'])) {
             abort(403, 'Akses ditolak.');
         }
 

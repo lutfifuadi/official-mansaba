@@ -86,9 +86,9 @@ class DaftarUlangTest extends TestCase
         ]);
     }
 
-    public function test_non_super_admin_cannot_manage_periods(): void
+    public function test_editor_cannot_manage_periods(): void
     {
-        $response = $this->actingAs($this->admin)
+        $response = $this->actingAs($this->editor)
             ->post(route('admin.daftar-ulang-periode.store'), [
                 'tahun_ajaran' => '2026/2027',
                 'kelas_target' => 'XI',
@@ -368,7 +368,7 @@ class DaftarUlangTest extends TestCase
         ]);
     }
 
-    public function test_non_super_admin_cannot_reset_all_daftar_ulang_data(): void
+    public function test_editor_cannot_reset_all_daftar_ulang_data(): void
     {
         $periode = DaftarUlangPeriode::create([
             'tahun_ajaran' => '2026/2027',
@@ -402,11 +402,11 @@ class DaftarUlangTest extends TestCase
         $this->assertDatabaseCount('daftar_ulang_siswa', 1);
         $this->assertDatabaseCount('daftar_ulang_checklist', 1);
 
-        // Try as admin
-        $responseAdmin = $this->actingAs($this->admin)
+        // Try as editor
+        $responseEditor = $this->actingAs($this->editor)
             ->post(route('admin.daftar-ulang.reset'));
 
-        $responseAdmin->assertStatus(403);
+        $responseEditor->assertStatus(403);
         $this->assertDatabaseCount('daftar_ulang_siswa', 1);
         $this->assertDatabaseHas('daftar_ulang_checklist', [
             'siswa_id' => $siswa->id,
@@ -414,18 +414,114 @@ class DaftarUlangTest extends TestCase
             'status' => 'lengkap',
             'verified_by' => $this->admin->id,
         ]);
+    }
 
-        // Try as operator
-        $responseOperator = $this->actingAs($this->operator)
-            ->post(route('admin.daftar-ulang.reset'));
+    public function test_admin_and_operator_can_manage_periods_reset_data_and_delete_siswa(): void
+    {
+        $periode = DaftarUlangPeriode::create([
+            'tahun_ajaran' => '2026/2027',
+            'kelas_target' => 'XI',
+            'tanggal_buka' => '2026-06-01',
+            'tanggal_tutup' => '2026-08-31',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
 
-        $responseOperator->assertStatus(403);
-        $this->assertDatabaseCount('daftar_ulang_siswa', 1);
-        $this->assertDatabaseHas('daftar_ulang_checklist', [
+        $siswa = DaftarUlangSiswa::create([
+            'periode_id' => $periode->id,
+            'nis' => '123456',
+            'nama_lengkap' => 'Muhammad Budi',
+            'kelas_asal' => 'X',
+            'kelas_tujuan' => 'XI',
+            'jurusan' => 'IPA',
+        ]);
+
+        DaftarUlangChecklist::create([
             'siswa_id' => $siswa->id,
             'raport' => true,
+            'kartu_keluarga' => true,
+            'akte_kelahiran' => true,
+            'ijazah' => true,
             'status' => 'lengkap',
             'verified_by' => $this->admin->id,
+            'verified_at' => now(),
         ]);
+
+        // 1. Admin can store a period
+        $responseAdminPeriod = $this->actingAs($this->admin)
+            ->post(route('admin.daftar-ulang-periode.store'), [
+                'tahun_ajaran' => '2027/2028',
+                'kelas_target' => 'XI',
+                'tanggal_buka' => '2027-06-01',
+                'tanggal_tutup' => '2027-08-31',
+                'is_active' => true,
+            ]);
+        $responseAdminPeriod->assertRedirect();
+        $this->assertDatabaseHas('daftar_ulang_periode', ['tahun_ajaran' => '2027/2028']);
+
+        // 2. Operator can store a period
+        $responseOperatorPeriod = $this->actingAs($this->operator)
+            ->post(route('admin.daftar-ulang-periode.store'), [
+                'tahun_ajaran' => '2028/2029',
+                'kelas_target' => 'XI',
+                'tanggal_buka' => '2028-06-01',
+                'tanggal_tutup' => '2028-08-31',
+                'is_active' => true,
+            ]);
+        $responseOperatorPeriod->assertRedirect();
+        $this->assertDatabaseHas('daftar_ulang_periode', ['tahun_ajaran' => '2028/2029']);
+
+        // 3. Admin can reset data
+        $responseAdminReset = $this->actingAs($this->admin)
+            ->post(route('admin.daftar-ulang.reset'));
+        $responseAdminReset->assertRedirect(route('admin.daftar-ulang.index'));
+        $this->assertDatabaseHas('daftar_ulang_checklist', [
+            'siswa_id' => $siswa->id,
+            'raport' => false,
+            'status' => 'belum_lengkap'
+        ]);
+
+        // 4. Operator can reset data
+        // Set checklist to true again first
+        DaftarUlangChecklist::where('siswa_id', $siswa->id)->update([
+            'raport' => true,
+            'status' => 'lengkap'
+        ]);
+        $responseOperatorReset = $this->actingAs($this->operator)
+            ->post(route('admin.daftar-ulang.reset'));
+        $responseOperatorReset->assertRedirect(route('admin.daftar-ulang.index'));
+        $this->assertDatabaseHas('daftar_ulang_checklist', [
+            'siswa_id' => $siswa->id,
+            'raport' => false,
+            'status' => 'belum_lengkap'
+        ]);
+
+        // 5. Admin can delete a student
+        $siswa2 = DaftarUlangSiswa::create([
+            'periode_id' => $periode->id,
+            'nis' => '11111',
+            'nama_lengkap' => 'Siswa Admin Delete',
+            'kelas_asal' => 'X',
+            'kelas_tujuan' => 'XI',
+            'jurusan' => 'IPA',
+        ]);
+        $responseAdminDelete = $this->actingAs($this->admin)
+            ->delete(route('admin.daftar-ulang-siswa.destroy', $siswa2->id));
+        $responseAdminDelete->assertRedirect(route('admin.daftar-ulang-siswa.index'));
+        $this->assertDatabaseMissing('daftar_ulang_siswa', ['id' => $siswa2->id]);
+
+        // 6. Operator can delete a student
+        $siswa3 = DaftarUlangSiswa::create([
+            'periode_id' => $periode->id,
+            'nis' => '22222',
+            'nama_lengkap' => 'Siswa Operator Delete',
+            'kelas_asal' => 'X',
+            'kelas_tujuan' => 'XI',
+            'jurusan' => 'IPA',
+        ]);
+        $responseOperatorDelete = $this->actingAs($this->operator)
+            ->delete(route('admin.daftar-ulang-siswa.destroy', $siswa3->id));
+        $responseOperatorDelete->assertRedirect(route('admin.daftar-ulang-siswa.index'));
+        $this->assertDatabaseMissing('daftar_ulang_siswa', ['id' => $siswa3->id]);
     }
 }

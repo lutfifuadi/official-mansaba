@@ -15,8 +15,8 @@ class DaftarUlangPeriodeController extends Controller
      */
     public function index()
     {
-        // Only accessible by super_admin (which is also guarded by middleware in routes, but good to have)
-        if (!Auth::user() || !Auth::user()->isSuperAdmin()) {
+        // Only accessible by super_admin, admin, and operator (guarded by middleware)
+        if (!Auth::user() || !in_array(Auth::user()->role, ['super_admin', 'admin', 'operator'])) {
             abort(403, 'Forbidden');
         }
 
@@ -30,7 +30,7 @@ class DaftarUlangPeriodeController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::user() || !Auth::user()->isSuperAdmin()) {
+        if (!Auth::user() || !in_array(Auth::user()->role, ['super_admin', 'admin', 'operator'])) {
             abort(403, 'Forbidden');
         }
 

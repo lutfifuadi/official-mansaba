@@ -119,7 +119,7 @@
               @endif
             </p>
           </div>
-          @if(auth()->user() && auth()->user()->isSuperAdmin())
+          @if(auth()->user() && in_array(auth()->user()->role, ['super_admin', 'admin', 'operator']))
             <button type="button" class="btn btn-sm btn-label-danger ms-3" id="btn-reset-data">
               <i class="icon-base ti tabler-trash me-1"></i> Reset Data
             </button>
@@ -141,7 +141,7 @@
     </form>
   </div>
 
-  @if(auth()->user() && auth()->user()->isSuperAdmin())
+  @if(auth()->user() && in_array(auth()->user()->role, ['super_admin', 'admin', 'operator']))
     <form id="reset-form" action="{{ route('admin.daftar-ulang.reset') }}" method="POST" class="d-none">
       @csrf
     </form>

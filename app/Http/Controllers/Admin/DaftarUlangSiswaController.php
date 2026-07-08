@@ -166,13 +166,13 @@ class DaftarUlangSiswaController extends Controller
 
     /**
      * Import data siswa dari file Excel.
-     * Hanya bisa diakses oleh super_admin dan admin.
+     * Hanya bisa diakses oleh super_admin, admin, dan operator.
      */
     public function import(Request $request)
     {
         // Validasi role
         $user = Auth::user();
-        if (!$user || !in_array($user->role, ['super_admin', 'admin'])) {
+        if (!$user || !in_array($user->role, ['super_admin', 'admin', 'operator'])) {
             return redirect()->back()
                 ->with('error', 'Anda tidak memiliki izin untuk mengimpor data.');
         }
@@ -228,8 +228,8 @@ class DaftarUlangSiswaController extends Controller
      */
     public function destroy($id)
     {
-        // Only accessible by super_admin
-        if (!Auth::user()->isSuperAdmin()) {
+        // Only accessible by super_admin, admin, and operator
+        if (!Auth::user() || !in_array(Auth::user()->role, ['super_admin', 'admin', 'operator'])) {
             abort(403, 'Forbidden');
         }
 

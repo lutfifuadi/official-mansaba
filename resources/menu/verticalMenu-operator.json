@@ -49,6 +49,11 @@
           "url": "/admin/daftar-ulang-siswa",
           "name": "Data Siswa",
           "slug": "daftar-ulang-siswa.index"
+        },
+        {
+          "url": "/admin/daftar-ulang/periode",
+          "name": "Periode Daftar Ulang",
+          "slug": "daftar-ulang-periode.index"
         }
       ]
     },
