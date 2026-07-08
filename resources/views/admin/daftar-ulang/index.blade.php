@@ -227,7 +227,7 @@
           </table>
         </div>
         
-        <div class="p-3 border-top" id="pagination-container">
+        <div class="p-3 border-top d-flex justify-content-end" id="pagination-container">
           {{ $siswas->links() }}
         </div>
       </div>
@@ -649,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    let linksHtml = '<nav><ul class="pagination mb-0">';
+    let linksHtml = '<nav><ul class="pagination justify-content-end mb-0">';
     
     // Previous Link
     if (paginator.prev_page_url) {

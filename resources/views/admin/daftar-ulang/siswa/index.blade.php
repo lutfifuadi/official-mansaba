@@ -100,7 +100,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="p-4 border-top">
+    <div class="p-4 border-top d-flex justify-content-end">
       {{ $siswas->links() }}
     </div>
   </div>
