@@ -270,7 +270,64 @@
   };
 </script>
 
+@vite('resources/js/daftar-ulang-echo.js')
+
 <script>
+// Inisialisasi Echo Real-Time Listener (polling sampai modul siap)
+(function initEcho() {
+    if (window.daftarUlangEcho) {
+        window.daftarUlangEcho.init({
+            onChecklistUpdated: function(payload) {
+                if (payload.siswa_id === null) {
+                    // Event reset global — refresh seluruh data tabel
+                    fetchData();
+                    showToast('Semua data checklist direset oleh admin.', 'info');
+                    return;
+                }
+
+                // Update baris checklist spesifik tanpa reload halaman
+                const row = document.querySelector('tr[data-siswa-id="' + payload.siswa_id + '"]');
+                if (row) {
+                    // Update checkboxes
+                    row.querySelector('[data-doc="raport"]').checked = payload.raport;
+                    row.querySelector('[data-doc="kk"]').checked = payload.kartu_keluarga;
+                    row.querySelector('[data-doc="akte"]').checked = payload.akte_kelahiran;
+                    row.querySelector('[data-doc="ijazah"]').checked = payload.ijazah;
+
+                    // Format tanggal verifikasi
+                    let formattedDate = '-';
+                    if (payload.verified_at) {
+                        const dateObj = new Date(payload.verified_at);
+                        formattedDate = dateObj.toLocaleDateString('id-ID', {
+                            day: 'numeric', month: 'short', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
+                        });
+                    }
+
+                    // Update status badge, verifikator, dan tanggal
+                    updateRowVisual(
+                        row,
+                        payload.raport,
+                        payload.kartu_keluarga,
+                        payload.akte_kelahiran,
+                        payload.ijazah,
+                        payload.verified_by_name || 'Admin',
+                        formattedDate
+                    );
+                }
+
+                showToast('Data siswa diperbarui oleh ' + (payload.verified_by_name || 'Admin'), 'success');
+            },
+
+            onStatsUpdated: function(stats) {
+                recalculateStats(stats);
+            }
+        });
+    } else {
+        setTimeout(initEcho, 500);
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
   // 1. State
   let currentKelas = '{{ $kelas }}';

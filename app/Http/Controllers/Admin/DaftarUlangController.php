@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DaftarUlangSiswa;
 use App\Models\DaftarUlangPeriode;
 use App\Models\DaftarUlangChecklist;
+use App\Events\DaftarUlangChecklistUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -150,6 +151,57 @@ class DaftarUlangController extends Controller
     }
 
     /**
+     * API Endpoint untuk mengambil statistik terkini daftar ulang (digunakan fallback AJAX dashboard).
+     */
+    public function stats(Request $request)
+    {
+        // Proteksi role
+        if (!Auth::user() || !in_array(Auth::user()->role, ['super_admin', 'admin', 'operator'])) {
+            return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+        }
+
+        // Global Stats
+        $totalSiswa = DaftarUlangSiswa::count();
+        $jumlahLengkap = DaftarUlangChecklist::where('status', 'lengkap')->count();
+        $jumlahBelumLengkap = $totalSiswa - $jumlahLengkap;
+        $progressPersen = $totalSiswa > 0 ? round(($jumlahLengkap / $totalSiswa) * 100, 1) : 0;
+
+        // Class XI Stats
+        $totalSiswaXI = DaftarUlangSiswa::where('kelas_tujuan', 'XI')->count();
+        $jumlahLengkapXI = DaftarUlangChecklist::whereHas('siswa', function ($q) {
+            $q->where('kelas_tujuan', 'XI');
+        })->where('status', 'lengkap')->count();
+        $jumlahBelumLengkapXI = $totalSiswaXI - $jumlahLengkapXI;
+        $progressXI = $totalSiswaXI > 0 ? round(($jumlahLengkapXI / $totalSiswaXI) * 100, 2) : 0;
+
+        // Class XII Stats
+        $totalSiswaXII = DaftarUlangSiswa::where('kelas_tujuan', 'XII')->count();
+        $jumlahLengkapXII = DaftarUlangChecklist::whereHas('siswa', function ($q) {
+            $q->where('kelas_tujuan', 'XII');
+        })->where('status', 'lengkap')->count();
+        $jumlahBelumLengkapXII = $totalSiswaXII - $jumlahLengkapXII;
+        $progressXII = $totalSiswaXII > 0 ? round(($jumlahLengkapXII / $totalSiswaXII) * 100, 2) : 0;
+
+        return response()->json([
+            'success' => true,
+            'stats' => [
+                'total'       => $totalSiswa,
+                'lengkap'     => $jumlahLengkap,
+                'belum'       => $jumlahBelumLengkap,
+                'persen'      => $progressPersen,
+                'total_xi'    => $totalSiswaXI,
+                'lengkap_xi'  => $jumlahLengkapXI,
+                'belum_xi'    => $jumlahBelumLengkapXI,
+                'persen_xi'   => $progressXI,
+                'total_xii'   => $totalSiswaXII,
+                'lengkap_xii' => $jumlahLengkapXII,
+                'belum_xii'   => $jumlahBelumLengkapXII,
+                'persen_xii'  => $progressXII,
+            ],
+        ]);
+    }
+
+    /**
      * API Endpoint untuk mengupdate checklist dokumen siswa via AJAX.
      */
     public function updateChecklist(Request $request, $siswa_id)
@@ -218,10 +270,63 @@ class DaftarUlangController extends Controller
 
         $checklist->save(); // This will trigger the 'saving' model event to calculate 'status' automatically
 
+        // 1. Global Stats
         $totalSiswa = DaftarUlangSiswa::count();
         $jumlahLengkap = DaftarUlangChecklist::where('status', 'lengkap')->count();
         $jumlahBelumLengkap = $totalSiswa - $jumlahLengkap;
         $progressPersen = $totalSiswa > 0 ? round(($jumlahLengkap / $totalSiswa) * 100, 1) : 0;
+
+        // 2. Class XI Stats
+        $totalSiswaXI = DaftarUlangSiswa::where('kelas_tujuan', 'XI')->count();
+        $jumlahLengkapXI = DaftarUlangChecklist::whereHas('siswa', function ($q) {
+            $q->where('kelas_tujuan', 'XI');
+        })->where('status', 'lengkap')->count();
+        $jumlahBelumLengkapXI = $totalSiswaXI - $jumlahLengkapXI;
+        $progressXI = $totalSiswaXI > 0 ? round(($jumlahLengkapXI / $totalSiswaXI) * 100, 2) : 0;
+
+        // 3. Class XII Stats
+        $totalSiswaXII = DaftarUlangSiswa::where('kelas_tujuan', 'XII')->count();
+        $jumlahLengkapXII = DaftarUlangChecklist::whereHas('siswa', function ($q) {
+            $q->where('kelas_tujuan', 'XII');
+        })->where('status', 'lengkap')->count();
+        $jumlahBelumLengkapXII = $totalSiswaXII - $jumlahLengkapXII;
+        $progressXII = $totalSiswaXII > 0 ? round(($jumlahLengkapXII / $totalSiswaXII) * 100, 2) : 0;
+
+        // Broadcast real-time event for checklist update
+        $statsPayload = [
+            'total' => $totalSiswa,
+            'lengkap' => $jumlahLengkap,
+            'belum' => $jumlahBelumLengkap,
+            'persen' => $progressPersen,
+            
+            // Class XI
+            'total_xi' => $totalSiswaXI,
+            'lengkap_xi' => $jumlahLengkapXI,
+            'belum_xi' => $jumlahBelumLengkapXI,
+            'persen_xi' => $progressXI,
+            
+            // Class XII
+            'total_xii' => $totalSiswaXII,
+            'lengkap_xii' => $jumlahLengkapXII,
+            'belum_xii' => $jumlahBelumLengkapXII,
+            'persen_xii' => $progressXII,
+        ];
+
+        $checklistPayload = [
+            'raport' => $checklist->raport,
+            'kartu_keluarga' => $checklist->kartu_keluarga,
+            'akte_kelahiran' => $checklist->akte_kelahiran,
+            'ijazah' => $checklist->ijazah,
+            'status' => $checklist->status,
+            'verified_by_name' => $user->name,
+            'verified_at' => $checklist->verified_at ? $checklist->verified_at->toIso8601String() : null,
+        ];
+
+        event(new DaftarUlangChecklistUpdated(
+            $siswa->id,
+            $checklistPayload,
+            $statsPayload
+        ));
 
         return response()->json([
             'success' => true,
@@ -265,6 +370,44 @@ class DaftarUlangController extends Controller
             'verified_by' => null,
             'verified_at' => null,
         ]);
+
+        // Broadcast reset event for real-time sync
+        $totalSiswa = \App\Models\DaftarUlangSiswa::count();
+        $totalSiswaXI = \App\Models\DaftarUlangSiswa::where('kelas_tujuan', 'XI')->count();
+        $totalSiswaXII = \App\Models\DaftarUlangSiswa::where('kelas_tujuan', 'XII')->count();
+
+        $statsPayload = [
+            'total' => $totalSiswa,
+            'lengkap' => 0,
+            'belum' => $totalSiswa,
+            'persen' => 0,
+            
+            // Class XI
+            'total_xi' => $totalSiswaXI,
+            'lengkap_xi' => 0,
+            'belum_xi' => $totalSiswaXI,
+            'persen_xi' => 0,
+            
+            // Class XII
+            'total_xii' => $totalSiswaXII,
+            'lengkap_xii' => 0,
+            'belum_xii' => $totalSiswaXII,
+            'persen_xii' => 0,
+        ];
+
+        event(new DaftarUlangChecklistUpdated(
+            null, // reset: tidak terkait siswa spesifik
+            [
+                'raport' => false,
+                'kartu_keluarga' => false,
+                'akte_kelahiran' => false,
+                'ijazah' => false,
+                'status' => 'belum_lengkap',
+                'verified_by_name' => null,
+                'verified_at' => null,
+            ],
+            $statsPayload
+        ));
 
         return redirect()->route('admin.daftar-ulang.index')->with('success', 'Semua log verifikasi dokumen berhasil direset ke awal.');
     }

@@ -77,6 +77,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->name('admin.')->gr
     Route::middleware('role:super_admin,admin,operator')->group(function () {
         Route::get('/daftar-ulang', [DaftarUlangController::class, 'index'])->name('daftar-ulang.index');
         Route::get('/daftar-ulang/dashboard', [DaftarUlangController::class, 'dashboard'])->name('daftar-ulang.dashboard');
+        Route::get('/daftar-ulang/stats', [DaftarUlangController::class, 'stats'])->name('daftar-ulang.stats');
         Route::post('/daftar-ulang/{siswa_id}/checklist', [DaftarUlangController::class, 'updateChecklist'])->name('daftar-ulang.update-checklist');
         
         // Import data siswa dari Excel

@@ -39,6 +39,7 @@ export default defineConfig({
 
                 // ── JS: App ──
                 'resources/js/app.js',
+                'resources/js/daftar-ulang-echo.js',
 
                 // ── JS: Theme Core ──
                 'resources/assets/js/main.js',
