@@ -7,52 +7,28 @@
       "slug": "admin.dashboard"
     },
     {
-      "menuHeader": "Konten"
+      "menuHeader": "Manajemen Konten"
     },
     {
+      "url": "/admin/news",
       "name": "Berita",
       "icon": "menu-icon icon-base ti tabler-news",
-      "slug": "admin.news",
-      "submenu": [
-        { "url": "/admin/news", "name": "Semua Berita", "slug": "admin.news.index" },
-        { "url": "/admin/news/create", "name": "Tambah Berita", "slug": "admin.news.create" }
-      ]
+      "slug": "admin.news"
     },
     {
+      "url": "/admin/announcements",
       "name": "Pengumuman",
       "icon": "menu-icon icon-base ti tabler-speakerphone",
-      "slug": "admin.announcements",
-      "submenu": [
-        { "url": "/admin/announcements", "name": "Semua Pengumuman", "slug": "admin.announcements.index" },
-        { "url": "/admin/announcements/create", "name": "Tambah Pengumuman", "slug": "admin.announcements.create" }
-      ]
+      "slug": "admin.announcements"
     },
     {
+      "url": "/admin/services",
       "name": "Layanan",
       "icon": "menu-icon icon-base ti tabler-apps",
-      "slug": "admin.services",
-      "submenu": [
-        { "url": "/admin/services", "name": "Semua Layanan", "slug": "admin.services.index" },
-        { "url": "/admin/services/create", "name": "Tambah Layanan", "slug": "admin.services.create" }
-      ]
+      "slug": "admin.services"
     },
     {
-      "menuHeader": "Analitik"
-    },
-    {
-      "url": "/admin/statistik",
-      "name": "Kunjungan Website",
-      "icon": "menu-icon icon-base ti tabler-chart-line",
-      "slug": "admin.visits"
-    },
-    {
-      "menuHeader": "Akun"
-    },
-    {
-      "url": "/admin/profile",
-      "name": "Profil Saya",
-      "icon": "menu-icon icon-base ti tabler-user",
-      "slug": "admin.profile"
+      "menuHeader": "Operasional"
     },
     {
       "name": "Daftar Ulang",
@@ -61,7 +37,7 @@
       "submenu": [
         {
           "url": "/admin/daftar-ulang/dashboard",
-          "name": "Dashboard",
+          "name": "Ringkasan",
           "slug": "daftar-ulang.dashboard"
         },
         {
@@ -75,6 +51,24 @@
           "slug": "daftar-ulang-siswa.index"
         }
       ]
+    },
+    {
+      "menuHeader": "Analitik"
+    },
+    {
+      "url": "/admin/statistik",
+      "name": "Statistik Pengunjung",
+      "icon": "menu-icon icon-base ti tabler-chart-line",
+      "slug": "admin.visits"
+    },
+    {
+      "menuHeader": "Akun"
+    },
+    {
+      "url": "/admin/profile",
+      "name": "Profil Saya",
+      "icon": "menu-icon icon-base ti tabler-user",
+      "slug": "admin.profile"
     }
   ]
 }

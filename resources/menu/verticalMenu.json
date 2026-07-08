@@ -7,64 +7,49 @@
       "slug": "admin.dashboard"
     },
     {
-      "menuHeader": "Konten"
+      "menuHeader": "Manajemen Konten"
     },
     {
+      "url": "/admin/news",
       "name": "Berita",
       "icon": "menu-icon icon-base ti tabler-news",
-      "slug": "admin.news",
-      "submenu": [
-        { "url": "/admin/news", "name": "Semua Berita", "slug": "admin.news.index" },
-        { "url": "/admin/news/create", "name": "Tambah Berita", "slug": "admin.news.create" }
-      ]
+      "slug": "admin.news"
     },
     {
+      "url": "/admin/galleries",
       "name": "Galeri",
       "icon": "menu-icon icon-base ti tabler-photo",
-      "slug": "admin.galleries",
-      "submenu": [
-        { "url": "/admin/galleries", "name": "Semua Galeri", "slug": "admin.galleries.index" },
-        { "url": "/admin/galleries/create", "name": "Tambah Galeri", "slug": "admin.galleries.create" }
-      ]
+      "slug": "admin.galleries"
     },
     {
+      "url": "/admin/achievements",
       "name": "Prestasi",
       "icon": "menu-icon icon-base ti tabler-trophy",
-      "slug": "admin.achievements",
-      "submenu": [
-        { "url": "/admin/achievements", "name": "Semua Prestasi", "slug": "admin.achievements.index" },
-        { "url": "/admin/achievements/create", "name": "Tambah Prestasi", "slug": "admin.achievements.create" }
-      ]
+      "slug": "admin.achievements"
     },
     {
+      "url": "/admin/extracurriculars",
       "name": "Ekstrakurikuler",
       "icon": "menu-icon icon-base ti tabler-users-group",
-      "slug": "admin.extracurriculars",
-      "submenu": [
-        { "url": "/admin/extracurriculars", "name": "Semua Ekskul", "slug": "admin.extracurriculars.index" },
-        { "url": "/admin/extracurriculars/create", "name": "Tambah Ekskul", "slug": "admin.extracurriculars.create" }
-      ]
+      "slug": "admin.extracurriculars"
     },
     {
+      "url": "/admin/announcements",
       "name": "Pengumuman",
       "icon": "menu-icon icon-base ti tabler-speakerphone",
-      "slug": "admin.announcements",
-      "submenu": [
-        { "url": "/admin/announcements", "name": "Semua Pengumuman", "slug": "admin.announcements.index" },
-        { "url": "/admin/announcements/create", "name": "Tambah Pengumuman", "slug": "admin.announcements.create" }
-      ]
+      "slug": "admin.announcements"
     },
     {
       "menuHeader": "Analitik"
     },
     {
       "url": "/admin/statistik",
-      "name": "Kunjungan Website",
+      "name": "Statistik Pengunjung",
       "icon": "menu-icon icon-base ti tabler-chart-line",
       "slug": "admin.visits"
     },
     {
-      "menuHeader": "Manajemen"
+      "menuHeader": "Konfigurasi"
     },
     {
       "url": "/admin/menus",
@@ -74,13 +59,13 @@
     },
     {
       "url": "/admin/settings",
-      "name": "Pengaturan",
+      "name": "Pengaturan Aplikasi",
       "icon": "menu-icon icon-base ti tabler-settings",
       "slug": "admin.settings"
     },
     {
       "url": "/admin/users",
-      "name": "Pengguna",
+      "name": "Manajemen Pengguna",
       "icon": "menu-icon icon-base ti tabler-users",
       "slug": "admin.users"
     },
