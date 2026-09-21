@@ -56,8 +56,8 @@ class DaftarUlangSiswaController extends Controller
             'periode_id' => 'required|exists:daftar_ulang_periode,id',
             'nis' => 'required|string|max:20',
             'nama_lengkap' => 'required|string|max:100',
-            'kelas_asal' => 'required|in:X,XI',
-            'kelas_tujuan' => 'required|in:XI,XII',
+            'kelas_asal' => 'required|string|max:50',
+            'kelas_tujuan' => 'required|in:X,XI,XII',
             'jurusan' => 'nullable|string|max:50',
         ]);
 
@@ -128,8 +128,8 @@ class DaftarUlangSiswaController extends Controller
             'periode_id' => 'required|exists:daftar_ulang_periode,id',
             'nis' => 'required|string|max:20',
             'nama_lengkap' => 'required|string|max:100',
-            'kelas_asal' => 'required|in:X,XI',
-            'kelas_tujuan' => 'required|in:XI,XII',
+            'kelas_asal' => 'required|string|max:50',
+            'kelas_tujuan' => 'required|in:X,XI,XII',
             'jurusan' => 'nullable|string|max:50',
         ]);
 

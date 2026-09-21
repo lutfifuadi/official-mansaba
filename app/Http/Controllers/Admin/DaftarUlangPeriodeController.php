@@ -37,7 +37,7 @@ class DaftarUlangPeriodeController extends Controller
         $validated = $request->validate([
             'id' => 'nullable|exists:daftar_ulang_periode,id',
             'tahun_ajaran' => 'required|string|max:20',
-            'kelas_target' => 'required|in:XI,XII',
+            'kelas_target' => 'required|in:X,XI,XII',
             'tanggal_buka' => 'required|date',
             'tanggal_tutup' => 'required|date|after_or_equal:tanggal_buka',
             'is_active' => 'nullable|boolean',

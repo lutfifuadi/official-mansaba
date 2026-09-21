@@ -20,16 +20,17 @@ class DaftarUlangController extends Controller
     public function index(Request $request)
     {
         // 1. Get active periods
+        $periodeX = DaftarUlangPeriode::active()->where('kelas_target', 'X')->first();
         $periodeXI = DaftarUlangPeriode::active()->where('kelas_target', 'XI')->first();
         $periodeXII = DaftarUlangPeriode::active()->where('kelas_target', 'XII')->first();
 
         // 2. Fetch siswa based on filters
         $query = DaftarUlangSiswa::with(['periode', 'checklist.verifiedBy']);
 
-        // Filter tab kelas (default to XI if none provided or invalid)
-        $kelas = $request->input('kelas', 'XI');
-        if (!in_array($kelas, ['XI', 'XII'])) {
-            $kelas = 'XI';
+        // Filter tab kelas (default to X if none provided or invalid)
+        $kelas = $request->input('kelas', 'X');
+        if (!in_array($kelas, ['X', 'XI', 'XII'])) {
+            $kelas = 'X';
         }
         $query->where('kelas_tujuan', $kelas);
 
@@ -211,6 +212,14 @@ class DaftarUlangController extends Controller
         $jumlahBelumLengkap = DaftarUlangChecklist::where('status', 'belum_lengkap')->count();
         $progressGlobal = $totalSiswa > 0 ? round(($jumlahLengkap / $totalSiswa) * 100, 2) : 0;
 
+        // Class X stats
+        $totalSiswaX = DaftarUlangSiswa::where('kelas_tujuan', 'X')->count();
+        $jumlahLengkapX = DaftarUlangChecklist::whereHas('siswa', function ($q) {
+            $q->where('kelas_tujuan', 'X');
+        })->where('status', 'lengkap')->count();
+        $jumlahBelumLengkapX = $totalSiswaX - $jumlahLengkapX;
+        $progressX = $totalSiswaX > 0 ? round(($jumlahLengkapX / $totalSiswaX) * 100, 2) : 0;
+
         // Class XI stats
         $totalSiswaXI = DaftarUlangSiswa::where('kelas_tujuan', 'XI')->count();
         $jumlahLengkapXI = DaftarUlangChecklist::whereHas('siswa', function ($q) {
@@ -228,15 +237,20 @@ class DaftarUlangController extends Controller
         $progressXII = $totalSiswaXII > 0 ? round(($jumlahLengkapXII / $totalSiswaXII) * 100, 2) : 0;
 
         // Active periods
+        $periodeX = DaftarUlangPeriode::active()->where('kelas_target', 'X')->first();
         $periodeXI = DaftarUlangPeriode::active()->where('kelas_target', 'XI')->first();
         $periodeXII = DaftarUlangPeriode::active()->where('kelas_target', 'XII')->first();
 
         $statsGlobal = $this->getKelompokAndKurangStats();
+        $statsX = $this->getKelompokAndKurangStats('X');
         $statsXI = $this->getKelompokAndKurangStats('XI');
         $statsXII = $this->getKelompokAndKurangStats('XII');
 
         $statistikKelompok = $statsGlobal['kelompok'];
         $ringkasanKurang = $statsGlobal['kurang'];
+
+        $statistikKelompokX = $statsX['kelompok'];
+        $ringkasanKurangX = $statsX['kurang'];
 
         $statistikKelompokXI = $statsXI['kelompok'];
         $ringkasanKurangXI = $statsXI['kurang'];
@@ -246,9 +260,11 @@ class DaftarUlangController extends Controller
 
         return view('admin.daftar-ulang.dashboard', compact(
             'totalSiswa', 'jumlahLengkap', 'jumlahBelumLengkap', 'progressGlobal',
+            'totalSiswaX', 'jumlahLengkapX', 'jumlahBelumLengkapX', 'progressX',
             'totalSiswaXI', 'jumlahLengkapXI', 'jumlahBelumLengkapXI', 'progressXI',
             'totalSiswaXII', 'jumlahLengkapXII', 'jumlahBelumLengkapXII', 'progressXII',
-            'periodeXI', 'periodeXII', 'statistikKelompok', 'ringkasanKurang',
+            'periodeX', 'periodeXI', 'periodeXII', 'statistikKelompok', 'ringkasanKurang',
+            'statistikKelompokX', 'ringkasanKurangX',
             'statistikKelompokXI', 'ringkasanKurangXI',
             'statistikKelompokXII', 'ringkasanKurangXII'
         ));
@@ -270,6 +286,14 @@ class DaftarUlangController extends Controller
         $jumlahBelumLengkap = $totalSiswa - $jumlahLengkap;
         $progressPersen = $totalSiswa > 0 ? round(($jumlahLengkap / $totalSiswa) * 100, 1) : 0;
 
+        // Class X Stats
+        $totalSiswaX = DaftarUlangSiswa::where('kelas_tujuan', 'X')->count();
+        $jumlahLengkapX = DaftarUlangChecklist::whereHas('siswa', function ($q) {
+            $q->where('kelas_tujuan', 'X');
+        })->where('status', 'lengkap')->count();
+        $jumlahBelumLengkapX = $totalSiswaX - $jumlahLengkapX;
+        $progressX = $totalSiswaX > 0 ? round(($jumlahLengkapX / $totalSiswaX) * 100, 2) : 0;
+
         // Class XI Stats
         $totalSiswaXI = DaftarUlangSiswa::where('kelas_tujuan', 'XI')->count();
         $jumlahLengkapXI = DaftarUlangChecklist::whereHas('siswa', function ($q) {
@@ -287,6 +311,7 @@ class DaftarUlangController extends Controller
         $progressXII = $totalSiswaXII > 0 ? round(($jumlahLengkapXII / $totalSiswaXII) * 100, 2) : 0;
 
         $statsGlobal = $this->getKelompokAndKurangStats();
+        $statsX = $this->getKelompokAndKurangStats('X');
         $statsXI = $this->getKelompokAndKurangStats('XI');
         $statsXII = $this->getKelompokAndKurangStats('XII');
 
@@ -297,6 +322,10 @@ class DaftarUlangController extends Controller
                 'lengkap'     => $jumlahLengkap,
                 'belum'       => $jumlahBelumLengkap,
                 'persen'      => $progressPersen,
+                'total_x'     => $totalSiswaX,
+                'lengkap_x'   => $jumlahLengkapX,
+                'belum_x'     => $jumlahBelumLengkapX,
+                'persen_x'    => $progressX,
                 'total_xi'    => $totalSiswaXI,
                 'lengkap_xi'  => $jumlahLengkapXI,
                 'belum_xi'    => $jumlahBelumLengkapXI,
@@ -310,6 +339,8 @@ class DaftarUlangController extends Controller
                 'berkas_kurang' => $statsGlobal['kurang'],
                 'ringkasan_kurang' => $statsGlobal['kurang'],
                 // Detail per tingkat
+                'statistik_kelompok_x' => $statsX['kelompok'],
+                'ringkasan_kurang_x' => $statsX['kurang'],
                 'statistik_kelompok_xi' => $statsXI['kelompok'],
                 'ringkasan_kurang_xi' => $statsXI['kurang'],
                 'statistik_kelompok_xii' => $statsXII['kelompok'],
@@ -393,7 +424,15 @@ class DaftarUlangController extends Controller
         $jumlahBelumLengkap = $totalSiswa - $jumlahLengkap;
         $progressPersen = $totalSiswa > 0 ? round(($jumlahLengkap / $totalSiswa) * 100, 1) : 0;
 
-        // 2. Class XI Stats
+        // 2. Class X Stats
+        $totalSiswaX = DaftarUlangSiswa::where('kelas_tujuan', 'X')->count();
+        $jumlahLengkapX = DaftarUlangChecklist::whereHas('siswa', function ($q) {
+            $q->where('kelas_tujuan', 'X');
+        })->where('status', 'lengkap')->count();
+        $jumlahBelumLengkapX = $totalSiswaX - $jumlahLengkapX;
+        $progressX = $totalSiswaX > 0 ? round(($jumlahLengkapX / $totalSiswaX) * 100, 2) : 0;
+
+        // 3. Class XI Stats
         $totalSiswaXI = DaftarUlangSiswa::where('kelas_tujuan', 'XI')->count();
         $jumlahLengkapXI = DaftarUlangChecklist::whereHas('siswa', function ($q) {
             $q->where('kelas_tujuan', 'XI');
@@ -401,7 +440,7 @@ class DaftarUlangController extends Controller
         $jumlahBelumLengkapXI = $totalSiswaXI - $jumlahLengkapXI;
         $progressXI = $totalSiswaXI > 0 ? round(($jumlahLengkapXI / $totalSiswaXI) * 100, 2) : 0;
 
-        // 3. Class XII Stats
+        // 4. Class XII Stats
         $totalSiswaXII = DaftarUlangSiswa::where('kelas_tujuan', 'XII')->count();
         $jumlahLengkapXII = DaftarUlangChecklist::whereHas('siswa', function ($q) {
             $q->where('kelas_tujuan', 'XII');
@@ -410,6 +449,7 @@ class DaftarUlangController extends Controller
         $progressXII = $totalSiswaXII > 0 ? round(($jumlahLengkapXII / $totalSiswaXII) * 100, 2) : 0;
 
         $statsGlobal = $this->getKelompokAndKurangStats();
+        $statsX = $this->getKelompokAndKurangStats('X');
         $statsXI = $this->getKelompokAndKurangStats('XI');
         $statsXII = $this->getKelompokAndKurangStats('XII');
 
@@ -419,6 +459,12 @@ class DaftarUlangController extends Controller
             'lengkap' => $jumlahLengkap,
             'belum' => $jumlahBelumLengkap,
             'persen' => $progressPersen,
+
+            // Class X
+            'total_x' => $totalSiswaX,
+            'lengkap_x' => $jumlahLengkapX,
+            'belum_x' => $jumlahBelumLengkapX,
+            'persen_x' => $progressX,
             
             // Class XI
             'total_xi' => $totalSiswaXI,
@@ -439,6 +485,8 @@ class DaftarUlangController extends Controller
             'ringkasan_kurang' => $statsGlobal['kurang'],
 
             // Detail per tingkat
+            'statistik_kelompok_x' => $statsX['kelompok'],
+            'ringkasan_kurang_x' => $statsX['kurang'],
             'statistik_kelompok_xi' => $statsXI['kelompok'],
             'ringkasan_kurang_xi' => $statsXI['kurang'],
             'statistik_kelompok_xii' => $statsXII['kelompok'],
@@ -528,6 +576,7 @@ class DaftarUlangController extends Controller
         ]);
 
         $totalSiswa = \App\Models\DaftarUlangSiswa::count();
+        $totalSiswaX = \App\Models\DaftarUlangSiswa::where('kelas_tujuan', 'X')->count();
         $totalSiswaXI = \App\Models\DaftarUlangSiswa::where('kelas_tujuan', 'XI')->count();
         $totalSiswaXII = \App\Models\DaftarUlangSiswa::where('kelas_tujuan', 'XII')->count();
 
@@ -546,6 +595,13 @@ class DaftarUlangController extends Controller
             'ijazah' => $totalSiswa,
         ];
 
+        $kelompokCountsX = [
+            'lengkap' => 0,
+            'hampir_lengkap' => 0,
+            'setengah_lengkap' => 0,
+            'baru_memulai' => 0,
+            'belum_kumpul' => $totalSiswaX,
+        ];
         $kelompokCountsXI = [
             'lengkap' => 0,
             'hampir_lengkap' => 0,
@@ -559,6 +615,12 @@ class DaftarUlangController extends Controller
             'setengah_lengkap' => 0,
             'baru_memulai' => 0,
             'belum_kumpul' => $totalSiswaXII,
+        ];
+        $berkasKurangSummaryX = [
+            'raport' => $totalSiswaX,
+            'kartu_keluarga' => $totalSiswaX,
+            'akte_kelahiran' => $totalSiswaX,
+            'ijazah' => $totalSiswaX,
         ];
         $berkasKurangSummaryXI = [
             'raport' => $totalSiswaXI,
@@ -578,6 +640,12 @@ class DaftarUlangController extends Controller
             'lengkap' => 0,
             'belum' => $totalSiswa,
             'persen' => 0,
+
+            // Class X
+            'total_x' => $totalSiswaX,
+            'lengkap_x' => 0,
+            'belum_x' => $totalSiswaX,
+            'persen_x' => 0,
             
             // Class XI
             'total_xi' => $totalSiswaXI,
@@ -598,6 +666,8 @@ class DaftarUlangController extends Controller
             'ringkasan_kurang' => $berkasKurangSummary,
 
             // Detail per tingkat
+            'statistik_kelompok_x' => $kelompokCountsX,
+            'ringkasan_kurang_x' => $berkasKurangSummaryX,
             'statistik_kelompok_xi' => $kelompokCountsXI,
             'ringkasan_kurang_xi' => $berkasKurangSummaryXI,
             'statistik_kelompok_xii' => $kelompokCountsXII,

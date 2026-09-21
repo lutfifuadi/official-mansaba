@@ -44,6 +44,7 @@
             <label for="kelas_target" class="form-label">Kelas Target</label>
             <select class="form-select @error('kelas_target') is-invalid @enderror" id="kelas_target" name="kelas_target" required>
               <option value="">Pilih Kelas Target</option>
+              <option value="X" {{ old('kelas_target') == 'X' ? 'selected' : '' }}>Kelas X</option>
               <option value="XI" {{ old('kelas_target') == 'XI' ? 'selected' : '' }}>Kelas XI</option>
               <option value="XII" {{ old('kelas_target') == 'XII' ? 'selected' : '' }}>Kelas XII</option>
             </select>

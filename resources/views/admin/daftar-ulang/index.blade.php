@@ -176,6 +176,11 @@
   <div class="nav-align-top">
     <ul class="nav nav-tabs" role="tablist">
       <li class="nav-item">
+        <a href="{{ route('admin.daftar-ulang.index', array_merge(request()->except('page'), ['kelas' => 'X'])) }}" class="nav-link tab-kelas {{ $kelas === 'X' ? 'active' : '' }}" data-kelas="X">
+          <i class="icon-base ti tabler-school me-1_5"></i> Kelas X
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="{{ route('admin.daftar-ulang.index', array_merge(request()->except('page'), ['kelas' => 'XI'])) }}" class="nav-link tab-kelas {{ $kelas === 'XI' ? 'active' : '' }}" data-kelas="XI">
           <i class="icon-base ti tabler-school me-1_5"></i> Kelas XI
         </a>
@@ -208,7 +213,17 @@
                 <th>Kekurangan Berkas</th>
               </tr>
             </thead>
-            <tbody id="table-body" data-periode-active="{{ ($kelas === 'XI' ? ($periodeXI && today()->between($periodeXI->tanggal_buka, $periodeXI->tanggal_tutup) && $periodeXI->is_active) : ($periodeXII && today()->between($periodeXII->tanggal_buka, $periodeXII->tanggal_tutup) && $periodeXII->is_active)) ? 'true' : 'false' }}">
+            @php
+  $activeFlag = false;
+  if ($kelas === 'X' && $periodeX && today()->between($periodeX->tanggal_buka, $periodeX->tanggal_tutup) && $periodeX->is_active) {
+    $activeFlag = true;
+  } elseif ($kelas === 'XI' && $periodeXI && today()->between($periodeXI->tanggal_buka, $periodeXI->tanggal_tutup) && $periodeXI->is_active) {
+    $activeFlag = true;
+  } elseif ($kelas === 'XII' && $periodeXII && today()->between($periodeXII->tanggal_buka, $periodeXII->tanggal_tutup) && $periodeXII->is_active) {
+    $activeFlag = true;
+  }
+@endphp
+            <tbody id="table-body" data-periode-active="{{ $activeFlag ? 'true' : 'false' }}">
               @forelse($siswas as $index => $siswa)
                 @php
                   $checklist = $siswa->checklist;
@@ -310,6 +325,10 @@
 @section('page-script')
 <script>
   window.periodeConfig = {
+    X: {
+      active: @json($periodeX && today()->between($periodeX->tanggal_buka, $periodeX->tanggal_tutup) && $periodeX->is_active),
+      text: @json($periodeX ? 'Periode Aktif: ' . $periodeX->tanggal_buka->format('d M Y') . ' s/d ' . $periodeX->tanggal_tutup->format('d M Y') : 'Periode Aktif: Tidak Ada Periode Aktif')
+    },
     XI: {
       active: @json($periodeXI && today()->between($periodeXI->tanggal_buka, $periodeXI->tanggal_tutup) && $periodeXI->is_active),
       text: @json($periodeXI ? 'Periode Aktif: ' . $periodeXI->tanggal_buka->format('d M Y') . ' s/d ' . $periodeXI->tanggal_tutup->format('d M Y') : 'Periode Aktif: Tidak Ada Periode Aktif')

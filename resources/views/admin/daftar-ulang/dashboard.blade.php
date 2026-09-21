@@ -102,9 +102,41 @@
   </div>
 </div>
 
-<!-- Row 2: Detail Progress Per Kelas (XI & XII) -->
+<!-- Row 2: Detail Progress Per Kelas (X, XI & XII) -->
 <div class="row g-5 mb-5">
-  <div class="col-md-6">
+  <div class="col-lg-4 col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="card-title mb-0">Progress Kelas X (Target)</h5>
+          <span class="badge bg-label-warning">Target: {{ $totalSiswaX }} Siswa</span>
+        </div>
+        <div class="d-flex align-items-center gap-4 mb-3">
+          <div class="w-100">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="fw-medium text-heading" id="dash-x-lengkap-text">{{ $jumlahLengkapX }} dari {{ $totalSiswaX }} Lengkap</span>
+              <span class="fw-semibold text-warning" id="dash-x-persen">{{ $progressX }}%</span>
+            </div>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar bg-warning" id="dash-x-progress-bar" role="progressbar" style="width: {{ $progressX }}%;" aria-valuenow="{{ $progressX }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row text-center g-4">
+          <div class="col-6 border-end">
+            <p class="mb-1 text-muted">Lengkap</p>
+            <h4 class="mb-0 text-success" id="dash-x-lengkap">{{ $jumlahLengkapX }}</h4>
+          </div>
+          <div class="col-6">
+            <p class="mb-1 text-muted">Belum Lengkap</p>
+            <h4 class="mb-0 text-danger" id="dash-x-belum">{{ $jumlahBelumLengkapX }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4 col-md-6">
     <div class="card h-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -136,12 +168,12 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-lg-4 col-md-12">
     <div class="card h-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h5 class="card-title mb-0">Progress Kelas XII (Target)</h5>
-          <span class="badge bg-label-primary">Target: {{ $totalSiswaXII }} Siswa</span>
+          <span class="badge bg-label-success">Target: {{ $totalSiswaXII }} Siswa</span>
         </div>
         <div class="d-flex align-items-center gap-4 mb-3">
           <div class="w-100">
@@ -175,6 +207,11 @@
     <li class="nav-item">
       <button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-detail-semua" role="tab" aria-selected="true">
         <i class="icon-base ti tabler-chart-pie me-1_5"></i> Semua Tingkat
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-detail-x" role="tab" aria-selected="false">
+        <i class="icon-base ti tabler-school me-1_5"></i> Kelas X
       </button>
     </li>
     <li class="nav-item">
@@ -271,6 +308,87 @@
       </div>
     </div>
 
+    <!-- TAB KELAS X -->
+    <div class="tab-pane fade" id="tab-detail-x" role="tabpanel">
+      <div class="row g-5">
+        <!-- Kolom Kiri: Donut Chart Kelompok Kelengkapan X -->
+        <div class="col-md-6 col-lg-7">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Segmentasi Kelompok Kelengkapan Kelas X</h5>
+                <small class="text-muted">Porsi kelengkapan berkas siswa target Kelas X</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="kelompokDonutChartX" style="min-height: 290px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Detail Berkas Belum Dikumpulkan X -->
+        <div class="col-md-6 col-lg-5">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="card-title mb-0">
+                <h5 class="m-0 me-2">Detail Berkas Belum Dikumpulkan</h5>
+                <small class="text-muted">Jumlah kekurangan dokumen fisik Kelas X</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Ijazah / SKL</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-ijazah-x-count">{{ $ringkasanKurangX['ijazah'] }} siswa</span>
+                    <span class="fw-semibold text-danger" id="kurang-ijazah-x-persen">{{ $totalSiswaX > 0 ? round(($ringkasanKurangX['ijazah'] / $totalSiswaX) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-danger" id="kurang-ijazah-x-bar" role="progressbar" style="width: {{ $totalSiswaX > 0 ? ($ringkasanKurangX['ijazah'] / $totalSiswaX) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaX > 0 ? ($ringkasanKurangX['ijazah'] / $totalSiswaX) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Akte Kelahiran</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-akte-x-count">{{ $ringkasanKurangX['akte_kelahiran'] }} siswa</span>
+                    <span class="fw-semibold text-warning" id="kurang-akte-x-persen">{{ $totalSiswaX > 0 ? round(($ringkasanKurangX['akte_kelahiran'] / $totalSiswaX) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-warning" id="kurang-akte-x-bar" role="progressbar" style="width: {{ $totalSiswaX > 0 ? ($ringkasanKurangX['akte_kelahiran'] / $totalSiswaX) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaX > 0 ? ($ringkasanKurangX['akte_kelahiran'] / $totalSiswaX) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Raport</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-raport-x-count">{{ $ringkasanKurangX['raport'] }} siswa</span>
+                    <span class="fw-semibold text-info" id="kurang-raport-x-persen">{{ $totalSiswaX > 0 ? round(($ringkasanKurangX['raport'] / $totalSiswaX) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-info" id="kurang-raport-x-bar" role="progressbar" style="width: {{ $totalSiswaX > 0 ? ($ringkasanKurangX['raport'] / $totalSiswaX) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaX > 0 ? ($ringkasanKurangX['raport'] / $totalSiswaX) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              <div class="mb-0">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-medium text-heading">Kartu Keluarga</span>
+                  <div class="d-flex align-items-center">
+                    <span class="text-muted me-2 small" id="kurang-kk-x-count">{{ $ringkasanKurangX['kartu_keluarga'] }} siswa</span>
+                    <span class="fw-semibold text-primary" id="kurang-kk-x-persen">{{ $totalSiswaX > 0 ? round(($ringkasanKurangX['kartu_keluarga'] / $totalSiswaX) * 100, 1) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-primary" id="kurang-kk-x-bar" role="progressbar" style="width: {{ $totalSiswaX > 0 ? ($ringkasanKurangX['kartu_keluarga'] / $totalSiswaX) * 100 : 0 }}%;" aria-valuenow="{{ $totalSiswaX > 0 ? ($ringkasanKurangX['kartu_keluarga'] / $totalSiswaX) * 100 : 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- TAB KELAS XI -->
     <div class="tab-pane fade" id="tab-detail-xi" role="tabpanel">
       <div class="row g-5">
@@ -463,6 +581,20 @@
       </thead>
       <tbody>
         <tr>
+          <td><span class="fw-bold">Kelas X</span></td>
+          <td class="text-center" id="dash-table-x-total">{{ $totalSiswaX }}</td>
+          <td class="text-center" id="dash-table-x-lengkap">{{ $jumlahLengkapX }}</td>
+          <td class="text-center" id="dash-table-x-belum">{{ $jumlahBelumLengkapX }}</td>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <span class="fw-medium text-heading" id="dash-table-x-persen">{{ $progressX }}%</span>
+              <div class="progress w-100" style="height: 6px;">
+                <div class="progress-bar bg-warning" id="dash-table-x-progress-bar" role="progressbar" style="width: {{ $progressX }}%;" aria-valuenow="{{ $progressX }}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td><span class="fw-bold">Kelas XI</span></td>
           <td class="text-center" id="dash-table-xi-total">{{ $totalSiswaXI }}</td>
           <td class="text-center" id="dash-table-xi-lengkap">{{ $jumlahLengkapXI }}</td>
@@ -548,6 +680,25 @@ function updateDashboardStats(stats) {
 
     var elPersen = document.getElementById('dash-stat-persen');
     if (elPersen) elPersen.textContent = (stats.persen || 0) + '%';
+
+    // 1b. Kelas X Card
+    var xText = document.getElementById('dash-x-lengkap-text');
+    if (xText) xText.textContent = (stats.lengkap_x || 0) + ' dari ' + (stats.total_x || 0) + ' Lengkap';
+
+    var xPersen = document.getElementById('dash-x-persen');
+    if (xPersen) xPersen.textContent = (stats.persen_x || 0) + '%';
+
+    var xBar = document.getElementById('dash-x-progress-bar');
+    if (xBar) {
+        xBar.style.width = (stats.persen_x || 0) + '%';
+        xBar.setAttribute('aria-valuenow', stats.persen_x || 0);
+    }
+
+    var xLengkap = document.getElementById('dash-x-lengkap');
+    if (xLengkap) xLengkap.textContent = stats.lengkap_x || 0;
+
+    var xBelum = document.getElementById('dash-x-belum');
+    if (xBelum) xBelum.textContent = stats.belum_x || 0;
 
     // 2. Kelas XI Card
     var xiText = document.getElementById('dash-xi-lengkap-text');
@@ -654,6 +805,7 @@ function updateDashboardStats(stats) {
         updateProgressBars('', stats.ringkasan_kurang, stats.total);
     }
     if (stats.ringkasan_kurang_xi) {
+        updateProgressBars('-x', stats.ringkasan_kurang_x, stats.total_x);
         updateProgressBars('-xi', stats.ringkasan_kurang_xi, stats.total_xi);
     }
     if (stats.ringkasan_kurang_xii) {
@@ -713,6 +865,7 @@ function updateProgressBars(suffix, ringkasan, total) {
 // INI: ApexCharts Donut Chart Kelompok Kelengkapan (Global, XI, XII)
 // ============================================================
 var kelompokChart;
+var kelompokChartX;
 var kelompokChartXI;
 var kelompokChartXII;
 
@@ -803,6 +956,19 @@ document.addEventListener('DOMContentLoaded', function() {
             {{ $statistikKelompok['belum_kumpul'] }}
         ]));
         kelompokChart.render();
+    }
+
+    // Inisialisasi Chart Kelas X
+    var chartElementX = document.querySelector('#kelompokDonutChartX');
+    if (chartElementX) {
+        kelompokChartX = new ApexCharts(chartElementX, getChartOptions([
+            {{ $statistikKelompokX['lengkap'] }},
+            {{ $statistikKelompokX['hampir_lengkap'] }},
+            {{ $statistikKelompokX['setengah_lengkap'] }},
+            {{ $statistikKelompokX['baru_memulai'] }},
+            {{ $statistikKelompokX['belum_kumpul'] }}
+        ]));
+        kelompokChartX.render();
     }
 
     // Inisialisasi Chart Kelas XI
