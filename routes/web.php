@@ -48,7 +48,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->name('admin.')->gr
     Route::resource('news', AdminNewsController::class)->middleware('role:super_admin,admin,operator,editor');
     Route::resource('galleries', AdminGalleryController::class)->middleware('role:super_admin,admin');
     Route::resource('achievements', AdminAchievementController::class)->middleware('role:super_admin,admin,editor');
-    Route::resource('extracurriculars', AdminExtracurricularController::class)->middleware('role:super_admin,admin');
+    Route::resource('extracurriculars', AdminExtracurricularController::class)->middleware('role:super_admin,admin,operator');
 
     Route::get('/settings', [SettingController::class, 'index'])->middleware('role:super_admin,admin')->name('settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->middleware('role:super_admin,admin')->name('settings.update');

@@ -6,14 +6,35 @@ use App\Helpers\StorageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Extracurricular;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ExtracurricularController extends Controller
 {
     public function index()
     {
-        $extracurriculars = Extracurricular::latest()->paginate(10);
-        return view('content.admin.extracurriculars.index', compact('extracurriculars'));
+        try {
+            $extracurriculars = Extracurricular::latest()->paginate(10);
+            return view('content.admin.extracurriculars.index', compact('extracurriculars'));
+        } catch (\Throwable $e) {
+            Log::error('Error loading extracurriculars admin index: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+
+            try {
+                $extracurriculars = Extracurricular::query()->paginate(10);
+            } catch (\Throwable $fallbackEx) {
+                $extracurriculars = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+            }
+
+            return view('content.admin.extracurriculars.index', compact('extracurriculars'))
+                ->with('error', 'Terjadi kendala saat memuat data: ' . $e->getMessage());
+        }
+    }
+
+    public function show($id)
+    {
+        return redirect()->route('admin.extracurriculars.edit', $id);
     }
 
     public function create()

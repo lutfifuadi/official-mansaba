@@ -58,7 +58,7 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->name }}</td>
                 <td>{{ $item->coach ?? '-' }}</td>
-                <td><span class="badge bg-label-{{ $catColors[$item->category] ?? 'secondary' }}">{{ $item->category ?? '-' }}</span></td>
+                <td><span class="badge bg-label-{{ (isset($catColors) && !empty($item->category) && isset($catColors[$item->category])) ? $catColors[$item->category] : 'secondary' }}">{{ $item->category ?? '-' }}</span></td>
                 <td><small class="text-muted">{{ $item->schedule ?? '-' }}</small></td>
                 <td>
                   <div class="d-flex align-items-center gap-1">
