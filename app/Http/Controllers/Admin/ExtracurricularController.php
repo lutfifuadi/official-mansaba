@@ -53,6 +53,7 @@ class ExtracurricularController extends Controller
             'category' => 'nullable|string|max:100',
         ]);
 
+        $validated['description'] = $validated['description'] ?? '';
         $validated['slug'] = Str::slug($validated['name']);
 
         if ($request->hasFile('image')) {
@@ -85,6 +86,8 @@ class ExtracurricularController extends Controller
             'schedule' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:100',
         ]);
+
+        $validated['description'] = $validated['description'] ?? '';
 
         if ($request->filled('name') && $request->name !== $extracurricular->name) {
             $validated['slug'] = Str::slug($validated['name']);
