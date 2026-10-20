@@ -48,9 +48,15 @@
         <div class="mansaba-card h-100">
           <div class="card-body p-4">
             <div class="d-flex align-items-start gap-3 mb-3">
-              <div style="width:52px;height:52px;background:{{ $color }}1A;border:2px solid {{ $color }}33;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <i class="ti tabler-{{ $item->icon ?? 'users' }}" style="font-size:1.5rem;color:{{ $color }};"></i>
-              </div>
+              @if (!empty($item->image))
+                <div style="width:52px;height:52px;background:#fff;border:2px solid {{ $color }}33;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+                  <img src="{{ \App\Helpers\StorageHelper::url($item->image) }}" alt="{{ $item->name }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\'ti tabler-{{ $item->icon ?? 'users' }}\' style=\'font-size:1.5rem;color:{{ $color }};\'></i>';">
+                </div>
+              @else
+                <div style="width:52px;height:52px;background:{{ $color }}1A;border:2px solid {{ $color }}33;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="ti tabler-{{ $item->icon ?? 'users' }}" style="font-size:1.5rem;color:{{ $color }};"></i>
+                </div>
+              @endif
               <div class="flex-grow-1">
                 <h5 class="fw-bold mb-1" style="color:var(--mansaba-dark);font-size:1rem;">{{ $item->name ?? 'Nama Ekskul' }}</h5>
                 @if ($item->schedule ?? false)

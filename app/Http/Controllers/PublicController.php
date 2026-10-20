@@ -91,7 +91,11 @@ class PublicController extends Controller
 
     public function extracurricularDetail($slug)
     {
-        $extracurricular = Extracurricular::with('achievements')->where('slug', $slug)->firstOrFail();
+        $extracurricular = Extracurricular::with('achievements')
+            ->where('slug', $slug)
+            ->orWhere('id', $slug)
+            ->firstOrFail();
+
         return view('content.public.extracurricular-detail', [
             'ekskul' => $extracurricular,
             'extracurricular' => $extracurricular

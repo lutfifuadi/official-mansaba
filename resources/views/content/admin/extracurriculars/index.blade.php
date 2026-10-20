@@ -56,12 +56,28 @@
             @forelse($extracurriculars as $item)
               <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $item->name }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if(!empty($item->image))
+                      <div class="avatar avatar-sm me-2">
+                        <img src="{{ \App\Helpers\StorageHelper::url($item->image) }}" alt="{{ $item->name }}" class="rounded" style="width:34px;height:34px;object-fit:cover;">
+                      </div>
+                    @else
+                      <div class="avatar avatar-sm me-2">
+                        <span class="avatar-initial rounded bg-label-info"><i class="icon-base ti tabler-users icon-sm"></i></span>
+                      </div>
+                    @endif
+                    <span class="fw-medium">{{ $item->name }}</span>
+                  </div>
+                </td>
                 <td>{{ $item->coach ?? '-' }}</td>
                 <td><span class="badge bg-label-{{ (isset($catColors) && !empty($item->category) && isset($catColors[$item->category])) ? $catColors[$item->category] : 'secondary' }}">{{ $item->category ?? '-' }}</span></td>
                 <td><small class="text-muted">{{ $item->schedule ?? '-' }}</small></td>
                 <td>
                   <div class="d-flex align-items-center gap-1">
+                    <a href="{{ route('public.extracurricular-detail', $item->slug ?? $item->id) }}" target="_blank" class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect text-info" title="Lihat di Web Publik">
+                      <i class="icon-base ti tabler-eye"></i>
+                    </a>
                     <a href="{{ route('admin.extracurriculars.edit', $item->id) }}" class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect" title="Edit">
                       <i class="icon-base ti tabler-pencil"></i>
                     </a>

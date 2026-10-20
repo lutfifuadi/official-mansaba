@@ -53,8 +53,18 @@ class ExtracurricularController extends Controller
             'category' => 'nullable|string|max:100',
         ]);
 
-        $validated['description'] = $validated['description'] ?? '';
-        $validated['slug'] = Str::slug($validated['name']);
+        if (isset($validated['description']) && trim(strip_tags($validated['description'])) === '') {
+            $validated['description'] = null;
+        }
+
+        $baseSlug = Str::slug($validated['name']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Extracurricular::where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+        $validated['slug'] = $slug;
 
         if ($request->hasFile('image')) {
             $validated['image'] = StorageHelper::putFile('extracurriculars', $request->file('image'));
@@ -87,10 +97,19 @@ class ExtracurricularController extends Controller
             'category' => 'nullable|string|max:100',
         ]);
 
-        $validated['description'] = $validated['description'] ?? '';
+        if (isset($validated['description']) && trim(strip_tags($validated['description'])) === '') {
+            $validated['description'] = null;
+        }
 
-        if ($request->filled('name') && $request->name !== $extracurricular->name) {
-            $validated['slug'] = Str::slug($validated['name']);
+        if ($request->filled('name') && ($request->name !== $extracurricular->name || empty($extracurricular->slug))) {
+            $baseSlug = Str::slug($validated['name']);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (Extracurricular::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                $slug = "{$baseSlug}-{$counter}";
+                $counter++;
+            }
+            $validated['slug'] = $slug;
         }
 
         if ($request->hasFile('image')) {

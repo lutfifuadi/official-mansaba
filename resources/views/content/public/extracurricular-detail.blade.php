@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb" class="breadcrumb-islami mb-2">
       <ol class="breadcrumb justify-content-center">
         <li class="breadcrumb-item"><a href="{{ route('home') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;">Beranda</a></li>
-        <li class="breadcrumb-item"><a href="{{ url('public/extracurriculars') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;">Ekstrakurikuler</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('public.extracurriculars') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;">Ekstrakurikuler</a></li>
         <li class="breadcrumb-item active">Detail</li>
       </ol>
     </nav>
@@ -25,18 +25,33 @@
       <div class="col-lg-10">
         <div class="mansaba-card">
           <div class="row g-0">
-            <div class="col-md-4 d-flex align-items-center justify-content-center p-5" style="background:linear-gradient(135deg,rgba(27,94,66,0.05),rgba(27,94,66,0.1));border-right:1px solid rgba(27,94,66,0.1);">
-              <div class="text-center">
-                <div class="mb-3" style="width:100px;height:100px;background:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 10px 25px rgba(27,94,66,0.15);">
-                  <i class="ti tabler-{{ $ekskul->icon ?? 'users' }}" style="font-size:3rem;color:var(--mansaba-green);"></i>
-                </div>
-                <h4 class="mb-0 fw-bold" style="color:var(--mansaba-dark);">{{ $ekskul->name ?? 'Nama Ekskul' }}</h4>
+            <div class="col-md-4 d-flex align-items-center justify-content-center p-4 p-md-5" style="background:linear-gradient(135deg,rgba(27,94,66,0.05),rgba(27,94,66,0.1));border-right:1px solid rgba(27,94,66,0.1);">
+              <div class="text-center w-100">
+                @if (!empty($ekskul->image))
+                  <div class="mb-3 mx-auto" style="width:120px;height:120px;background:#fff;border-radius:20px;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 25px rgba(27,94,66,0.15);border:3px solid #fff;">
+                    <img src="{{ \App\Helpers\StorageHelper::url($ekskul->image) }}" alt="{{ $ekskul->name }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\'ti tabler-users\' style=\'font-size:3rem;color:var(--mansaba-green);\'></i>';">
+                  </div>
+                @else
+                  <div class="mb-3 mx-auto" style="width:100px;height:100px;background:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 10px 25px rgba(27,94,66,0.15);">
+                    <i class="ti tabler-{{ $ekskul->icon ?? 'users' }}" style="font-size:3rem;color:var(--mansaba-green);"></i>
+                  </div>
+                @endif
+                <h4 class="mb-1 fw-bold" style="color:var(--mansaba-dark);">{{ $ekskul->name ?? 'Nama Ekskul' }}</h4>
+                @if (!empty($ekskul->category))
+                  <span class="badge mt-1" style="background:rgba(27,94,66,0.12);color:var(--mansaba-green);font-size:0.75rem;padding:6px 14px;border-radius:20px;font-weight:600;">{{ $ekskul->category }}</span>
+                @endif
               </div>
             </div>
             <div class="col-md-8">
               <div class="card-body p-4 p-md-5">
                 <h5 class="fw-bold mb-3" style="color:var(--mansaba-dark);">Tentang {{ $ekskul->name ?? 'Ekskul' }}</h5>
-                <p style="color:#555;line-height:1.7;">{{ $ekskul->description ?? 'Deskripsi tidak tersedia.' }}</p>
+                <div class="ekskul-description mb-4" style="color:#555;line-height:1.8;">
+                  @if (!empty(trim(strip_tags($ekskul->description ?? ''))))
+                    {!! strip_tags($ekskul->description, '<p><br><b><strong><i><em><u><ul><ol><li><a><h1><h2><h3><h4><h5><h6><blockquote><span><hr><table><thead><tbody><tr><th><td>') !!}
+                  @else
+                    <p class="text-muted fst-italic">Deskripsi tidak tersedia.</p>
+                  @endif
+                </div>
 
                 <div class="row g-4 mt-2">
                   @if ($ekskul->coach ?? $ekskul->advisor ?? $ekskul->pembina ?? false)
@@ -96,7 +111,7 @@
                   @endif
                 </div>
 
-                @if($extracurricular->achievements->isNotEmpty())
+                @if(!empty($extracurricular->achievements) && $extracurricular->achievements->isNotEmpty())
                   <div class="mt-5 pt-4 border-top" style="border-color:rgba(27,94,66,0.1)!important;">
                     <h5 class="fw-bold mb-4" style="color:var(--mansaba-dark);">
                       <i class="ti tabler-trophy me-2" style="color:var(--mansaba-gold);"></i>
@@ -124,7 +139,7 @@
                 @endif
 
                 <div class="mt-5 pt-4 border-top" style="border-color:rgba(27,94,66,0.1)!important;">
-                  <a href="{{ url('public/extracurriculars') }}" class="btn px-4 py-2" style="background:var(--mansaba-green);color:#fff;border-radius:5px;font-weight:600;">
+                  <a href="{{ route('public.extracurriculars') }}" class="btn px-4 py-2" style="background:var(--mansaba-green);color:#fff;border-radius:5px;font-weight:600;">
                     <i class="ti tabler-arrow-left me-2"></i>Kembali
                   </a>
                 </div>

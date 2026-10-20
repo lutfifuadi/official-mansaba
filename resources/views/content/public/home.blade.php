@@ -395,8 +395,12 @@ document.addEventListener('DOMContentLoaded', function() {
           <a href="{{ route('public.extracurricular-detail', $slug) }}" class="text-decoration-none">
             <div class="ekskul-card h-100">
               <div class="ekskul-card-top" style="background:{{ $c['bg'] }};">
-                <div class="ekskul-icon-circle">
-                  <i class="ti tabler-{{ $item->icon ?? $c['icon'] }}"></i>
+                <div class="ekskul-icon-circle" style="overflow:hidden;">
+                  @if (!empty($item->image))
+                    <img src="{{ \App\Helpers\StorageHelper::url($item->image) }}" alt="{{ $item->name }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\'ti tabler-{{ $item->icon ?? $c['icon'] }}\'></i>';">
+                  @else
+                    <i class="ti tabler-{{ $item->icon ?? $c['icon'] }}"></i>
+                  @endif
                 </div>
               </div>
               <div class="ekskul-card-body">
