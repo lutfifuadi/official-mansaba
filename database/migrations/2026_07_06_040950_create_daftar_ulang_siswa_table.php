@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('daftar_ulang_siswa', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('periode_id')->constrained('daftar_ulang_periode')->onDelete('cascade');
-            $table->string('nis', 20);
-            $table->string('nama_lengkap', 100);
-            $table->enum('kelas_asal', ['X', 'XI']);
-            $table->enum('kelas_tujuan', ['XI', 'XII']);
-            $table->string('jurusan', 50)->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('daftar_ulang_siswa')) {
+            Schema::create('daftar_ulang_siswa', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('periode_id')->constrained('daftar_ulang_periode')->onDelete('cascade');
+                $table->string('nis', 20);
+                $table->string('nama_lengkap', 100);
+                $table->enum('kelas_asal', ['X', 'XI']);
+                $table->enum('kelas_tujuan', ['XI', 'XII']);
+                $table->string('jurusan', 50)->nullable();
+                $table->timestamps();
 
-            $table->unique(['nis', 'periode_id']);
-        });
+                $table->unique(['nis', 'periode_id']);
+            });
+        }
     }
 
     /**

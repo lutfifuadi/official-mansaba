@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('daftar_ulang_periode', function (Blueprint $table) {
-            $table->id();
-            $table->string('tahun_ajaran', 20);
-            $table->enum('kelas_target', ['XI', 'XII']);
-            $table->date('tanggal_buka');
-            $table->date('tanggal_tutup');
-            $table->boolean('is_active')->default(true);
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamps();
+        if (!Schema::hasTable('daftar_ulang_periode')) {
+            Schema::create('daftar_ulang_periode', function (Blueprint $table) {
+                $table->id();
+                $table->string('tahun_ajaran', 20);
+                $table->enum('kelas_target', ['XI', 'XII']);
+                $table->date('tanggal_buka');
+                $table->date('tanggal_tutup');
+                $table->boolean('is_active')->default(true);
+                $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+                $table->timestamps();
 
-            $table->unique(['tahun_ajaran', 'kelas_target']);
-        });
+                $table->unique(['tahun_ajaran', 'kelas_target']);
+            });
+        }
     }
 
     /**
